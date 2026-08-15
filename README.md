@@ -39,8 +39,22 @@ The development server binds to `0.0.0.0` for local and hosted preview environme
 ## Quality checks
 
 ```bash
+npm run typecheck
+npm run lint
+npm test
 npm run build
 ```
+
+## Phase 2 backend setup
+
+The database and authentication foundation uses Neon PostgreSQL, Drizzle ORM, and Better Auth. Copy `.env.example` to `.env.local`, use a dedicated local Neon branch, and provide environment-specific values.
+
+```bash
+npm run db:migrate
+npm run db:seed:access
+```
+
+Never point local development or a Vercel preview at the production database. Runtime safeguards reject that configuration. See `docs/PHASE_2_AUDIT_AND_PLAN.md` and `docs/MILESTONE_1_REPORT.md` for the architecture, migration order, security decisions, and current integration limitations.
 
 ## Planned production phases
 

@@ -10,18 +10,28 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AccountRouteImport } from './routes/account'
 import { Route as CoursesRouteImport } from './routes/courses'
 import { Route as ExploreRouteImport } from './routes/explore'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as LabsRouteImport } from './routes/labs'
 import { Route as MyLearningRouteImport } from './routes/my-learning'
 import { Route as PathwaysRouteImport } from './routes/pathways'
+import { Route as RegisterRouteImport } from './routes/register'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ResourcesRouteImport } from './routes/resources'
+import { Route as SignInRouteImport } from './routes/sign-in'
 import { Route as CoursesCourseSlugRouteImport } from './routes/courses.$courseSlug'
 import { Route as CoursesCourseSlugLessonsLessonSlugRouteImport } from './routes/courses/$courseSlug/lessons/$lessonSlug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountRoute = AccountRouteImport.update({
+  id: '/account',
+  path: '/account',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CoursesRoute = CoursesRouteImport.update({
@@ -32,6 +42,11 @@ const CoursesRoute = CoursesRouteImport.update({
 const ExploreRoute = ExploreRouteImport.update({
   id: '/explore',
   path: '/explore',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LabsRoute = LabsRouteImport.update({
@@ -49,9 +64,24 @@ const PathwaysRoute = PathwaysRouteImport.update({
   path: '/pathways',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RegisterRoute = RegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ResourcesRoute = ResourcesRouteImport.update({
   id: '/resources',
   path: '/resources',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignInRoute = SignInRouteImport.update({
+  id: '/sign-in',
+  path: '/sign-in',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CoursesCourseSlugRoute = CoursesCourseSlugRouteImport.update({
@@ -68,35 +98,50 @@ const CoursesCourseSlugLessonsLessonSlugRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/account': typeof AccountRoute
   '/courses': typeof CoursesRouteWithChildren
   '/explore': typeof ExploreRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/labs': typeof LabsRoute
   '/my-learning': typeof MyLearningRoute
   '/pathways': typeof PathwaysRoute
+  '/register': typeof RegisterRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/resources': typeof ResourcesRoute
+  '/sign-in': typeof SignInRoute
   '/courses/$courseSlug': typeof CoursesCourseSlugRouteWithChildren
   '/courses/$courseSlug/lessons/$lessonSlug': typeof CoursesCourseSlugLessonsLessonSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/account': typeof AccountRoute
   '/courses': typeof CoursesRouteWithChildren
   '/explore': typeof ExploreRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/labs': typeof LabsRoute
   '/my-learning': typeof MyLearningRoute
   '/pathways': typeof PathwaysRoute
+  '/register': typeof RegisterRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/resources': typeof ResourcesRoute
+  '/sign-in': typeof SignInRoute
   '/courses/$courseSlug': typeof CoursesCourseSlugRouteWithChildren
   '/courses/$courseSlug/lessons/$lessonSlug': typeof CoursesCourseSlugLessonsLessonSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/account': typeof AccountRoute
   '/courses': typeof CoursesRouteWithChildren
   '/explore': typeof ExploreRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/labs': typeof LabsRoute
   '/my-learning': typeof MyLearningRoute
   '/pathways': typeof PathwaysRoute
+  '/register': typeof RegisterRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/resources': typeof ResourcesRoute
+  '/sign-in': typeof SignInRoute
   '/courses/$courseSlug': typeof CoursesCourseSlugRouteWithChildren
   '/courses/$courseSlug/lessons/$lessonSlug': typeof CoursesCourseSlugLessonsLessonSlugRoute
 }
@@ -104,46 +149,66 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/account'
     | '/courses'
     | '/explore'
+    | '/forgot-password'
     | '/labs'
     | '/my-learning'
     | '/pathways'
+    | '/register'
+    | '/reset-password'
     | '/resources'
+    | '/sign-in'
     | '/courses/$courseSlug'
     | '/courses/$courseSlug/lessons/$lessonSlug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/account'
     | '/courses'
     | '/explore'
+    | '/forgot-password'
     | '/labs'
     | '/my-learning'
     | '/pathways'
+    | '/register'
+    | '/reset-password'
     | '/resources'
+    | '/sign-in'
     | '/courses/$courseSlug'
     | '/courses/$courseSlug/lessons/$lessonSlug'
   id:
     | '__root__'
     | '/'
+    | '/account'
     | '/courses'
     | '/explore'
+    | '/forgot-password'
     | '/labs'
     | '/my-learning'
     | '/pathways'
+    | '/register'
+    | '/reset-password'
     | '/resources'
+    | '/sign-in'
     | '/courses/$courseSlug'
     | '/courses/$courseSlug/lessons/$lessonSlug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AccountRoute: typeof AccountRoute
   CoursesRoute: typeof CoursesRouteWithChildren
   ExploreRoute: typeof ExploreRoute
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
   LabsRoute: typeof LabsRoute
   MyLearningRoute: typeof MyLearningRoute
   PathwaysRoute: typeof PathwaysRoute
+  RegisterRoute: typeof RegisterRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   ResourcesRoute: typeof ResourcesRoute
+  SignInRoute: typeof SignInRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -153,6 +218,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account': {
+      id: '/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AccountRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/courses': {
@@ -167,6 +239,13 @@ declare module '@tanstack/react-router' {
       path: '/explore'
       fullPath: '/explore'
       preLoaderRoute: typeof ExploreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/labs': {
@@ -190,11 +269,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PathwaysRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/resources': {
       id: '/resources'
       path: '/resources'
       fullPath: '/resources'
       preLoaderRoute: typeof ResourcesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sign-in': {
+      id: '/sign-in'
+      path: '/sign-in'
+      fullPath: '/sign-in'
+      preLoaderRoute: typeof SignInRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/courses/$courseSlug': {
@@ -239,12 +339,17 @@ const CoursesRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AccountRoute: AccountRoute,
   CoursesRoute: CoursesRouteWithChildren,
   ExploreRoute: ExploreRoute,
+  ForgotPasswordRoute: ForgotPasswordRoute,
   LabsRoute: LabsRoute,
   MyLearningRoute: MyLearningRoute,
   PathwaysRoute: PathwaysRoute,
+  RegisterRoute: RegisterRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   ResourcesRoute: ResourcesRoute,
+  SignInRoute: SignInRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

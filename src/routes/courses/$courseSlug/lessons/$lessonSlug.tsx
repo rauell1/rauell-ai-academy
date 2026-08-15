@@ -1,5 +1,5 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft, ArrowRight, Check, ChevronDown, Lightbulb, Menu, MessageCircleQuestion } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Lightbulb, MessageCircleQuestion } from "lucide-react";
 import { useState } from "react";
 import { courses } from "@/data/academy";
 export const Route=createFileRoute("/courses/$courseSlug/lessons/$lessonSlug")({component:Lesson});

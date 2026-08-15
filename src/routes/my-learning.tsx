@@ -1,5 +1,131 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Award, BookOpenCheck, Clock3, Flame, Target } from "lucide-react";
+import {
+  ArrowRight,
+  Award,
+  BookOpenCheck,
+  Clock3,
+  Flame,
+  Target,
+} from "lucide-react";
 import { courses } from "@/data/academy";
-export const Route=createFileRoute("/my-learning")({component:Dashboard});
-function Dashboard(){const c=courses[0];return <><section className="bg-ink text-white"><div className="mx-auto max-w-7xl px-5 py-14 lg:px-8"><p className="eyebrow text-mint">My learning</p><h1 className="font-display mt-4 text-4xl font-bold md:text-5xl">Welcome back, learner.</h1><p className="mt-3 text-white/55">Small steps, applied consistently, become real capability.</p></div></section><section className="mx-auto max-w-7xl px-5 py-12 lg:px-8"><div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{[[Flame,"1 day","Current streak"],[Clock3,"42 min","Time learned"],[BookOpenCheck,"1","Lessons complete"],[Award,"0","Certificates"]].map(([Icon,n,l])=>{const I=Icon as typeof Flame;return <div key={l as string} className="card p-5"><I className="h-5 w-5 text-leaf"/><p className="font-display mt-4 text-3xl font-bold">{n as string}</p><p className="mt-1 text-xs font-bold uppercase tracking-wider text-ink/45">{l as string}</p></div>})}</div><div className="mt-10 grid gap-8 lg:grid-cols-[1fr_360px]"><div><h2 className="font-display text-3xl font-bold">Continue learning</h2><article className="card mt-5 overflow-hidden"><div className="grid md:grid-cols-[220px_1fr]"><div className={`${c.color} grid min-h-48 place-items-center`}><c.icon className="h-20 w-20"/></div><div className="p-6"><p className="eyebrow text-leaf">In progress · 8%</p><h3 className="font-display mt-3 text-2xl font-bold">{c.title}</h3><div className="mt-5 h-2 overflow-hidden rounded-full bg-ink/10"><div className="h-full w-[8%] rounded-full bg-leaf"/></div><p className="mt-3 text-xs font-semibold text-ink/50">1 of {c.lessons} lessons complete</p><Link to="/courses/$courseSlug/lessons/$lessonSlug" params={{courseSlug:c.slug,lessonSlug:"1-1"}} className="mt-6 inline-flex items-center gap-2 rounded-full bg-ink px-5 py-3 text-sm font-bold text-white">Continue course <ArrowRight className="h-4 w-4"/></Link></div></div></article></div><aside><h2 className="font-display text-3xl font-bold">This week</h2><div className="card mt-5 p-6"><Target className="h-6 w-6 text-leaf"/><p className="mt-4 font-bold">Complete 3 lessons</p><p className="mt-2 text-sm leading-6 text-ink/55">A focused 20 minutes on three days is enough to keep moving.</p><div className="mt-5 flex gap-2">{[1,2,3,4,5,6,7].map((x)=><span key={x} className={`grid h-8 w-8 place-items-center rounded-full text-[10px] font-bold ${x===1?"bg-mint":"bg-ink/5 text-ink/35"}`}>{"MTWTFSS"[x-1]}</span>)}</div></div></aside></div></section></>}
+import { authClient } from "@/lib/auth-client";
+export const Route = createFileRoute("/my-learning")({ component: Dashboard });
+function Dashboard() {
+  const { data: session, isPending } = authClient.useSession();
+  const c = courses[0];
+  if (isPending)
+    return (
+      <div className="mx-auto max-w-7xl px-5 py-20" role="status">
+        Loading your learning...
+      </div>
+    );
+  if (!session)
+    return (
+      <section className="mx-auto max-w-xl px-5 py-20 text-center">
+        <p className="eyebrow text-leaf">Protected learning</p>
+        <h1 className="font-display mt-4 text-4xl font-bold">
+          Sign in to view your progress.
+        </h1>
+        <p className="mt-4 text-ink/60">
+          Your learner dashboard is linked to your secure Academy account.
+        </p>
+        <Link
+          to="/sign-in"
+          className="mt-7 inline-block rounded-full bg-ink px-6 py-3 text-sm font-bold text-white"
+        >
+          Sign in
+        </Link>
+      </section>
+    );
+  return (
+    <>
+      <section className="bg-ink text-white">
+        <div className="mx-auto max-w-7xl px-5 py-14 lg:px-8">
+          <p className="eyebrow text-mint">My learning</p>
+          <h1 className="font-display mt-4 text-4xl font-bold md:text-5xl">
+            Welcome back, learner.
+          </h1>
+          <p className="mt-3 text-white/55">
+            Small steps, applied consistently, become real capability.
+          </p>
+        </div>
+      </section>
+      <section className="mx-auto max-w-7xl px-5 py-12 lg:px-8">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {[
+            [Flame, "1 day", "Current streak"],
+            [Clock3, "42 min", "Time learned"],
+            [BookOpenCheck, "1", "Lessons complete"],
+            [Award, "0", "Certificates"],
+          ].map(([Icon, n, l]) => {
+            const I = Icon as typeof Flame;
+            return (
+              <div key={l as string} className="card p-5">
+                <I className="h-5 w-5 text-leaf" />
+                <p className="font-display mt-4 text-3xl font-bold">
+                  {n as string}
+                </p>
+                <p className="mt-1 text-xs font-bold uppercase tracking-wider text-ink/45">
+                  {l as string}
+                </p>
+              </div>
+            );
+          })}
+        </div>
+        <div className="mt-10 grid gap-8 lg:grid-cols-[1fr_360px]">
+          <div>
+            <h2 className="font-display text-3xl font-bold">
+              Continue learning
+            </h2>
+            <article className="card mt-5 overflow-hidden">
+              <div className="grid md:grid-cols-[220px_1fr]">
+                <div className={`${c.color} grid min-h-48 place-items-center`}>
+                  <c.icon className="h-20 w-20" />
+                </div>
+                <div className="p-6">
+                  <p className="eyebrow text-leaf">In progress · 8%</p>
+                  <h3 className="font-display mt-3 text-2xl font-bold">
+                    {c.title}
+                  </h3>
+                  <div className="mt-5 h-2 overflow-hidden rounded-full bg-ink/10">
+                    <div className="h-full w-[8%] rounded-full bg-leaf" />
+                  </div>
+                  <p className="mt-3 text-xs font-semibold text-ink/50">
+                    1 of {c.lessons} lessons complete
+                  </p>
+                  <Link
+                    to="/courses/$courseSlug/lessons/$lessonSlug"
+                    params={{ courseSlug: c.slug, lessonSlug: "1-1" }}
+                    className="mt-6 inline-flex items-center gap-2 rounded-full bg-ink px-5 py-3 text-sm font-bold text-white"
+                  >
+                    Continue course <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </div>
+              </div>
+            </article>
+          </div>
+          <aside>
+            <h2 className="font-display text-3xl font-bold">This week</h2>
+            <div className="card mt-5 p-6">
+              <Target className="h-6 w-6 text-leaf" />
+              <p className="mt-4 font-bold">Complete 3 lessons</p>
+              <p className="mt-2 text-sm leading-6 text-ink/55">
+                A focused 20 minutes on three days is enough to keep moving.
+              </p>
+              <div className="mt-5 flex gap-2">
+                {[1, 2, 3, 4, 5, 6, 7].map((x) => (
+                  <span
+                    key={x}
+                    className={`grid h-8 w-8 place-items-center rounded-full text-[10px] font-bold ${x === 1 ? "bg-mint" : "bg-ink/5 text-ink/35"}`}
+                  >
+                    {"MTWTFSS"[x - 1]}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
+    </>
+  );
+}
