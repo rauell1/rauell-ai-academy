@@ -1216,6 +1216,8 @@ operationsApi.post(
 operationsApi.post("/files/project", async (c) => {
   const session = await currentSession(c.req.raw.headers);
   if (!session) return c.json({ error: "Authentication required." }, 401);
+  if (!getServerEnv().BLOB_READ_WRITE_TOKEN)
+    return c.json({ error: "File storage is not configured." }, 503);
   const body = await c.req.parseBody();
   const file = body.file;
   if (!(file instanceof File))
@@ -1258,6 +1260,8 @@ operationsApi.post("/files/project", async (c) => {
 operationsApi.get("/files/:id/download", async (c) => {
   const session = await currentSession(c.req.raw.headers);
   if (!session) return c.json({ error: "Authentication required." }, 401);
+  if (!getServerEnv().BLOB_READ_WRITE_TOKEN)
+    return c.json({ error: "File storage is not configured." }, 503);
   const [file] = await getDb()
     .select()
     .from(storedFiles)
@@ -1275,6 +1279,8 @@ operationsApi.get("/files/:id/download", async (c) => {
 operationsApi.delete("/files/:id", async (c) => {
   const session = await currentSession(c.req.raw.headers);
   if (!session) return c.json({ error: "Authentication required." }, 401);
+  if (!getServerEnv().BLOB_READ_WRITE_TOKEN)
+    return c.json({ error: "File storage is not configured." }, 503);
   const db = getDb();
   const [file] = await db
     .select()
