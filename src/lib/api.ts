@@ -56,6 +56,7 @@ export type ApiCourse = {
   learningOutcomes: string[];
   skills: string[];
   state: string;
+  enrolled?: boolean;
   modules?: ApiModule[];
   assessments?: Array<{ id: string; title: string }>;
   projects?: Array<{ id: string; title: string }>;

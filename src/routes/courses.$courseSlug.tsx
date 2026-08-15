@@ -24,6 +24,8 @@ function CourseDetail() {
   } = useApi<ApiCourse>(`/courses/${courseSlug}`);
   const { data: session } = authClient.useSession();
   const [action, setAction] = useState({ busy: false, error: "", done: false });
+  const isEnrolled = course?.enrolled || action.done;
+  const firstLessonSlug = "1-1";
   if (loading)
     return (
       <div className="mx-auto max-w-7xl px-5 py-20" role="status">
@@ -184,31 +186,32 @@ function CourseDetail() {
         </div>
         <aside>
           <div className="card sticky top-24 p-6">
-            <p className="eyebrow text-leaf">Start this course</p>
+            <p className="eyebrow text-leaf">
+              {isEnrolled ? "You are enrolled" : "Start this course"}
+            </p>
             <h3 className="font-display mt-3 text-2xl font-bold">
-              Learn at your pace.
+              {isEnrolled ? "Keep learning." : "Learn at your pace."}
             </h3>
             {action.error && (
               <p role="alert" className="mt-4 text-sm text-red-700">
                 {action.error}
               </p>
             )}
-            {action.done && (
-              <p role="status" className="mt-4 text-sm font-bold text-leaf">
-                You are enrolled.
-              </p>
-            )}
-            {session ? (
+            {isEnrolled ? (
+              <Link
+                to="/courses/$courseSlug/lessons/$lessonSlug"
+                params={{ courseSlug: course.slug, lessonSlug: firstLessonSlug }}
+                className="mt-6 block rounded-full bg-leaf px-5 py-3 text-center text-sm font-bold text-white transition hover:bg-leaf/80"
+              >
+                Continue learning →
+              </Link>
+            ) : session ? (
               <button
                 onClick={enrol}
-                disabled={action.busy || action.done}
+                disabled={action.busy}
                 className="mt-6 w-full rounded-full bg-ink px-5 py-3 text-sm font-bold text-white disabled:opacity-50"
               >
-                {action.busy
-                  ? "Enrolling..."
-                  : action.done
-                    ? "Enrolled"
-                    : "Enrol now"}
+                {action.busy ? "Enrolling..." : "Enrol now"}
               </button>
             ) : (
               <Link
