@@ -16,7 +16,8 @@
     "db:seed:content": "tsx src/server/seed-content.ts",
     "db:bootstrap:super-admin": "tsx src/server/bootstrap-super-admin.ts",
     "db:seed:course:ai": "tsx src/server/seed-course-ai-automation.ts",
-    "db:upload:videos": "tsx --env-file .env.local src/server/upload-videos-to-blob.ts"
+    "db:upload:videos": "tsx --env-file .env.local src/server/upload-videos-to-blob.ts",
+    "db:migrate:video-urls": "tsx --env-file .env.local src/server/migrate-video-urls.ts"
   },
   "dependencies": {
     "@hono/zod-validator": "^0.9.0",
