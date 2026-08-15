@@ -21,8 +21,13 @@ function videoUrl(file: string): string {
   return blobUrls[file] ?? `/AI & Automation Full Course_/${file}`;
 }
 
+type BlockType =
+  | "heading" | "paragraph" | "callout" | "key_takeaway" | "citation"
+  | "rich_text" | "checklist" | "knowledge_check" | "video" | "image"
+  | "audio" | "code" | "table" | "download";
+
 type BlockDef = {
-  type: string;
+  type: BlockType;
   title?: string;
   plainText?: string;
   config?: Record<string, unknown>;
@@ -794,11 +799,11 @@ async function seedAiAutomationCourse() {
       await db.insert(lessonBlocks).values([
         {
           lessonId: lesson.id,
-          type: "video",
+          type: "video" as const,
           title: lessonDef.title,
           config: { url: url },
           sortOrder: 0,
-          state: "published",
+          state: "published" as const,
         },
         ...lessonDef.blocks.map((b, idx) => ({
           lessonId: lesson.id,
