@@ -11,6 +11,12 @@ const serverEnvSchema = z.object({
   APP_ORIGIN: z.string().url(),
   RESEND_API_KEY: z.string().startsWith("re_").optional(),
   EMAIL_FROM: z.string().email().optional(),
+  BLOB_READ_WRITE_TOKEN: z.string().optional(),
+  MAX_PROJECT_UPLOAD_BYTES: z.coerce
+    .number()
+    .int()
+    .positive()
+    .default(10 * 1024 * 1024),
 });
 
 export function getServerEnv(source: NodeJS.ProcessEnv = process.env) {

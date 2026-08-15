@@ -5,16 +5,20 @@ import { z } from "zod";
 import { completionBasisPoints } from "../../lib/progress";
 import { auth } from "../auth";
 import { getDb } from "../db";
+import { sendAuthEmail } from "../email";
 import {
   auditLogs,
   courseProgress,
   courses,
   enrolments,
+  assessments,
+  projects,
   lessonBlocks,
   lessonProgress,
   lessons,
   modules,
   progressImports,
+  users,
 } from "../schema";
 
 const progressInput = z.object({
@@ -39,7 +43,12 @@ const importInput = z.object({
 async function sessionFor(headers: Headers) {
   const session = await auth.api.getSession({ headers });
   if (!session) return null;
-  return session;
+  const [account] = await getDb()
+    .select({ state: users.state })
+    .from(users)
+    .where(eq(users.id, session.user.id))
+    .limit(1);
+  return account?.state === "active" ? session : null;
 }
 
 async function recalculate(enrolmentId: string) {
@@ -148,8 +157,25 @@ learningApi.get("/courses/:slug", async (c) => {
         )
         .orderBy(asc(lessons.sortOrder))
     : [];
+  const assessmentRows = await db
+    .select({ id: assessments.id, title: assessments.title })
+    .from(assessments)
+    .where(
+      and(
+        eq(assessments.courseId, course.id),
+        eq(assessments.state, "published"),
+      ),
+    );
+  const projectRows = await db
+    .select({ id: projects.id, title: projects.title })
+    .from(projects)
+    .where(
+      and(eq(projects.courseId, course.id), eq(projects.state, "published")),
+    );
   return c.json({
     ...course,
+    assessments: assessmentRows,
+    projects: projectRows,
     modules: moduleRows.map((module) => ({
       ...module,
       lessons: lessonRows.filter((lesson) => lesson.moduleId === module.id),
@@ -214,7 +240,7 @@ learningApi.post("/courses/:courseId/enrol", async (c) => {
   if (!session) return c.json({ error: "Authentication required." }, 401);
   const db = getDb();
   const [course] = await db
-    .select({ id: courses.id })
+    .select({ id: courses.id, title: courses.title, slug: courses.slug })
     .from(courses)
     .where(
       and(
@@ -240,6 +266,12 @@ learningApi.post("/courses/:courseId/enrol", async (c) => {
     metadata: { courseId: course.id },
   });
   await recalculate(row.id);
+  await sendAuthEmail({
+    to: session.user.email,
+    subject: `Enrolled in ${course.title}`,
+    text: `You are enrolled in ${course.title}. Continue at ${new URL(c.req.url).origin}/courses/${course.slug}`,
+    html: `<p>Your Academy enrolment is confirmed.</p><p><a href="${new URL(c.req.url).origin}/courses/${encodeURIComponent(course.slug)}">Continue learning</a></p>`,
+  });
   return c.json({ enrolment: row }, 201);
 });
 

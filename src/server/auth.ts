@@ -6,6 +6,7 @@ import { getServerEnv } from "./env";
 import {
   accounts,
   profiles,
+  rateLimits,
   roles,
   sessions,
   userRoles,
@@ -29,6 +30,7 @@ export const auth = betterAuth({
       session: sessions,
       account: accounts,
       verification: verifications,
+      rateLimit: rateLimits,
     },
   }),
   advanced: {
@@ -40,6 +42,7 @@ export const auth = betterAuth({
       secure: env.NODE_ENV === "production",
     },
   },
+  rateLimit: { enabled: true, window: 60, max: 10, storage: "database" },
   session: {
     expiresIn: 60 * 60 * 24 * 7,
     updateAge: 60 * 60 * 24,
@@ -81,6 +84,19 @@ export const auth = betterAuth({
     deleteUser: { enabled: true },
   },
   databaseHooks: {
+    session: {
+      create: {
+        before: async (session) => {
+          const [account] = await db
+            .select({ state: users.state })
+            .from(users)
+            .where(eq(users.id, session.userId))
+            .limit(1);
+          if (!account || account.state !== "active") return false;
+          return { data: session };
+        },
+      },
+    },
     user: {
       create: {
         after: async (user) => {

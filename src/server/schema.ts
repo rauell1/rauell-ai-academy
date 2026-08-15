@@ -184,6 +184,20 @@ export const sessions = pgTable(
   ],
 );
 
+export const rateLimits = pgTable(
+  "rate_limits",
+  {
+    id: id(),
+    key: text("key").notNull(),
+    count: integer("count").default(0).notNull(),
+    lastRequest: timestamp("last_request", { withTimezone: true }).notNull(),
+  },
+  (t) => [
+    uniqueIndex("rate_limits_key_uidx").on(t.key),
+    index("rate_limits_last_request_idx").on(t.lastRequest),
+  ],
+);
+
 export const verifications = pgTable(
   "verifications",
   {

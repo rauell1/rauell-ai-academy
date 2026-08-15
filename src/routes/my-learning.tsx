@@ -126,6 +126,34 @@ function Dashboard() {
     </>
   );
 }
+function CertificateButton({ courseId }: { courseId: string }) {
+  const [message, setMessage] = useState("");
+  async function issue() {
+    try {
+      const result = await apiRequest<{
+        certificate: { certificateNumber: string };
+      }>(`/courses/${courseId}/certificate`, { method: "POST" });
+      setMessage(result.certificate.certificateNumber);
+    } catch (e) {
+      setMessage(e instanceof Error ? e.message : "Certificate check failed.");
+    }
+  }
+  return (
+    <span>
+      <button onClick={issue} className="text-xs font-bold text-leaf">
+        Check certificate eligibility
+      </button>
+      {message && (
+        <span
+          role="status"
+          className="mt-1 block max-w-52 text-[11px] text-ink/50"
+        >
+          {message}
+        </span>
+      )}
+    </span>
+  );
+}
 function DashboardContent({ data }: { data: DashboardData }) {
   const completed = data.enrolled.filter(
     (x) => x.status === "completed",
@@ -187,13 +215,16 @@ function DashboardContent({ data }: { data: DashboardData }) {
               <p className="mt-2 text-xs text-ink/45">
                 {((item.completionBasisPoints ?? 0) / 100).toFixed(0)}% complete
               </p>
-              <Link
-                to="/courses/$courseSlug"
-                params={{ courseSlug: item.slug }}
-                className="mt-5 inline-flex items-center gap-2 text-sm font-bold"
-              >
-                Resume course <ArrowRight className="h-4 w-4" />
-              </Link>
+              <div className="mt-5 flex flex-wrap items-center gap-4">
+                <Link
+                  to="/courses/$courseSlug"
+                  params={{ courseSlug: item.slug }}
+                  className="inline-flex items-center gap-2 text-sm font-bold"
+                >
+                  Resume course <ArrowRight className="h-4 w-4" />
+                </Link>
+                <CertificateButton courseId={item.courseId} />
+              </div>
             </article>
           ))}
         </div>

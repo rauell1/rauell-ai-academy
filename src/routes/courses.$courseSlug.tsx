@@ -151,6 +151,36 @@ function CourseDetail() {
               </div>
             ))}
           </div>
+          {course.assessments?.length || course.projects?.length ? (
+            <div className="mt-10 grid gap-4 sm:grid-cols-2">
+              {course.assessments?.map((item) => (
+                <Link
+                  key={item.id}
+                  to="/assessments/$assessmentId"
+                  params={{ assessmentId: item.id }}
+                  className="card card-lift p-5"
+                >
+                  <p className="eyebrow text-leaf">Assessment</p>
+                  <h3 className="font-display mt-2 text-xl font-bold">
+                    {item.title}
+                  </h3>
+                </Link>
+              ))}
+              {course.projects?.map((item) => (
+                <Link
+                  key={item.id}
+                  to="/projects/$projectId"
+                  params={{ projectId: item.id }}
+                  className="card card-lift p-5"
+                >
+                  <p className="eyebrow text-leaf">Final project</p>
+                  <h3 className="font-display mt-2 text-xl font-bold">
+                    {item.title}
+                  </h3>
+                </Link>
+              ))}
+            </div>
+          ) : null}
         </div>
         <aside>
           <div className="card sticky top-24 p-6">

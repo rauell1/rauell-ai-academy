@@ -52,9 +52,10 @@ The database and authentication foundation uses Neon PostgreSQL, Drizzle ORM, an
 ```bash
 npm run db:migrate
 npm run db:seed:access
+npm run db:seed:content
 ```
 
-Never point local development or a Vercel preview at the production database. Runtime safeguards reject that configuration. See `docs/PHASE_2_AUDIT_AND_PLAN.md` and `docs/MILESTONE_1_REPORT.md` for the architecture, migration order, security decisions, and current integration limitations.
+Never point local development or a Vercel preview at the production database. Runtime safeguards reject that configuration. See `docs/PHASE_2_AUDIT_AND_PLAN.md`, the milestone reports, and `docs/PHASE_2_IMPLEMENTATION_REPORT.md` for architecture, deployment, migration order, security decisions, and external integration limitations.
 
 ## Planned production phases
 

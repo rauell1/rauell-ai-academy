@@ -11,9 +11,11 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AccountRouteImport } from './routes/account'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as CoursesRouteImport } from './routes/courses'
 import { Route as ExploreRouteImport } from './routes/explore'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
+import { Route as InstructorRouteImport } from './routes/instructor'
 import { Route as LabsRouteImport } from './routes/labs'
 import { Route as MyLearningRouteImport } from './routes/my-learning'
 import { Route as PathwaysRouteImport } from './routes/pathways'
@@ -21,7 +23,12 @@ import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ResourcesRouteImport } from './routes/resources'
 import { Route as SignInRouteImport } from './routes/sign-in'
+import { Route as AdminAccessRouteImport } from './routes/admin.access'
+import { Route as AssessmentsAssessmentIdRouteImport } from './routes/assessments.$assessmentId'
 import { Route as CoursesCourseSlugRouteImport } from './routes/courses.$courseSlug'
+import { Route as ProjectsProjectIdRouteImport } from './routes/projects.$projectId'
+import { Route as VerifyCertificateNumberRouteImport } from './routes/verify.$certificateNumber'
+import { Route as AdminCoursesCourseIdRouteImport } from './routes/admin.courses.$courseId'
 import { Route as CoursesCourseSlugLessonsLessonSlugRouteImport } from './routes/courses/$courseSlug/lessons/$lessonSlug'
 
 const IndexRoute = IndexRouteImport.update({
@@ -32,6 +39,11 @@ const IndexRoute = IndexRouteImport.update({
 const AccountRoute = AccountRouteImport.update({
   id: '/account',
   path: '/account',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CoursesRoute = CoursesRouteImport.update({
@@ -47,6 +59,11 @@ const ExploreRoute = ExploreRouteImport.update({
 const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
   id: '/forgot-password',
   path: '/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InstructorRoute = InstructorRouteImport.update({
+  id: '/instructor',
+  path: '/instructor',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LabsRoute = LabsRouteImport.update({
@@ -84,10 +101,35 @@ const SignInRoute = SignInRouteImport.update({
   path: '/sign-in',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminAccessRoute = AdminAccessRouteImport.update({
+  id: '/access',
+  path: '/access',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AssessmentsAssessmentIdRoute = AssessmentsAssessmentIdRouteImport.update({
+  id: '/assessments/$assessmentId',
+  path: '/assessments/$assessmentId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CoursesCourseSlugRoute = CoursesCourseSlugRouteImport.update({
   id: '/$courseSlug',
   path: '/$courseSlug',
   getParentRoute: () => CoursesRoute,
+} as any)
+const ProjectsProjectIdRoute = ProjectsProjectIdRouteImport.update({
+  id: '/projects/$projectId',
+  path: '/projects/$projectId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VerifyCertificateNumberRoute = VerifyCertificateNumberRouteImport.update({
+  id: '/verify/$certificateNumber',
+  path: '/verify/$certificateNumber',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminCoursesCourseIdRoute = AdminCoursesCourseIdRouteImport.update({
+  id: '/courses/$courseId',
+  path: '/courses/$courseId',
+  getParentRoute: () => AdminRoute,
 } as any)
 const CoursesCourseSlugLessonsLessonSlugRoute =
   CoursesCourseSlugLessonsLessonSlugRouteImport.update({
@@ -99,9 +141,11 @@ const CoursesCourseSlugLessonsLessonSlugRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
+  '/admin': typeof AdminRouteWithChildren
   '/courses': typeof CoursesRouteWithChildren
   '/explore': typeof ExploreRoute
   '/forgot-password': typeof ForgotPasswordRoute
+  '/instructor': typeof InstructorRoute
   '/labs': typeof LabsRoute
   '/my-learning': typeof MyLearningRoute
   '/pathways': typeof PathwaysRoute
@@ -109,15 +153,22 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/resources': typeof ResourcesRoute
   '/sign-in': typeof SignInRoute
+  '/admin/access': typeof AdminAccessRoute
+  '/assessments/$assessmentId': typeof AssessmentsAssessmentIdRoute
   '/courses/$courseSlug': typeof CoursesCourseSlugRouteWithChildren
+  '/projects/$projectId': typeof ProjectsProjectIdRoute
+  '/verify/$certificateNumber': typeof VerifyCertificateNumberRoute
+  '/admin/courses/$courseId': typeof AdminCoursesCourseIdRoute
   '/courses/$courseSlug/lessons/$lessonSlug': typeof CoursesCourseSlugLessonsLessonSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
+  '/admin': typeof AdminRouteWithChildren
   '/courses': typeof CoursesRouteWithChildren
   '/explore': typeof ExploreRoute
   '/forgot-password': typeof ForgotPasswordRoute
+  '/instructor': typeof InstructorRoute
   '/labs': typeof LabsRoute
   '/my-learning': typeof MyLearningRoute
   '/pathways': typeof PathwaysRoute
@@ -125,16 +176,23 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/resources': typeof ResourcesRoute
   '/sign-in': typeof SignInRoute
+  '/admin/access': typeof AdminAccessRoute
+  '/assessments/$assessmentId': typeof AssessmentsAssessmentIdRoute
   '/courses/$courseSlug': typeof CoursesCourseSlugRouteWithChildren
+  '/projects/$projectId': typeof ProjectsProjectIdRoute
+  '/verify/$certificateNumber': typeof VerifyCertificateNumberRoute
+  '/admin/courses/$courseId': typeof AdminCoursesCourseIdRoute
   '/courses/$courseSlug/lessons/$lessonSlug': typeof CoursesCourseSlugLessonsLessonSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
+  '/admin': typeof AdminRouteWithChildren
   '/courses': typeof CoursesRouteWithChildren
   '/explore': typeof ExploreRoute
   '/forgot-password': typeof ForgotPasswordRoute
+  '/instructor': typeof InstructorRoute
   '/labs': typeof LabsRoute
   '/my-learning': typeof MyLearningRoute
   '/pathways': typeof PathwaysRoute
@@ -142,7 +200,12 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/resources': typeof ResourcesRoute
   '/sign-in': typeof SignInRoute
+  '/admin/access': typeof AdminAccessRoute
+  '/assessments/$assessmentId': typeof AssessmentsAssessmentIdRoute
   '/courses/$courseSlug': typeof CoursesCourseSlugRouteWithChildren
+  '/projects/$projectId': typeof ProjectsProjectIdRoute
+  '/verify/$certificateNumber': typeof VerifyCertificateNumberRoute
+  '/admin/courses/$courseId': typeof AdminCoursesCourseIdRoute
   '/courses/$courseSlug/lessons/$lessonSlug': typeof CoursesCourseSlugLessonsLessonSlugRoute
 }
 export interface FileRouteTypes {
@@ -150,9 +213,11 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/account'
+    | '/admin'
     | '/courses'
     | '/explore'
     | '/forgot-password'
+    | '/instructor'
     | '/labs'
     | '/my-learning'
     | '/pathways'
@@ -160,15 +225,22 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/resources'
     | '/sign-in'
+    | '/admin/access'
+    | '/assessments/$assessmentId'
     | '/courses/$courseSlug'
+    | '/projects/$projectId'
+    | '/verify/$certificateNumber'
+    | '/admin/courses/$courseId'
     | '/courses/$courseSlug/lessons/$lessonSlug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/account'
+    | '/admin'
     | '/courses'
     | '/explore'
     | '/forgot-password'
+    | '/instructor'
     | '/labs'
     | '/my-learning'
     | '/pathways'
@@ -176,15 +248,22 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/resources'
     | '/sign-in'
+    | '/admin/access'
+    | '/assessments/$assessmentId'
     | '/courses/$courseSlug'
+    | '/projects/$projectId'
+    | '/verify/$certificateNumber'
+    | '/admin/courses/$courseId'
     | '/courses/$courseSlug/lessons/$lessonSlug'
   id:
     | '__root__'
     | '/'
     | '/account'
+    | '/admin'
     | '/courses'
     | '/explore'
     | '/forgot-password'
+    | '/instructor'
     | '/labs'
     | '/my-learning'
     | '/pathways'
@@ -192,16 +271,23 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/resources'
     | '/sign-in'
+    | '/admin/access'
+    | '/assessments/$assessmentId'
     | '/courses/$courseSlug'
+    | '/projects/$projectId'
+    | '/verify/$certificateNumber'
+    | '/admin/courses/$courseId'
     | '/courses/$courseSlug/lessons/$lessonSlug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AccountRoute: typeof AccountRoute
+  AdminRoute: typeof AdminRouteWithChildren
   CoursesRoute: typeof CoursesRouteWithChildren
   ExploreRoute: typeof ExploreRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
+  InstructorRoute: typeof InstructorRoute
   LabsRoute: typeof LabsRoute
   MyLearningRoute: typeof MyLearningRoute
   PathwaysRoute: typeof PathwaysRoute
@@ -209,6 +295,9 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   ResourcesRoute: typeof ResourcesRoute
   SignInRoute: typeof SignInRoute
+  AssessmentsAssessmentIdRoute: typeof AssessmentsAssessmentIdRoute
+  ProjectsProjectIdRoute: typeof ProjectsProjectIdRoute
+  VerifyCertificateNumberRoute: typeof VerifyCertificateNumberRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -225,6 +314,13 @@ declare module '@tanstack/react-router' {
       path: '/account'
       fullPath: '/account'
       preLoaderRoute: typeof AccountRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/courses': {
@@ -246,6 +342,13 @@ declare module '@tanstack/react-router' {
       path: '/forgot-password'
       fullPath: '/forgot-password'
       preLoaderRoute: typeof ForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/instructor': {
+      id: '/instructor'
+      path: '/instructor'
+      fullPath: '/instructor'
+      preLoaderRoute: typeof InstructorRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/labs': {
@@ -297,12 +400,47 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SignInRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/access': {
+      id: '/admin/access'
+      path: '/access'
+      fullPath: '/admin/access'
+      preLoaderRoute: typeof AdminAccessRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/assessments/$assessmentId': {
+      id: '/assessments/$assessmentId'
+      path: '/assessments/$assessmentId'
+      fullPath: '/assessments/$assessmentId'
+      preLoaderRoute: typeof AssessmentsAssessmentIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/courses/$courseSlug': {
       id: '/courses/$courseSlug'
       path: '/$courseSlug'
       fullPath: '/courses/$courseSlug'
       preLoaderRoute: typeof CoursesCourseSlugRouteImport
       parentRoute: typeof CoursesRoute
+    }
+    '/projects/$projectId': {
+      id: '/projects/$projectId'
+      path: '/projects/$projectId'
+      fullPath: '/projects/$projectId'
+      preLoaderRoute: typeof ProjectsProjectIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/verify/$certificateNumber': {
+      id: '/verify/$certificateNumber'
+      path: '/verify/$certificateNumber'
+      fullPath: '/verify/$certificateNumber'
+      preLoaderRoute: typeof VerifyCertificateNumberRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/courses/$courseId': {
+      id: '/admin/courses/$courseId'
+      path: '/courses/$courseId'
+      fullPath: '/admin/courses/$courseId'
+      preLoaderRoute: typeof AdminCoursesCourseIdRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/courses/$courseSlug/lessons/$lessonSlug': {
       id: '/courses/$courseSlug/lessons/$lessonSlug'
@@ -313,6 +451,18 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface AdminRouteChildren {
+  AdminAccessRoute: typeof AdminAccessRoute
+  AdminCoursesCourseIdRoute: typeof AdminCoursesCourseIdRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminAccessRoute: AdminAccessRoute,
+  AdminCoursesCourseIdRoute: AdminCoursesCourseIdRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface CoursesCourseSlugRouteChildren {
   CoursesCourseSlugLessonsLessonSlugRoute: typeof CoursesCourseSlugLessonsLessonSlugRoute
@@ -340,9 +490,11 @@ const CoursesRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccountRoute: AccountRoute,
+  AdminRoute: AdminRouteWithChildren,
   CoursesRoute: CoursesRouteWithChildren,
   ExploreRoute: ExploreRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
+  InstructorRoute: InstructorRoute,
   LabsRoute: LabsRoute,
   MyLearningRoute: MyLearningRoute,
   PathwaysRoute: PathwaysRoute,
@@ -350,6 +502,9 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   ResourcesRoute: ResourcesRoute,
   SignInRoute: SignInRoute,
+  AssessmentsAssessmentIdRoute: AssessmentsAssessmentIdRoute,
+  ProjectsProjectIdRoute: ProjectsProjectIdRoute,
+  VerifyCertificateNumberRoute: VerifyCertificateNumberRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
