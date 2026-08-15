@@ -9,7 +9,7 @@ import {
   X,
 } from "lucide-react";
 import { useState } from "react";
-import { apiRequest, type ApiCourse, useApi } from "@/lib/api";
+import { apiRequest, type ApiCourse, type ApiModule, useApi } from "@/lib/api";
 import { LessonBlock, type Block } from "@/components/LessonBlock";
 
 export const Route = createFileRoute(
@@ -283,7 +283,7 @@ function ModuleNav({
   currentLi,
   onNavigate,
 }: {
-  module: ApiCourse["modules"] extends Array<infer M> ? M : never;
+  module: ApiModule;
   mIdx: number;
   courseSlug: string;
   currentMi: number;
