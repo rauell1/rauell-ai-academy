@@ -1,9 +1,25 @@
 import { and, eq } from "drizzle-orm";
+import { existsSync, readFileSync } from "fs";
+import { join } from "path";
+import { fileURLToPath } from "url";
 import { getDb } from "./db";
 import { courses, lessonBlocks, lessons, modules } from "./schema";
 
-const BASE_URL = "/AI & Automation Full Course_";
+const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const RESEED = process.argv.includes("--reseed");
+
+// Load Blob URLs from manifest if available (produced by upload-videos-to-blob.ts)
+const MANIFEST_PATH = join(__dirname, "video-blob-manifest.json");
+const blobUrls: Record<string, string> = existsSync(MANIFEST_PATH)
+  ? (JSON.parse(readFileSync(MANIFEST_PATH, "utf8")) as Record<string, string>)
+  : {};
+const hasBlobUrls = Object.keys(blobUrls).length > 0;
+if (hasBlobUrls) console.info("Using Vercel Blob URLs from manifest.");
+else console.info("No Blob manifest found — using local static file paths.");
+
+function videoUrl(file: string): string {
+  return blobUrls[file] ?? `/AI & Automation Full Course_/${file}`;
+}
 
 type BlockDef = {
   type: string;
@@ -774,13 +790,13 @@ async function seedAiAutomationCourse() {
         console.info(`    Replaced blocks for: ${lessonDef.title}`);
       }
 
-      const videoUrl = `${BASE_URL}/${lessonDef.videoFile}`;
+      const url = videoUrl(lessonDef.videoFile);
       await db.insert(lessonBlocks).values([
         {
           lessonId: lesson.id,
           type: "video",
           title: lessonDef.title,
-          config: { url: videoUrl },
+          config: { url: url },
           sortOrder: 0,
           state: "published",
         },
