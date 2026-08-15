@@ -1,7 +1,7 @@
 import { and, eq } from "drizzle-orm";
 import { existsSync, readFileSync } from "fs";
 import { join } from "path";
-import { fileURLToPath } from "url";
+import { fileURLToPath, pathToFileURL } from "url";
 import { getDb } from "./db";
 import { courses, lessonBlocks, lessons, modules } from "./schema";
 
@@ -829,7 +829,7 @@ async function seedAiAutomationCourse() {
     );
 }
 
-if (import.meta.url === `file://${process.argv[1]}`)
+if (import.meta.url === pathToFileURL(process.argv[1]).href)
   seedAiAutomationCourse().catch((e) => {
     console.error(e instanceof Error ? e.message : "Seed failed.");
     process.exitCode = 1;
