@@ -1,0 +1,1 @@
+# rauell-ai-academy
