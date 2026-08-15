@@ -14,7 +14,8 @@
     "db:studio": "drizzle-kit studio",
     "db:seed:access": "tsx src/server/seed-access.ts",
     "db:seed:content": "tsx src/server/seed-content.ts",
-    "db:bootstrap:super-admin": "tsx src/server/bootstrap-super-admin.ts"
+    "db:bootstrap:super-admin": "tsx src/server/bootstrap-super-admin.ts",
+    "db:seed:course:ai": "tsx src/server/seed-course-ai-automation.ts"
   },
   "dependencies": {
     "@hono/zod-validator": "^0.9.0",
