@@ -1,6 +1,76 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { ArrowRight, BookOpen } from "lucide-react";
 import { PageIntro } from "@/components/Cards";
-import { pathways } from "@/data/academy";
-export const Route=createFileRoute("/pathways")({component:Pathways});
-function Pathways(){return <><PageIntro eyebrow="Learning pathways" title="A clear route from curious to capable." copy="Follow a guided sequence of courses, labs, assessments, and a final project. Pick the pathway that matches the work you want to do."/><section className="mx-auto max-w-7xl px-5 py-16 lg:px-8">{pathways.map((p,i)=>{const I=p.icon;return <article key={p.slug} className="card mb-5 grid overflow-hidden lg:grid-cols-[.48fr_1fr]"><div className={`${p.color} relative min-h-64 p-8`}><span className="text-xs font-black text-ink/45">PATH 0{i+1}</span><I className="absolute bottom-8 right-8 h-24 w-24 text-ink/80"/></div><div className="p-7 sm:p-10"><div className="flex flex-wrap items-center gap-3 text-xs font-bold uppercase tracking-wider text-ink/45"><span>Beginner friendly</span><span>·</span><span>{p.hours} hours</span></div><h2 className="font-display mt-3 text-3xl font-bold">{p.title}</h2><p className="mt-3 max-w-2xl leading-7 text-ink/62">{p.copy}</p><div className="mt-6 grid gap-2 sm:grid-cols-2">{["Guided course sequence","Practical labs","Knowledge checks","Portfolio project"].map(x=><span key={x} className="inline-flex items-center gap-2 text-sm font-semibold"><CheckCircle2 className="h-4 w-4 text-leaf"/>{x}</span>)}</div><Link to="/courses" className="mt-8 inline-flex items-center gap-2 rounded-full bg-ink px-5 py-3 text-sm font-bold text-white">View pathway courses <ArrowRight className="h-4 w-4"/></Link></div></article>})}</section></>}
+import { useApi } from "@/lib/api";
+
+export const Route = createFileRoute("/pathways")({ component: Pathways });
+
+type ApiPathway = {
+  id: string;
+  slug: string;
+  title: string;
+  description: string;
+  sortOrder: number;
+};
+
+function Pathways() {
+  const { data: pathways, loading, error } = useApi<ApiPathway[]>("/pathways");
+
+  return (
+    <>
+      <PageIntro
+        eyebrow="Learning pathways"
+        title="A clear route from curious to capable."
+        copy="Follow a guided sequence of courses and practical work. Pick the pathway that matches the work you want to do."
+      />
+      <section className="mx-auto max-w-7xl px-5 py-16 lg:px-8">
+        {loading && (
+          <p className="py-12 text-center text-ink/50" role="status">
+            Loading pathways…
+          </p>
+        )}
+        {error && (
+          <p className="py-12 text-center text-red-500" role="alert">
+            {error}
+          </p>
+        )}
+        {!loading && !error && (!pathways || pathways.length === 0) && (
+          <p className="py-12 text-center text-ink/50">
+            No pathways available yet. Check back soon.
+          </p>
+        )}
+        <div className="space-y-5">
+          {pathways?.map((pathway, i) => (
+            <article
+              key={pathway.id}
+              className="card grid overflow-hidden lg:grid-cols-[.35fr_1fr]"
+            >
+              <div className="relative flex min-h-52 items-center justify-center bg-mint/40 p-8">
+                <span className="font-display text-6xl font-black text-leaf/30">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <BookOpen className="absolute bottom-6 right-6 h-10 w-10 text-leaf/40" />
+              </div>
+              <div className="p-7 sm:p-10">
+                <h2 className="font-display text-3xl font-bold">
+                  {pathway.title}
+                </h2>
+                <p className="mt-3 max-w-2xl leading-7 text-ink/62">
+                  {pathway.description}
+                </p>
+                <Link
+                  to="/pathways/$pathwaySlug"
+                  params={{ pathwaySlug: pathway.slug }}
+                  className="mt-8 inline-flex items-center gap-2 rounded-full bg-ink px-5 py-3 text-sm font-bold text-white transition hover:bg-ink/80"
+                >
+                  View pathway
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+    </>
+  );
+}

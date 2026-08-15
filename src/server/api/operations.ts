@@ -476,6 +476,42 @@ operationsApi.post(
     return c.json({ block: row }, 201);
   },
 );
+operationsApi.patch(
+  "/admin/blocks/:id",
+  zValidator(
+    "json",
+    blockInput.partial().omit({ sortOrder: true }).extend({
+      sortOrder: z.number().int().min(0).optional(),
+    }),
+  ),
+  async (c) => {
+    const session = await requirePermission(
+      c.req.raw.headers,
+      PERMISSIONS.CONTENT_EDIT,
+    );
+    const [row] = await getDb()
+      .update(lessonBlocks)
+      .set({ ...c.req.valid("json"), updatedBy: session.user.id, updatedAt: new Date() })
+      .where(eq(lessonBlocks.id, c.req.param("id")))
+      .returning();
+    if (!row) return c.json({ error: "Block not found." }, 404);
+    await audit(session.user.id, "lesson_block.edited", "lesson_block", row.id);
+    return c.json({ block: row });
+  },
+);
+operationsApi.delete("/admin/blocks/:id", async (c) => {
+  const session = await requirePermission(
+    c.req.raw.headers,
+    PERMISSIONS.CONTENT_EDIT,
+  );
+  const [row] = await getDb()
+    .delete(lessonBlocks)
+    .where(eq(lessonBlocks.id, c.req.param("id")))
+    .returning({ id: lessonBlocks.id });
+  if (!row) return c.json({ error: "Block not found." }, 404);
+  await audit(session.user.id, "lesson_block.deleted", "lesson_block", row.id);
+  return c.json({ ok: true });
+});
 operationsApi.post(
   "/admin/courses/:id/transition",
   zValidator("json", transitionInput),
