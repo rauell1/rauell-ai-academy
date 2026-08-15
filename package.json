@@ -1,0 +1,62 @@
+{
+  "name": "rauell-ai-academy",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --host 0.0.0.0",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio",
+    "db:seed:access": "tsx src/server/seed-access.ts",
+    "db:seed:content": "tsx src/server/seed-content.ts",
+    "db:bootstrap:super-admin": "tsx src/server/bootstrap-super-admin.ts"
+  },
+  "dependencies": {
+    "@hono/zod-validator": "^0.9.0",
+    "@neondatabase/serverless": "^1.1.0",
+    "@tailwindcss/vite": "^4.2.1",
+    "@tanstack/react-router": "^1.168.0",
+    "@tanstack/router-plugin": "^1.168.0",
+    "@vercel/blob": "^2.8.0",
+    "better-auth": "^1.6.29",
+    "drizzle-orm": "^0.45.2",
+    "hono": "^4.13.2",
+    "lucide-react": "^0.575.0",
+    "qrcode": "^1.5.4",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "resend": "^6.20.0",
+    "tailwindcss": "^4.2.1",
+    "vite-tsconfig-paths": "^6.0.2",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.32.0",
+    "@types/node": "^22.16.5",
+    "@types/qrcode": "^1.5.6",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^5.0.4",
+    "@vitest/coverage-v8": "^4.1.10",
+    "drizzle-kit": "^0.31.10",
+    "eslint": "^9.32.0",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.20",
+    "globals": "^15.15.0",
+    "prettier": "^3.7.3",
+    "tsx": "^4.23.12",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.56.1",
+    "vite": "^7.3.6",
+    "vitest": "^4.1.10"
+  },
+  "overrides": {
+    "esbuild": "^0.25.2"
+  }
+}
