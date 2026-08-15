@@ -738,6 +738,48 @@ export const certificateVerifications = pgTable(
   ],
 );
 
+export const progressImports = pgTable(
+  "progress_imports",
+  {
+    id: id(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    importKey: text("import_key").notNull(),
+    importedItems: integer("imported_items").default(0).notNull(),
+    sourceSummary: jsonb("source_summary").default({}).notNull(),
+    confirmedAt: timestamp("confirmed_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    ...timestamps,
+  },
+  (t) => [
+    uniqueIndex("progress_imports_user_key_uidx").on(t.userId, t.importKey),
+  ],
+);
+
+export const storedFiles = pgTable(
+  "stored_files",
+  {
+    id: id(),
+    ownerId: uuid("owner_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    purpose: text("purpose").notNull(),
+    storageKey: text("storage_key").notNull(),
+    originalName: text("original_name").notNull(),
+    mimeType: text("mime_type").notNull(),
+    sizeBytes: integer("size_bytes").notNull(),
+    state: text("state").default("pending").notNull(),
+    deletedAt: timestamp("deleted_at", { withTimezone: true }),
+    ...timestamps,
+  },
+  (t) => [
+    uniqueIndex("stored_files_key_uidx").on(t.storageKey),
+    index("stored_files_owner_idx").on(t.ownerId, t.purpose),
+  ],
+);
+
 export const contentVersions = pgTable(
   "content_versions",
   {

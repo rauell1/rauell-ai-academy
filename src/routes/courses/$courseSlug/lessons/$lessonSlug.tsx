@@ -1,10 +1,161 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft, ArrowRight, Check, Lightbulb, MessageCircleQuestion } from "lucide-react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { ArrowLeft, Check, Lightbulb } from "lucide-react";
 import { useState } from "react";
-import { courses } from "@/data/academy";
-export const Route=createFileRoute("/courses/$courseSlug/lessons/$lessonSlug")({component:Lesson});
-function Lesson(){const {courseSlug,lessonSlug}=Route.useParams();const course=courses.find(c=>c.slug===courseSlug);if(!course)throw notFound();const [mi,li]=lessonSlug.split("-").map(Number);const title=course.modules[mi-1]?.lessons[li-1];if(!title)throw notFound();const [done,setDone]=useState(()=>localStorage.getItem(`done:${courseSlug}:${lessonSlug}`)==="1");const complete=()=>{localStorage.setItem(`done:${courseSlug}:${lessonSlug}`,"1");setDone(true)};const nextLi=li<course.modules[mi-1].lessons.length?li+1:1;const nextMi=li<course.modules[mi-1].lessons.length?mi:Math.min(mi+1,course.modules.length);return <div className="min-h-screen bg-paper">
-<div className="border-b border-ink/10 bg-ink px-5 py-3 text-white"><div className="mx-auto flex max-w-7xl items-center gap-4"><Link to="/courses/$courseSlug" params={{courseSlug}} className="inline-flex items-center gap-2 text-xs font-bold text-white/65"><ArrowLeft className="h-4 w-4"/>Course overview</Link><span className="ml-auto text-xs text-white/45">Lesson {lessonSlug}</span></div></div>
-<div className="mx-auto grid max-w-7xl lg:grid-cols-[300px_1fr]"><aside className="hidden border-r border-ink/10 p-5 lg:block"><p className="eyebrow text-leaf">{course.title}</p>{course.modules.map((m,x)=><div key={m.title} className="mt-6"><p className="text-xs font-black">{x+1}. {m.title}</p><div className="mt-2 space-y-1">{m.lessons.map((l,y)=><Link key={l} to="/courses/$courseSlug/lessons/$lessonSlug" params={{courseSlug,lessonSlug:`${x+1}-${y+1}`}} className={`block rounded-lg px-3 py-2 text-xs leading-5 ${x+1===mi&&y+1===li?"bg-mint font-bold":"text-ink/55 hover:bg-cream"}`}>{l}</Link>)}</div></div>)}</aside>
-<article className="px-5 py-12 lg:px-14 lg:py-16"><div className="mx-auto max-w-3xl"><p className="eyebrow text-leaf">Module {mi} · Lesson {li}</p><h1 className="font-display mt-4 text-4xl font-bold leading-tight md:text-5xl">{title}</h1><p className="mt-5 text-lg leading-8 text-ink/60">In this lesson, you will build a useful mental model and apply it to a situation you might meet in real work.</p><div className="mt-10 aspect-video rounded-2xl bg-ink p-8 text-white"><div className="flex h-full flex-col justify-between"><p className="eyebrow text-mint">Lesson briefing</p><div><h2 className="font-display text-3xl font-bold">Think before you automate.</h2><p className="mt-3 max-w-xl text-sm leading-6 text-white/60">Good AI work begins with a clear problem, reliable context, and a plan for checking the result.</p></div><span className="text-xs text-white/35">06:20 · Transcript available</span></div></div><div className="prose mt-10"><h2 className="font-display text-2xl font-bold">The key idea</h2><p className="mt-4 leading-8 text-ink/68">AI systems are most useful when the goal is specific and the person using them remains responsible for the final decision. Before asking a model to help, define the outcome, the evidence it should use, and the mistakes that would matter most.</p><div className="mt-8 flex gap-4 rounded-2xl border border-leaf/25 bg-mint/20 p-5"><Lightbulb className="h-6 w-6 shrink-0 text-leaf"/><div><p className="font-bold">Try this</p><p className="mt-1 text-sm leading-6 text-ink/65">Choose one repetitive task from your day. Write down what a good result looks like, what information is private, and who should review the output.</p></div></div><h2 className="font-display mt-10 text-2xl font-bold">Check your understanding</h2><div className="mt-4 card p-5"><p className="font-bold">Why should a human review high impact AI outputs?</p>{["AI always writes slowly","Responsibility cannot be delegated to a model","Models cannot process any data"].map((x,i)=><label key={x} className="mt-3 flex gap-3 rounded-xl border border-ink/10 p-3 text-sm"><input type="radio" name="q" defaultChecked={i===1}/>{x}</label>)}</div></div><div className="mt-10 flex flex-wrap items-center justify-between gap-4 border-t border-ink/10 pt-8"><button onClick={complete} className={`inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-bold ${done?"bg-leaf text-white":"bg-mint text-ink"}`}><Check className="h-4 w-4"/>{done?"Lesson complete":"Mark as complete"}</button><Link to="/courses/$courseSlug/lessons/$lessonSlug" params={{courseSlug,lessonSlug:`${nextMi}-${nextLi}`}} className="inline-flex items-center gap-2 text-sm font-bold">Next lesson <ArrowRight className="h-4 w-4"/></Link></div></div></article></div>
-<button aria-label="Ask the Academy guide" className="fixed bottom-5 right-5 grid h-14 w-14 place-items-center rounded-full bg-ink text-mint shadow-xl"><MessageCircleQuestion/></button></div>}
+import { apiRequest, type ApiCourse, useApi } from "@/lib/api";
+export const Route = createFileRoute(
+  "/courses/$courseSlug/lessons/$lessonSlug",
+)({ component: Lesson });
+type LessonPayload = {
+  id: string;
+  title: string;
+  summary: string | null;
+  estimatedMinutes: number;
+  blocks: Array<{
+    id: string;
+    type: string;
+    title: string | null;
+    plainText: string | null;
+    config: unknown;
+  }>;
+};
+function Lesson() {
+  const { courseSlug, lessonSlug } = Route.useParams();
+  const courseQuery = useApi<ApiCourse>(`/courses/${courseSlug}`);
+  const [mi, li] = lessonSlug.split("-").map(Number);
+  const selected = courseQuery.data?.modules?.[mi - 1]?.lessons[li - 1];
+  const lessonQuery = useApi<LessonPayload>(
+    selected ? `/lessons/${selected.id}` : null,
+  );
+  const [status, setStatus] = useState({ busy: false, done: false, error: "" });
+  if (courseQuery.loading || lessonQuery.loading)
+    return (
+      <div className="mx-auto max-w-4xl px-5 py-20" role="status">
+        Loading lesson...
+      </div>
+    );
+  const error = courseQuery.error || lessonQuery.error;
+  if (error || !courseQuery.data || !selected || !lessonQuery.data)
+    return (
+      <div className="mx-auto max-w-3xl px-5 py-20" role="alert">
+        <h1 className="font-display text-3xl font-bold">Lesson unavailable</h1>
+        <p className="mt-3 text-ink/60">
+          {error || "This lesson could not be found."}
+        </p>
+        <Link
+          to="/courses/$courseSlug"
+          params={{ courseSlug }}
+          className="mt-6 inline-flex items-center gap-2 font-bold"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Course overview
+        </Link>
+      </div>
+    );
+  const lesson = lessonQuery.data;
+  async function complete() {
+    setStatus({ busy: true, done: false, error: "" });
+    try {
+      await apiRequest("/progress", {
+        method: "PATCH",
+        body: JSON.stringify({ lessonId: lesson.id, completed: true }),
+      });
+      setStatus({ busy: false, done: true, error: "" });
+      localStorage.removeItem(`done:${courseSlug}:${lessonSlug}`);
+    } catch (e) {
+      setStatus({
+        busy: false,
+        done: false,
+        error: e instanceof Error ? e.message : "Progress could not be saved.",
+      });
+    }
+  }
+  return (
+    <div className="min-h-screen bg-paper">
+      <div className="border-b border-ink/10 bg-ink px-5 py-3 text-white">
+        <div className="mx-auto max-w-7xl">
+          <Link
+            to="/courses/$courseSlug"
+            params={{ courseSlug }}
+            className="inline-flex items-center gap-2 text-xs font-bold text-white/65"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Course overview
+          </Link>
+        </div>
+      </div>
+      <article className="mx-auto max-w-3xl px-5 py-14">
+        <p className="eyebrow text-leaf">
+          Module {mi} · Lesson {li}
+        </p>
+        <h1 className="font-display mt-4 text-4xl font-bold md:text-5xl">
+          {lesson.title}
+        </h1>
+        {lesson.summary && (
+          <p className="mt-5 text-lg leading-8 text-ink/60">{lesson.summary}</p>
+        )}
+        <div className="mt-10 space-y-7">
+          {lesson.blocks.map((block) => (
+            <LessonBlock key={block.id} block={block} />
+          ))}
+        </div>
+        {status.error && (
+          <p
+            role="alert"
+            className="mt-8 rounded-xl bg-red-50 p-4 text-sm text-red-800"
+          >
+            {status.error}
+          </p>
+        )}
+        <div className="mt-10 border-t border-ink/10 pt-8">
+          <button
+            onClick={complete}
+            disabled={status.busy || status.done}
+            className={`inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-bold ${status.done ? "bg-leaf text-white" : "bg-mint text-ink"}`}
+          >
+            <Check className="h-4 w-4" />
+            {status.busy
+              ? "Saving..."
+              : status.done
+                ? "Lesson complete"
+                : "Mark as complete"}
+          </button>
+        </div>
+      </article>
+    </div>
+  );
+}
+function LessonBlock({ block }: { block: LessonPayload["blocks"][number] }) {
+  if (block.type === "heading")
+    return (
+      <h2 className="font-display text-2xl font-bold">
+        {block.title || block.plainText}
+      </h2>
+    );
+  if (block.type === "callout" || block.type === "key_takeaway")
+    return (
+      <div className="flex gap-4 rounded-2xl border border-leaf/25 bg-mint/20 p-5">
+        <Lightbulb className="h-6 w-6 shrink-0 text-leaf" />
+        <div>
+          <p className="font-bold">{block.title || "Key takeaway"}</p>
+          <p className="mt-1 text-sm leading-6 text-ink/65">
+            {block.plainText}
+          </p>
+        </div>
+      </div>
+    );
+  if (block.type === "citation")
+    return (
+      <div className="border-l-2 border-leaf pl-4 text-sm leading-6 text-ink/55">
+        <strong>{block.title}</strong>
+        <p>{block.plainText}</p>
+      </div>
+    );
+  return (
+    <div>
+      <h2 className="font-display text-2xl font-bold">{block.title}</h2>
+      <p className="mt-3 whitespace-pre-line leading-8 text-ink/68">
+        {block.plainText}
+      </p>
+    </div>
+  );
+}
