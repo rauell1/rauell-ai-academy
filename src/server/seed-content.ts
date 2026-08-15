@@ -1,4 +1,5 @@
 import { eq } from "drizzle-orm";
+import { pathToFileURL } from "url";
 import { getDb } from "./db";
 import {
   answerOptions,
@@ -463,7 +464,7 @@ export async function seedAuthoredContent() {
     "Draft course content seeded. Roy's editorial approval is required before publication.",
   );
 }
-if (import.meta.url === `file://${process.argv[1]}`)
+if (import.meta.url === pathToFileURL(process.argv[1]).href)
   seedAuthoredContent().catch((e) => {
     console.error(e instanceof Error ? e.message : "Content seed failed.");
     process.exitCode = 1;

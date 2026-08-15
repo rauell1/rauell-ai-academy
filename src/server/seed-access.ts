@@ -1,3 +1,4 @@
+import { pathToFileURL } from "url";
 import { getDb } from "./db";
 import { permissions, rolePermissions, roles } from "./schema";
 import { PERMISSIONS } from "./permissions";
@@ -90,7 +91,7 @@ export async function seedAccessControl() {
   });
 }
 
-if (import.meta.url === `file://${process.argv[1]}`)
+if (import.meta.url === pathToFileURL(process.argv[1]).href)
   seedAccessControl()
     .then(() => console.info("Access control seed complete."))
     .catch((error) => {
