@@ -258,10 +258,11 @@ export function LessonBlock({ block }: { block: Block }) {
 
     case "checklist": {
       const { items } =
-        cfg<{ items?: Array<{ text: string }> }>(block);
-      return (
-        <ChecklistBlock title={block.title} items={items || []} />
+        cfg<{ items?: Array<string | { text: string }> }>(block);
+      const normalized = (items || []).map((item) =>
+        typeof item === "string" ? { text: item } : item,
       );
+      return <ChecklistBlock title={block.title} items={normalized} />;
     }
 
     case "download": {

@@ -222,8 +222,25 @@ learningApi.get("/courses/:slug", async (c) => {
     .where(
       and(eq(projects.courseId, course.id), eq(projects.state, "published")),
     );
+  const session = await sessionFor(c.req.raw.headers);
+  let enrolled = false;
+  if (session) {
+    const [row] = await db
+      .select({ id: enrolments.id })
+      .from(enrolments)
+      .where(
+        and(
+          eq(enrolments.userId, session.user.id),
+          eq(enrolments.courseId, course.id),
+          eq(enrolments.status, "active"),
+        ),
+      )
+      .limit(1);
+    enrolled = !!row;
+  }
   return c.json({
     ...course,
+    enrolled,
     assessments: assessmentRows,
     projects: projectRows,
     modules: moduleRows.map((module) => ({
@@ -253,18 +270,6 @@ learningApi.get("/lessons/:id", async (c) => {
     )
     .limit(1);
   if (!lesson) return c.json({ error: "Lesson not found." }, 404);
-  const [enrolment] = await db
-    .select()
-    .from(enrolments)
-    .where(
-      and(
-        eq(enrolments.userId, session.user.id),
-        eq(enrolments.courseId, lesson.courseId),
-        eq(enrolments.status, "active"),
-      ),
-    )
-    .limit(1);
-  if (!enrolment) return c.json({ error: "Course enrolment required." }, 403);
   const blocks = await db
     .select({
       id: lessonBlocks.id,
