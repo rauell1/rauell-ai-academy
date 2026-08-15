@@ -17,6 +17,8 @@ import {
   lessonProgress,
   lessons,
   modules,
+  pathways,
+  pathwayCourses,
   progressImports,
   users,
 } from "../schema";
@@ -103,6 +105,54 @@ async function recalculate(enrolmentId: string) {
 }
 
 export const learningApi = new Hono();
+
+learningApi.get("/pathways", async (c) => {
+  const db = getDb();
+  const rows = await db
+    .select()
+    .from(pathways)
+    .where(eq(pathways.state, "published"))
+    .orderBy(asc(pathways.sortOrder));
+  return c.json(rows);
+});
+
+learningApi.get("/pathways/:slug", async (c) => {
+  const db = getDb();
+  const [pathway] = await db
+    .select()
+    .from(pathways)
+    .where(
+      and(
+        eq(pathways.slug, c.req.param("slug")),
+        eq(pathways.state, "published"),
+      ),
+    )
+    .limit(1);
+  if (!pathway) return c.json({ error: "Pathway not found." }, 404);
+  const joined = await db
+    .select({
+      id: courses.id,
+      slug: courses.slug,
+      title: courses.title,
+      summary: courses.summary,
+      level: courses.level,
+      estimatedMinutes: courses.estimatedMinutes,
+      skills: courses.skills,
+      learningOutcomes: courses.learningOutcomes,
+      sortOrder: pathwayCourses.sortOrder,
+      isRequired: pathwayCourses.isRequired,
+    })
+    .from(pathwayCourses)
+    .innerJoin(courses, eq(pathwayCourses.courseId, courses.id))
+    .where(
+      and(
+        eq(pathwayCourses.pathwayId, pathway.id),
+        eq(courses.state, "published"),
+      ),
+    )
+    .orderBy(asc(pathwayCourses.sortOrder));
+  return c.json({ ...pathway, courses: joined });
+});
 
 learningApi.get("/courses", async (c) => {
   const db = getDb();
