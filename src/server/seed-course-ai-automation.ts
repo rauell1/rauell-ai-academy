@@ -57,7 +57,7 @@ const curriculum: ModuleDef[] = [
         title: "Make.com Introduction & Setup",
         summary:
           "Get oriented with Make.com and set up your account ready for your first automation.",
-        videoFile: "Make.com - Day 0 - Intro.mp4",
+        videoFile: "Make.com Course. Intro. Day 0. How to Learn Business Process Automation..mp4",
         estimatedMinutes: 15,
         blocks: [
           {
@@ -96,7 +96,7 @@ const curriculum: ModuleDef[] = [
         title: "Your First Scenario",
         summary:
           "Build and run your first end-to-end automation in Make.com.",
-        videoFile: "Make.com - Day 1.mp4",
+        videoFile: "Make.com Course. Day 1.  Make essentials, JSON, Arrays and Collections, Data Structures..mp4",
         estimatedMinutes: 20,
         blocks: [
           {
@@ -123,7 +123,7 @@ const curriculum: ModuleDef[] = [
         title: "Filters & Routers",
         summary:
           "Control data flow with conditional filters and multi-branch routers.",
-        videoFile: "Make.com - Day 2.mp4",
+        videoFile: "Make.com Course. Day 2. Make Fundamentals. Canvas, Variables, Functions..mp4",
         estimatedMinutes: 20,
         blocks: [
           {
@@ -150,7 +150,7 @@ const curriculum: ModuleDef[] = [
         title: "Iterators & Aggregators",
         summary:
           "Process lists of items one by one and combine results back together.",
-        videoFile: "Make.com - Day 3.mp4",
+        videoFile: "Make.com Course. Day 3. Connection, Webhooks, and Filters..mp4",
         estimatedMinutes: 20,
         blocks: [
           {
@@ -177,7 +177,7 @@ const curriculum: ModuleDef[] = [
         title: "HTTP Modules & Webhooks",
         summary:
           "Connect to any external API and receive real-time events with webhooks.",
-        videoFile: "Make.com - Day 4.mp4",
+        videoFile: "Make.com Course. Day 4.  Iterators and aggregators.mp4",
         estimatedMinutes: 20,
         blocks: [
           {
@@ -204,7 +204,7 @@ const curriculum: ModuleDef[] = [
         title: "Error Handling",
         summary:
           "Build resilient automations that recover gracefully from failures.",
-        videoFile: "Make.com - Day 5.mp4",
+        videoFile: "Make.com Full Course. Day 5.  How Work With Data In Complex Arrays..mp4",
         estimatedMinutes: 20,
         blocks: [
           {
@@ -231,7 +231,7 @@ const curriculum: ModuleDef[] = [
         title: "Scheduling & Data Stores",
         summary:
           "Run automations on a schedule and persist data between runs.",
-        videoFile: "Make.com - Day 6.mp4",
+        videoFile: "Make.com Full Course. Day 6. How To Group And Aggregate The Data.(1).mp4",
         estimatedMinutes: 20,
         blocks: [
           {
@@ -258,7 +258,7 @@ const curriculum: ModuleDef[] = [
         title: "Advanced Scenarios",
         summary:
           "Combine everything you've learned into complex, production-ready automations.",
-        videoFile: "Make.com - Day 7.mp4",
+        videoFile: "Make.com Full Course. Day 7. How to Make HTTP Requests. HTTP Module..mp4",
         estimatedMinutes: 25,
         blocks: [
           {
@@ -285,7 +285,7 @@ const curriculum: ModuleDef[] = [
         title: "Make.com: Complete Beginner Tutorial",
         summary:
           "A comprehensive walkthrough of Make.com covering everything from signup to your first real automation.",
-        videoFile: "Make.com Full Beginner Tutorial.mp4",
+        videoFile: "Make.com Tutorial for Beginners (2026) – Full Guide.mp4",
         estimatedMinutes: 60,
         blocks: [
           {
@@ -332,7 +332,7 @@ const curriculum: ModuleDef[] = [
         title: "n8n: Your First Workflow",
         summary:
           "Install n8n (or use n8n Cloud) and build your first automated workflow.",
-        videoFile: "n8n 30 Day Challenge - Day 1.mp4",
+        videoFile: "YTDown.com_YouTube_Day-1-of-30-Day-AI-Automation-Challenge_Media_0V1GdbMYrEI_006_144p.mp4",
         estimatedMinutes: 20,
         blocks: [
           {
@@ -359,7 +359,7 @@ const curriculum: ModuleDef[] = [
         title: "n8n: Connecting Services",
         summary:
           "Connect n8n to external services using credentials and pre-built integrations.",
-        videoFile: "n8n 30 Day Challenge - Day 2.mp4",
+        videoFile: "YTDown.com_YouTube_Day-2of-30-Day-AI-Automation-Challenge_Media_qqAgJMPp0Jw_002_720p.mp4",
         estimatedMinutes: 20,
         blocks: [
           {
@@ -386,7 +386,7 @@ const curriculum: ModuleDef[] = [
         title: "n8n: External Integrations",
         summary:
           "Build workflows that communicate with third-party services and handle real-world data.",
-        videoFile: "n8n 30 Day Challenge - Day 3.mp4",
+        videoFile: "YTDown.com_YouTube_Day-3-of-30-Day-AI-Automation-Challenge_Media_Kxdgh_HPeDM_004_360p.mp4",
         estimatedMinutes: 20,
         blocks: [
           {
@@ -413,7 +413,7 @@ const curriculum: ModuleDef[] = [
         title: "n8n: JSON & Data Transformation",
         summary:
           "Manipulate and reshape data using n8n's expression engine and Code node.",
-        videoFile: "n8n JSON and data.mp4",
+        videoFile: "YTDown.com_YouTube_n8n-for-Beginners-Understanding-JSON-&-D_Media_AAAp7wXT1fY_003_480p.mp4",
         estimatedMinutes: 25,
         blocks: [
           {
@@ -446,7 +446,7 @@ const curriculum: ModuleDef[] = [
         title: "n8n: Variables & Expressions",
         summary:
           "Use variables and dynamic expressions to build flexible, reusable workflows.",
-        videoFile: "n8n day 5 variables.mp4",
+        videoFile: "Your First n8n Workflow Variables & Expressions Explained (Day 5 of 30-Day AI Automation Challenge).mp4",
         estimatedMinutes: 20,
         blocks: [
           {
@@ -473,7 +473,7 @@ const curriculum: ModuleDef[] = [
         title: "n8n: Build an AI Chatbot",
         summary:
           "Create a conversational AI chatbot workflow using n8n's AI nodes.",
-        videoFile: "n8n day 6 chatbot.mp4",
+        videoFile: "Build Your OWN AI Chatbot from SCRATCH in n8n (Day 6 of 30-Day AI Automation Challenge).mp4",
         estimatedMinutes: 25,
         blocks: [
           {
@@ -507,7 +507,7 @@ const curriculum: ModuleDef[] = [
         title: "Zapier for Beginners",
         summary:
           "Learn the fundamentals of Zapier and create your first working Zap.",
-        videoFile: "Zapier for Beginners.mp4",
+        videoFile: "Zapier AI Tutorial for Beginners_ Automation Made Simple 🟧.mp4",
         estimatedMinutes: 30,
         blocks: [
           {
@@ -553,7 +553,7 @@ const curriculum: ModuleDef[] = [
         title: "Zapier: Beginner to Pro",
         summary:
           "Level up with Paths, Formatter, Webhooks, and multi-step Zaps for real-world use cases.",
-        videoFile: "Zapier Beginner to Pro.mp4",
+        videoFile: "Zapier Course_ From Beginner To Pro In 1 Hour.mp4",
         estimatedMinutes: 45,
         blocks: [
           {
@@ -593,7 +593,7 @@ const curriculum: ModuleDef[] = [
         title: "Build an AI Customer Support Agent",
         summary:
           "Create an AI agent that handles customer support queries automatically — end to end.",
-        videoFile: "Build an AI Customer Support Agent.mp4",
+        videoFile: "YTDown.com_YouTube_Building-an-AI-Agent-for-Customer-Suppor_Media_jX8k42jOc3M_004_360p.mp4",
         estimatedMinutes: 35,
         blocks: [
           {
@@ -626,7 +626,7 @@ const curriculum: ModuleDef[] = [
         title: "How to Build & Sell AI Agents",
         summary:
           "Turn your automation skills into a product or service that generates real income.",
-        videoFile: "How to Build & Sell AI Agents.mp4",
+        videoFile: "How_to_Build_Sell_AI_Automations_Ultimate_Beginner_s_Guide_720p.mp4",
         estimatedMinutes: 40,
         blocks: [
           {
