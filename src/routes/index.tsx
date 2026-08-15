@@ -326,7 +326,7 @@ function PublishedCourses() {
     );
   return (
     <div className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-      {data?.slice(0, 3).map((course) => (
+      {(Array.isArray(data) ? data.slice(0, 3) : []).map((course) => (
         <Link
           key={course.id}
           to="/courses/$courseSlug"
