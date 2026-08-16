@@ -1,4 +1,4 @@
-import { handle } from "hono/vercel";
+import { getRequestListener } from "@hono/node-server";
 import { Hono } from "hono";
 import { learningApi } from "../../src/server/api/learning";
 import { operationsApi } from "../../src/server/api/operations";
@@ -6,7 +6,7 @@ import { AuthorizationError } from "../../src/server/permissions";
 import { getServerEnv } from "../../src/server/env";
 
 export const config = {
-  runtime: "edge",
+  runtime: "nodejs",
 };
 
 const app = new Hono().basePath("/api/v1");
@@ -42,4 +42,11 @@ app.onError((error, c) => {
 app.route("/", learningApi);
 app.route("/", operationsApi);
 
-export default handle(app);
+const listener = getRequestListener(app.fetch);
+
+export default async function handler(req: any, res?: any) {
+  if (!res || (typeof req.json === "function" && !req.headers?.host)) {
+    return app.fetch(req);
+  }
+  return listener(req, res);
+}
