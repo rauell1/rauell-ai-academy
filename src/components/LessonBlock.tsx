@@ -32,7 +32,11 @@ function getVideoEmbed(url: string): { iframe: boolean; src: string } {
   const vimeo = url.match(/vimeo\.com\/(\d+)/);
   if (vimeo)
     return { iframe: true, src: `https://player.vimeo.com/video/${vimeo[1]}` };
-  return { iframe: false, src: url };
+  try {
+    return { iframe: false, src: encodeURI(decodeURI(url)) };
+  } catch {
+    return { iframe: false, src: url };
+  }
 }
 
 export function LessonBlock({ block }: { block: Block }) {
@@ -119,8 +123,12 @@ export function LessonBlock({ block }: { block: Block }) {
               <video
                 src={embedSrc}
                 controls
-                className="absolute inset-0 h-full w-full"
-              />
+                preload="metadata"
+                playsInline
+                className="absolute inset-0 h-full w-full object-contain"
+              >
+                Your browser does not support the video tag.
+              </video>
             )}
           </div>
           {(caption || block.title) && (
@@ -135,6 +143,12 @@ export function LessonBlock({ block }: { block: Block }) {
     case "audio": {
       const { url, caption } = cfg<{ url?: string; caption?: string }>(block);
       if (!url) return null;
+      let audioSrc = url;
+      try {
+        audioSrc = encodeURI(decodeURI(url));
+      } catch {
+        audioSrc = url;
+      }
       return (
         <figure className="rounded-2xl border border-ink/10 bg-paper p-4">
           <div className="mb-3 flex items-center gap-2">
@@ -143,7 +157,7 @@ export function LessonBlock({ block }: { block: Block }) {
               {block.title || caption || "Audio"}
             </span>
           </div>
-          <audio src={url} controls className="w-full" />
+          <audio src={audioSrc} controls preload="metadata" className="w-full" />
           {caption && block.title && (
             <figcaption className="mt-2 text-xs text-ink/50">{caption}</figcaption>
           )}

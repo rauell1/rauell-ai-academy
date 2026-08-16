@@ -112,38 +112,52 @@ function Lesson() {
       </div>
     );
 
-  if (lessonQuery.error?.includes("Authentication")) {
-    return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-paper px-5 text-center">
-        <LogIn className="h-12 w-12 text-ink/30" />
-        <h1 className="font-display mt-6 text-2xl font-bold">
-          Sign in to view this lesson
-        </h1>
-        <p className="mt-3 text-ink/60">
-          Create a free account or sign in to access the course content.
-        </p>
-        <div className="mt-8 flex flex-wrap justify-center gap-3">
+  if (lessonQuery.error) {
+    if (lessonQuery.error.includes("Authentication")) {
+      return (
+        <div className="flex min-h-screen flex-col items-center justify-center bg-paper px-5 text-center">
+          <LogIn className="h-12 w-12 text-ink/30" />
+          <h1 className="font-display mt-6 text-2xl font-bold">
+            Sign in to view this lesson
+          </h1>
+          <p className="mt-3 text-ink/60">
+            Create a free account or sign in to access the course content.
+          </p>
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
+            <Link
+              to="/sign-in"
+              className="rounded-full bg-ink px-6 py-3 text-sm font-bold text-white transition hover:bg-ink/80"
+            >
+              Sign in
+            </Link>
+            <Link
+              to="/register"
+              className="rounded-full border border-ink/20 px-6 py-3 text-sm font-bold transition hover:border-ink/40"
+            >
+              Create account
+            </Link>
+          </div>
           <Link
-            to="/sign-in"
-            className="rounded-full bg-ink px-6 py-3 text-sm font-bold text-white transition hover:bg-ink/80"
+            to="/courses/$courseSlug"
+            params={{ courseSlug }}
+            className="mt-8 inline-flex items-center gap-2 text-sm text-ink/50 transition hover:text-ink"
           >
-            Sign in
-          </Link>
-          <Link
-            to="/register"
-            className="rounded-full border border-ink/20 px-6 py-3 text-sm font-bold transition hover:border-ink/40"
-          >
-            Create account
+            <ArrowLeft className="h-4 w-4" />
+            Back to course overview
           </Link>
         </div>
-        <Link
-          to="/courses/$courseSlug"
-          params={{ courseSlug }}
-          className="mt-8 inline-flex items-center gap-2 text-sm text-ink/50 transition hover:text-ink"
+      );
+    }
+    return (
+      <div className="mx-auto max-w-3xl px-5 py-20" role="alert">
+        <h1 className="font-display text-3xl font-bold">Lesson unavailable</h1>
+        <p className="mt-3 text-ink/60">{lessonQuery.error}</p>
+        <button
+          onClick={lessonQuery.reload}
+          className="mt-5 rounded-full bg-ink px-5 py-3 text-sm font-bold text-white"
         >
-          <ArrowLeft className="h-4 w-4" />
-          Back to course overview
-        </Link>
+          Try again
+        </button>
       </div>
     );
   }

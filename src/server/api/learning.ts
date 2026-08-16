@@ -252,8 +252,6 @@ learningApi.get("/courses/:slug", async (c) => {
 
 learningApi.get("/lessons/:id", async (c) => {
   const db = getDb();
-  const session = await sessionFor(c.req.raw.headers);
-  if (!session) return c.json({ error: "Authentication required." }, 401);
   const [lesson] = await db
     .select({
       id: lessons.id,
