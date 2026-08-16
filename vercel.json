@@ -3,6 +3,8 @@
   "outputDirectory": "dist",
   "cleanUrls": true,
   "rewrites": [
+    { "source": "/api/v1/:path*", "destination": "/api/v1/[...route]" },
+    { "source": "/api/auth/:path*", "destination": "/api/auth/[...all]" },
     { "source": "/((?!api/|.*\\..*).*)", "destination": "/index.html" }
   ],
   "headers": [
