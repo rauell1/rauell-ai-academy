@@ -5,7 +5,8 @@
   "rewrites": [
     { "source": "/api/v1/:path*", "destination": "/api/v1/[...route]" },
     { "source": "/api/auth/:path*", "destination": "/api/auth/[...all]" },
-    { "source": "/((?!api/|.*\\..*).*)", "destination": "/index.html" }
+    { "source": "/api/:path*", "destination": "/api/:path*" },
+    { "source": "/(.*)", "destination": "/index.html" }
   ],
   "headers": [
     {
@@ -34,7 +35,9 @@
   ],
   "functions": {
     "api/**/*.ts": {
-      "includeFiles": "src/**",
+      "maxDuration": 30
+    },
+    "api/**/*.js": {
       "maxDuration": 30
     }
   }
