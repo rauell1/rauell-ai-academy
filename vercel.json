@@ -32,5 +32,10 @@
       ]
     }
   ],
-  "functions": { "api/**/*.ts": { "maxDuration": 30 } }
+  "functions": {
+    "api/**/*.ts": {
+      "includeFiles": "src/**",
+      "maxDuration": 30
+    }
+  }
 }
