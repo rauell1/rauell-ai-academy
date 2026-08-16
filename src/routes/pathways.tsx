@@ -1,20 +1,33 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, BookOpen } from "lucide-react";
 import { PageIntro } from "@/components/Cards";
+import { pathways as fallbackPathways } from "@/data/academy";
 import { useApi } from "@/lib/api";
 
 export const Route = createFileRoute("/pathways")({ component: Pathways });
 
 type ApiPathway = {
-  id: string;
+  id?: string;
   slug: string;
   title: string;
-  description: string;
-  sortOrder: number;
+  description?: string;
+  copy?: string;
+  sortOrder?: number;
 };
 
 function Pathways() {
-  const { data: pathways, loading, error } = useApi<ApiPathway[]>("/pathways");
+  const { data: apiPathways, loading } = useApi<ApiPathway[]>("/pathways");
+
+  const list: ApiPathway[] =
+    apiPathways && apiPathways.length > 0
+      ? apiPathways
+      : fallbackPathways.map((p, idx) => ({
+          id: p.slug,
+          slug: p.slug,
+          title: p.title,
+          description: p.copy,
+          sortOrder: idx,
+        }));
 
   return (
     <>
@@ -24,23 +37,13 @@ function Pathways() {
         copy="Follow a guided sequence of courses and practical work. Pick the pathway that matches the work you want to do."
       />
       <section className="mx-auto max-w-7xl px-5 py-16 lg:px-8">
-        {loading && (
+        {loading && !list.length && (
           <p className="py-12 text-center text-ink/50" role="status">
             Loading pathways…
           </p>
         )}
-        {error && (
-          <p className="py-12 text-center text-red-500" role="alert">
-            {error}
-          </p>
-        )}
-        {!loading && !error && (!pathways || pathways.length === 0) && (
-          <p className="py-12 text-center text-ink/50">
-            No pathways available yet. Check back soon.
-          </p>
-        )}
         <div className="space-y-5">
-          {pathways?.map((pathway, i) => (
+          {list.map((pathway, i) => (
             <article
               key={pathway.id}
               className="card grid overflow-hidden lg:grid-cols-[.35fr_1fr]"

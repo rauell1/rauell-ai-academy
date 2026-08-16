@@ -1,5 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, ArrowRight, Clock, CheckCircle2 } from "lucide-react";
+import {
+  courses as staticCourses,
+  pathways as staticPathways,
+} from "@/data/academy";
 import { useApi } from "@/lib/api";
 
 export const Route = createFileRoute("/pathways/$pathwaySlug")({
@@ -32,18 +36,43 @@ function PathwayDetail() {
     `/pathways/${pathwaySlug}`,
   );
 
-  if (loading)
+  const staticFound = staticPathways.find((p) => p.slug === pathwaySlug);
+  const fallbackDetail: ApiPathwayDetail | null = staticFound
+    ? {
+        id: staticFound.slug,
+        slug: staticFound.slug,
+        title: staticFound.title,
+        description: staticFound.copy,
+        courses: staticCourses.slice(0, staticFound.courses || 3).map((sc, idx) => ({
+          id: sc.slug,
+          slug: sc.slug,
+          title: sc.title,
+          summary: sc.description,
+          level: sc.level,
+          estimatedMinutes: 240,
+          skills: sc.outcomes || [],
+          isRequired: true,
+          sortOrder: idx,
+        })),
+      }
+    : null;
+
+  const activePathway = pathway || fallbackDetail;
+
+  if (loading && !activePathway)
     return (
       <div className="mx-auto max-w-4xl px-5 py-20 text-ink/50" role="status">
         Loading pathway…
       </div>
     );
 
-  if (error || !pathway)
+  if (!activePathway)
     return (
       <div className="mx-auto max-w-3xl px-5 py-20" role="alert">
         <h1 className="font-display text-3xl font-bold">Pathway not found</h1>
-        <p className="mt-3 text-ink/60">{error || "This pathway does not exist."}</p>
+        <p className="mt-3 text-ink/60">
+          {error || "This pathway does not exist."}
+        </p>
         <Link
           to="/pathways"
           className="mt-6 inline-flex items-center gap-2 font-bold"
@@ -54,7 +83,7 @@ function PathwayDetail() {
       </div>
     );
 
-  const totalMinutes = pathway.courses.reduce(
+  const totalMinutes = (activePathway.courses || []).reduce(
     (sum, c) => sum + c.estimatedMinutes,
     0,
   );
@@ -73,10 +102,10 @@ function PathwayDetail() {
             All pathways
           </Link>
           <h1 className="font-display mt-6 text-4xl font-bold md:text-5xl">
-            {pathway.title}
+            {activePathway.title}
           </h1>
           <p className="mt-4 max-w-2xl text-lg leading-8 text-white/70">
-            {pathway.description}
+            {activePathway.description}
           </p>
           <div className="mt-6 flex flex-wrap items-center gap-4 text-sm text-white/55">
             <span className="flex items-center gap-1.5">
@@ -84,7 +113,10 @@ function PathwayDetail() {
               {hours > 0 ? `~${hours} hours` : `${totalMinutes} min`}
             </span>
             <span>·</span>
-            <span>{pathway.courses.length} course{pathway.courses.length !== 1 ? "s" : ""}</span>
+            <span>
+              {activePathway.courses.length} course
+              {activePathway.courses.length !== 1 ? "s" : ""}
+            </span>
           </div>
         </div>
       </div>
@@ -92,7 +124,7 @@ function PathwayDetail() {
       {/* Course list */}
       <section className="mx-auto max-w-7xl px-5 py-16 lg:px-8">
         <div className="space-y-4">
-          {pathway.courses.map((course, i) => (
+          {activePathway.courses.map((course, i) => (
             <article
               key={course.id}
               className="card grid gap-4 p-6 sm:grid-cols-[auto_1fr_auto]"

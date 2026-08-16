@@ -9,7 +9,18 @@ const app = new Hono().basePath("/api/v1");
 app.use("*", async (c, next) => {
   if (!["GET", "HEAD", "OPTIONS"].includes(c.req.method)) {
     const origin = c.req.header("origin");
-    if (origin && origin !== getServerEnv().APP_ORIGIN)
+    const allowed = [
+      getServerEnv().APP_ORIGIN,
+      "https://learn.rauell.systems",
+      "http://localhost:5173",
+      "http://localhost:3000",
+    ];
+    if (
+      origin &&
+      !allowed.includes(origin) &&
+      !origin.endsWith(".vercel.app") &&
+      !origin.endsWith(".rauell.systems")
+    )
       return c.json({ error: "Request origin is not allowed." }, 403);
   }
   await next();

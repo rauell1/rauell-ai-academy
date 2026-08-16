@@ -22,7 +22,14 @@ export const auth = betterAuth({
   baseURL: env.APP_ORIGIN,
   basePath: "/api/auth",
   secret: env.BETTER_AUTH_SECRET,
-  trustedOrigins: [env.APP_ORIGIN],
+  trustedOrigins: Array.from(
+    new Set([
+      env.APP_ORIGIN,
+      "https://learn.rauell.systems",
+      "http://localhost:5173",
+      "http://localhost:3000",
+    ]),
+  ),
   database: drizzleAdapter(db, {
     provider: "pg",
     schema: {
