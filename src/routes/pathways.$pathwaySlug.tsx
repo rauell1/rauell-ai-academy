@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, ArrowRight, Clock, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, Clock, CheckCircle2, BookOpen } from "lucide-react";
 import {
   courses as staticCourses,
   pathways as staticPathways,
@@ -17,9 +17,10 @@ type PathwayCourse = {
   summary: string;
   level: string;
   estimatedMinutes: number;
-  skills: string[];
-  isRequired: boolean;
-  sortOrder: number;
+  skills?: string[];
+  learningOutcomes?: string[];
+  isRequired?: boolean;
+  sortOrder?: number;
 };
 
 type ApiPathwayDetail = {
@@ -51,6 +52,7 @@ function PathwayDetail() {
           level: sc.level,
           estimatedMinutes: 240,
           skills: sc.outcomes || [],
+          learningOutcomes: sc.outcomes || [],
           isRequired: true,
           sortOrder: idx,
         })),
@@ -61,21 +63,21 @@ function PathwayDetail() {
 
   if (loading && !activePathway)
     return (
-      <div className="mx-auto max-w-4xl px-5 py-20 text-ink/50" role="status">
-        Loading pathway…
+      <div className="mx-auto max-w-4xl px-5 py-20 text-center text-ink/50" role="status">
+        <p className="font-display text-xl font-bold">Loading pathway...</p>
       </div>
     );
 
   if (!activePathway)
     return (
-      <div className="mx-auto max-w-3xl px-5 py-20" role="alert">
+      <div className="mx-auto max-w-3xl px-5 py-20 text-center" role="alert">
         <h1 className="font-display text-3xl font-bold">Pathway not found</h1>
         <p className="mt-3 text-ink/60">
           {error || "This pathway does not exist."}
         </p>
         <Link
           to="/pathways"
-          className="mt-6 inline-flex items-center gap-2 font-bold"
+          className="mt-6 inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3 text-sm font-bold text-white"
         >
           <ArrowLeft className="h-4 w-4" />
           All pathways
@@ -83,8 +85,9 @@ function PathwayDetail() {
       </div>
     );
 
-  const totalMinutes = (activePathway.courses || []).reduce(
-    (sum, c) => sum + c.estimatedMinutes,
+  const courseList = Array.isArray(activePathway.courses) ? activePathway.courses : [];
+  const totalMinutes = courseList.reduce(
+    (sum, c) => sum + (c.estimatedMinutes || 0),
     0,
   );
   const hours = Math.round(totalMinutes / 60);
@@ -113,9 +116,9 @@ function PathwayDetail() {
               {hours > 0 ? `~${hours} hours` : `${totalMinutes} min`}
             </span>
             <span>·</span>
-            <span>
-              {activePathway.courses.length} course
-              {activePathway.courses.length !== 1 ? "s" : ""}
+            <span className="flex items-center gap-1.5">
+              <BookOpen className="h-4 w-4" />
+              {courseList.length} course{courseList.length !== 1 ? "s" : ""}
             </span>
           </div>
         </div>
@@ -124,65 +127,71 @@ function PathwayDetail() {
       {/* Course list */}
       <section className="mx-auto max-w-7xl px-5 py-16 lg:px-8">
         <div className="space-y-4">
-          {activePathway.courses.map((course, i) => (
-            <article
-              key={course.id}
-              className="card grid gap-4 p-6 sm:grid-cols-[auto_1fr_auto]"
-            >
-              {/* Step number */}
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-mint font-bold text-leaf">
-                {i + 1}
-              </div>
+          {courseList.map((course, i) => {
+            const skills = Array.isArray(course.skills) ? course.skills : [];
+            const courseMinutes = course.estimatedMinutes || 240;
+            const courseHours = Math.round(courseMinutes / 60);
 
-              {/* Content */}
-              <div className="min-w-0">
-                <div className="flex flex-wrap items-center gap-3">
-                  <span className="eyebrow text-leaf">{course.level}</span>
-                  <span className="text-xs text-ink/40">·</span>
-                  <span className="flex items-center gap-1 text-xs text-ink/50">
-                    <Clock className="h-3 w-3" />
-                    {Math.round(course.estimatedMinutes / 60)} hr
-                  </span>
-                  {!course.isRequired && (
-                    <span className="rounded-full border border-ink/15 px-2 py-0.5 text-[10px] font-bold text-ink/40">
-                      Optional
+            return (
+              <article
+                key={course.id || course.slug}
+                className="card grid gap-4 p-6 sm:grid-cols-[auto_1fr_auto] hover:border-ink/20 transition"
+              >
+                {/* Step number */}
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-mint font-bold text-leaf">
+                  {i + 1}
+                </div>
+
+                {/* Content */}
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <span className="eyebrow text-leaf">{course.level || "Beginner"}</span>
+                    <span className="text-xs text-ink/40">·</span>
+                    <span className="flex items-center gap-1 text-xs text-ink/50">
+                      <Clock className="h-3 w-3" />
+                      {courseHours > 0 ? `${courseHours} hr` : `${courseMinutes} min`}
                     </span>
+                    {!course.isRequired && (
+                      <span className="rounded-full border border-ink/15 px-2 py-0.5 text-[10px] font-bold text-ink/40">
+                        Optional
+                      </span>
+                    )}
+                  </div>
+                  <h2 className="font-display mt-2 text-xl font-bold text-ink">
+                    {course.title}
+                  </h2>
+                  <p className="mt-1 text-sm leading-6 text-ink/60">
+                    {course.summary}
+                  </p>
+                  {skills.length > 0 && (
+                    <div className="mt-3 flex flex-wrap gap-1.5">
+                      {skills.map((skill) => (
+                        <span
+                          key={skill}
+                          className="inline-flex items-center gap-1 rounded-full bg-mint/40 px-2.5 py-0.5 text-xs font-bold text-ink/70"
+                        >
+                          <CheckCircle2 className="h-3 w-3 text-leaf" />
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
                   )}
                 </div>
-                <h2 className="font-display mt-2 text-xl font-bold">
-                  {course.title}
-                </h2>
-                <p className="mt-1 text-sm leading-6 text-ink/60">
-                  {course.summary}
-                </p>
-                {course.skills.length > 0 && (
-                  <div className="mt-3 flex flex-wrap gap-1.5">
-                    {course.skills.map((skill) => (
-                      <span
-                        key={skill}
-                        className="inline-flex items-center gap-1 rounded-full bg-mint/40 px-2.5 py-0.5 text-xs font-bold text-ink/70"
-                      >
-                        <CheckCircle2 className="h-3 w-3 text-leaf" />
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
-                )}
-              </div>
 
-              {/* CTA */}
-              <div className="flex shrink-0 items-center">
-                <Link
-                  to="/courses/$courseSlug"
-                  params={{ courseSlug: course.slug }}
-                  className="inline-flex items-center gap-2 rounded-full bg-ink px-4 py-2.5 text-sm font-bold text-white transition hover:bg-ink/80"
-                >
-                  View course
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-              </div>
-            </article>
-          ))}
+                {/* CTA */}
+                <div className="flex shrink-0 items-center">
+                  <Link
+                    to="/courses/$courseSlug"
+                    params={{ courseSlug: course.slug }}
+                    className="inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2.5 text-sm font-bold text-white transition hover:bg-leaf"
+                  >
+                    View course
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </div>
+              </article>
+            );
+          })}
         </div>
       </section>
     </>
