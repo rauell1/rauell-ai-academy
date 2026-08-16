@@ -1,7 +1,40 @@
 import { Link, useLocation } from "@tanstack/react-router";
 import { ArrowUpRight, BookOpen, Menu, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Component, type ReactNode, useEffect, useState } from "react";
 import { authClient } from "@/lib/auth-client";
+
+class ErrorBoundary extends Component<
+  { children: ReactNode },
+  { hasError: boolean; message: string }
+> {
+  constructor(props: { children: ReactNode }) {
+    super(props);
+    this.state = { hasError: false, message: "" };
+  }
+  static getDerivedStateFromError(error: unknown) {
+    return {
+      hasError: true,
+      message: error instanceof Error ? error.message : "An unexpected error occurred.",
+    };
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="mx-auto max-w-2xl px-5 py-24 text-center">
+          <h1 className="font-display text-3xl font-bold text-ink">Something went wrong</h1>
+          <p className="mt-4 text-sm leading-7 text-ink/60">{this.state.message}</p>
+          <button
+            onClick={() => { this.setState({ hasError: false, message: "" }); window.location.reload(); }}
+            className="mt-8 rounded-full bg-ink px-6 py-3 text-sm font-bold text-white"
+          >
+            Reload page
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 const nav = [
   ["/explore", "Explore"],
@@ -177,11 +210,13 @@ export function Footer() {
   );
 }
 
-export function AppLayout({ children }: { children: React.ReactNode }) {
+export function AppLayout({ children }: { children: ReactNode }) {
   return (
     <>
       <Header />
-      <main>{children}</main>
+      <main>
+        <ErrorBoundary>{children}</ErrorBoundary>
+      </main>
       <Footer />
     </>
   );

@@ -54,7 +54,18 @@ export const courses: Course[] = [
     level: "Advanced", duration: "7h 30m", lessons: 16, category: "Build", color: "bg-[#d6c9f2]", icon: Bot,
     outcomes: ["Design an agent workflow", "Add tools and permissions safely", "Evaluate reliability and cost"],
     modules: [{ title: "Agent architecture", lessons: ["Workflows versus agents", "Tools and permissions", "State and memory", "Planning patterns"] }, { title: "Reliability", lessons: ["Structured outputs", "Retries and fallbacks", "Human approval", "Tracing and cost"] }, { title: "Capstone", lessons: ["Choose a system", "Write the specification", "Build the workflow", "Create evaluations", "Red team the agent", "Demo day", "Documentation", "Final review"] }]
-  }
+  },
+  {
+    slug: "ai-automation-masterclass", title: "AI Automation Masterclass", description: "Design end-to-end automation workflows using AI models, APIs, triggers, and human-in-the-loop controls.",
+    level: "Advanced", duration: "8h", lessons: 16, category: "Build", color: "bg-[#c9d6f2]", icon: Workflow,
+    outcomes: ["Design full automation workflows", "Connect models to APIs and triggers", "Implement human review checkpoints", "Test and monitor production automations"],
+    modules: [
+      { title: "Automation foundations", lessons: ["From scripts to workflows", "Triggers and actions", "State management", "Error handling"] },
+      { title: "AI integration", lessons: ["Connecting LLMs to data", "Structured outputs in pipelines", "Tool use patterns", "Rate limits and costs"] },
+      { title: "Safety and operations", lessons: ["Human approval checkpoints", "Audit logs and tracing", "Monitoring and alerting", "Rollback strategies"] },
+      { title: "Capstone project", lessons: ["Design your automation", "Build and test", "Security review", "Final presentation"] },
+    ]
+  },
 ];
 
 export const labs = [
