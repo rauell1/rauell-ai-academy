@@ -97,27 +97,54 @@ function Home() {
                   </h2>
                 </div>
               </div>
-              <div className="relative mt-8 space-y-4">
+              <div className="relative mt-8 space-y-3">
                 {[
-                  "Understand AI systems",
-                  "Prompt with purpose",
-                  "Verify every output",
-                  "Build your first workflow",
+                  {
+                    title: "Understand AI systems",
+                    courseSlug: "ai-foundations-for-everyone",
+                    lessonSlug: "1-1",
+                  },
+                  {
+                    title: "Prompt with purpose",
+                    courseSlug: "prompt-engineering-in-practice",
+                    lessonSlug: "1-1",
+                  },
+                  {
+                    title: "Verify every output",
+                    courseSlug: "responsible-ai-and-verification",
+                    lessonSlug: "1-1",
+                  },
+                  {
+                    title: "Build your first workflow",
+                    courseSlug: "ai-automation-masterclass",
+                    lessonSlug: "1-1",
+                  },
                 ].map((item, i) => (
-                  <div
-                    key={item}
-                    className={`flex items-center gap-4 rounded-xl border p-3.5 ${i === 0 ? "border-mint/50 bg-mint/10" : "border-white/10 bg-white/[.04]"}`}
+                  <Link
+                    key={item.title}
+                    to="/courses/$courseSlug/lessons/$lessonSlug"
+                    params={{
+                      courseSlug: item.courseSlug,
+                      lessonSlug: item.lessonSlug,
+                    }}
+                    className={`group flex items-center gap-4 rounded-xl border p-3.5 transition ${
+                      i === 0
+                        ? "border-mint/50 bg-mint/10 hover:bg-mint/20"
+                        : "border-white/10 bg-white/[.04] hover:bg-white/10 hover:border-white/20"
+                    }`}
                   >
                     <span
-                      className={`grid h-7 w-7 place-items-center rounded-full text-xs font-bold ${i === 0 ? "bg-mint text-ink" : "bg-white/10 text-white/50"}`}
+                      className={`grid h-7 w-7 place-items-center rounded-full text-xs font-bold ${
+                        i === 0 ? "bg-mint text-ink" : "bg-white/10 text-white/70"
+                      }`}
                     >
                       {i + 1}
                     </span>
-                    <span className="text-sm font-semibold">{item}</span>
-                    {i === 0 && (
-                      <Play className="ml-auto h-4 w-4 fill-mint text-mint" />
-                    )}
-                  </div>
+                    <span className="text-sm font-semibold text-white/90 group-hover:text-white">
+                      {item.title}
+                    </span>
+                    <Play className="ml-auto h-4 w-4 fill-mint text-mint opacity-60 transition group-hover:opacity-100 group-hover:scale-110" />
+                  </Link>
                 ))}
               </div>
             </div>
@@ -143,7 +170,7 @@ function Home() {
       <section className="border-b border-ink/10 bg-ink text-white">
         <div className="mx-auto grid max-w-7xl grid-cols-2 gap-8 px-5 py-8 md:grid-cols-4 lg:px-8">
           {[
-            ["6", "practical courses"],
+            ["7", "practical courses"],
             ["4", "learning pathways"],
             ["100%", "self paced"],
             ["1", "shared mission"],
@@ -179,7 +206,8 @@ function Home() {
             return (
               <Link
                 key={p.slug}
-                to="/pathways"
+                to="/pathways/$pathwaySlug"
+                params={{ pathwaySlug: p.slug }}
                 className="card card-lift group flex items-start gap-5 p-6"
               >
                 <div
@@ -326,7 +354,7 @@ function PublishedCourses() {
     );
   return (
     <div className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-      {(Array.isArray(data) ? data.slice(0, 3) : []).map((course) => (
+      {(Array.isArray(data) ? data.slice(0, 6) : []).map((course) => (
         <Link
           key={course.id}
           to="/courses/$courseSlug"

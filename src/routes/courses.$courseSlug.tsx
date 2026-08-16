@@ -206,20 +206,38 @@ function CourseDetail() {
                 Continue learning →
               </Link>
             ) : session ? (
-              <button
-                onClick={enrol}
-                disabled={action.busy}
-                className="mt-6 w-full rounded-full bg-ink px-5 py-3 text-sm font-bold text-white disabled:opacity-50"
-              >
-                {action.busy ? "Enrolling..." : "Enrol now"}
-              </button>
+              <div className="mt-6 space-y-3">
+                <button
+                  onClick={enrol}
+                  disabled={action.busy}
+                  className="w-full rounded-full bg-ink px-5 py-3 text-sm font-bold text-white transition hover:bg-ink/85 disabled:opacity-50"
+                >
+                  {action.busy ? "Enrolling..." : "Enrol in course"}
+                </button>
+                <Link
+                  to="/courses/$courseSlug/lessons/$lessonSlug"
+                  params={{ courseSlug: course.slug, lessonSlug: firstLessonSlug }}
+                  className="block rounded-full border border-ink/20 px-5 py-2.5 text-center text-xs font-bold text-ink transition hover:bg-paper"
+                >
+                  Preview lesson 1 →
+                </Link>
+              </div>
             ) : (
-              <Link
-                to="/sign-in"
-                className="mt-6 block rounded-full bg-ink px-5 py-3 text-center text-sm font-bold text-white"
-              >
-                Sign in to enrol
-              </Link>
+              <div className="mt-6 space-y-3">
+                <Link
+                  to="/courses/$courseSlug/lessons/$lessonSlug"
+                  params={{ courseSlug: course.slug, lessonSlug: firstLessonSlug }}
+                  className="block rounded-full bg-leaf px-5 py-3 text-center text-sm font-bold text-white transition hover:bg-leaf/90"
+                >
+                  Start learning now →
+                </Link>
+                <Link
+                  to="/sign-in"
+                  className="block rounded-full border border-ink/20 px-5 py-2.5 text-center text-xs font-bold text-ink transition hover:bg-paper"
+                >
+                  Sign in to save progress
+                </Link>
+              </div>
             )}
           </div>
         </aside>
