@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
-    "build:api": "esbuild api/v1/[...route].ts --bundle --platform=node --target=node20 --format=esm --outfile=api/v1/[...route].js --packages=external && esbuild api/auth/[...all].ts --bundle --platform=node --target=node20 --format=esm --outfile=api/auth/[...all].js --packages=external",
+    "build:api": "esbuild src/server/routes/api-v1.ts --bundle --platform=node --target=node20 --format=esm --outfile=api/v1/[...route].js --packages=external && esbuild src/server/routes/api-auth.ts --bundle --platform=node --target=node20 --format=esm --outfile=api/auth/[...all].js --packages=external",
     "build": "tsc --noEmit && vite build && npm run build:api",
     "preview": "vite preview --host 0.0.0.0",
     "lint": "eslint .",
