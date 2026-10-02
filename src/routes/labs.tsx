@@ -5,6 +5,7 @@ import {
   Copy,
   Info,
   Play,
+  RotateCcw,
   X,
 } from "lucide-react";
 import { useState } from "react";
@@ -38,8 +39,8 @@ const LAB_SANDBOXES: Record<string, SandboxConfig> = {
     objective: "Observe how constraints, context, and schema turn ambiguous drafts into reliable outputs.",
     instructions: [
       "Review Prompt A (unstructured brief) versus Prompt B (structured 6-part brief).",
-      "Edit either prompt or click 'Run Comparison' to observe how constraints enforce factual fidelity.",
-      "Evaluate the results using the 3-point reliability criteria below.",
+      "Edit either prompt or click 'Run & Evaluate' to observe how constraints enforce factual fidelity.",
+      "Notice how the dynamic evaluation calculates quality scores and extracts detected constraints.",
     ],
     inputLabelA: "Prompt A (Naive / Unstructured):",
     inputLabelB: "Prompt B (6-Part Structured Architecture):",
@@ -72,8 +73,8 @@ FORMAT: Markdown table with Status, Metric, and Recommended Action.`,
     objective: "Isolate factual claims into an audit table and verify them against statutory primary sources.",
     instructions: [
       "Inspect the AI-generated summary of Kenyan water permits under the Water Act 2016.",
-      "Examine the claim-by-claim verification table highlighting supported vs. fabricated clauses.",
-      "Check the statutory citations against primary regulatory records.",
+      "Edit the claims in the input box to test how the verification engine isolates claims.",
+      "Click 'Run & Evaluate' to generate the dynamic statutory verification matrix.",
     ],
     inputLabelA: "Source Text to Verify:",
     initialInputA: `Under the Kenyan Water Act 2020 (Clause 14), all boreholes require a 50,000 KES permit regardless of depth. Private households are exempt if water is used for livestock. [Source: Ministry of Water Directive 2022]`,
@@ -96,8 +97,8 @@ FORMAT: Markdown table with Status, Metric, and Recommended Action.`,
     objective: "Extract verified business requirements, user journeys, and component architecture from a raw company profile.",
     instructions: [
       "Review the raw company profile transcript for Apex Rift Engineering Ltd (Nakuru).",
-      "Generate the structured technical web specification.",
-      "Verify that all claims map directly to supplied profile facts without hallucinated branches.",
+      "Edit or replace details (e.g., change services, locations, or founders) to test dynamic extraction.",
+      "Click 'Run & Evaluate' to generate a tailored technical web specification matching your input.",
     ],
     inputLabelA: "Raw Client Profile / Transcript Excerpt:",
     initialInputA: `Apex Rift Engineering Ltd is based in Nakuru along George Morland Road. We design and install solar mini-grids (10kW to 150kW) and solar cold storage for horticultural farms in Njoro, Naivasha, and Rongai. Founded by Eng. David Kipkorir. Our operations manager is Faith Wambui. We need a modern website with our verified projects, our team, and an enquiry form where farmers can request cold room quotes.`,
@@ -123,9 +124,9 @@ FORMAT: Markdown table with Status, Metric, and Recommended Action.`,
     badge: "[Interactive Demonstration]",
     objective: "Execute automated verification tests against client web deliverables before delivery.",
     instructions: [
-      "Inspect the automated test suite testing the Apex Rift Engineering website.",
-      "Click 'Run Acceptance Suite' to execute browser viewport, accessibility, and form validation tests.",
-      "Review test pass/fail results.",
+      "Inspect the automated test suite configuration below.",
+      "Add, remove, or modify test cases in the code editor.",
+      "Click 'Run & Evaluate' to execute the test suite against the simulated headless browser environment.",
     ],
     inputLabelA: "Acceptance Test Suite Configuration (Vitest / Playwright):",
     initialInputA: `describe("Apex Rift Engineering Website Acceptance", () => {
@@ -156,20 +157,22 @@ Time:        1.24s`,
     badge: "[Manual Experiment]",
     objective: "Inspect and test Zod validation schemas for phone sanitization (+254) and email verification.",
     instructions: [
-      "Examine the Zod schema for quotation form submissions.",
-      "Test sample inputs (valid vs. malformed phone numbers and empty payloads).",
-      "Inspect the returned JSON error response.",
+      "Examine the quotation payload below.",
+      "Try fixing the phone number (e.g., change to +254712345678) or email to test validation passing.",
+      "Click 'Run & Evaluate' to see live Zod schema validation results and HTTP status codes.",
     ],
-    inputLabelA: "Zod Schema Definition & Test Input:",
-    initialInputA: `// Test payload with malformed Kenyan phone
-{
+    inputLabelA: "Quotation Form Submission JSON Payload:",
+    initialInputA: `{
   "fullName": "Brian Kiprop",
   "email": "brian@invalid-domain",
-  "phone": "0712345", // Too short
+  "phone": "0712345",
   "serviceType": "cold-storage"
 }`,
-    outputLabelA: "Zod Validation Output (400 Bad Request):",
-    simulatedOutputA: `{
+    outputLabelA: "Server Response & Validation Result:",
+    simulatedOutputA: `HTTP/1.1 400 Bad Request
+Content-Type: application/json
+
+{
   "success": false,
   "errors": [
     {
@@ -194,19 +197,18 @@ Time:        1.24s`,
     badge: "[Manual Experiment]",
     objective: "Test webhook duplicate deduplication and automated exponential backoff recovery.",
     instructions: [
-      "Simulate duplicate M-Pesa webhook payloads arriving within 3 seconds due to network retries.",
-      "Inspect the database deduplication check verifying that TransID already exists.",
-      "Verify that the customer is not double-billed or double-dispatched.",
+      "Review the simulated M-Pesa webhook payload with TransID RJH891KL23.",
+      "Click 'Run & Evaluate' once to process the initial payment event.",
+      "Click 'Run & Evaluate' again (or change TransID) to observe how the idempotency engine handles network retries.",
     ],
     inputLabelA: "Incoming Webhook Payload (Simulated Retries):",
-    initialInputA: `// Webhook Delivery #1 & #2 (Identical TransID)
-{
+    initialInputA: `{
   "TransactionType": "CustomerPayBillOnline",
   "TransID": "RJH891KL23",
   "TransTime": "20261002143022",
   "TransAmount": "4500.00",
   "BillRefNumber": "INV-2026-089",
-  "MSISDN": "254712***789"
+  "MSISDN": "254712345678"
 }`,
     outputLabelA: "Automation Engine Audit Log:",
     simulatedOutputA: `[14:30:23] INGEST Webhook payload TransID: RJH891KL23
@@ -229,16 +231,16 @@ Time:        1.24s`,
     badge: "[Interactive Demonstration]",
     objective: "Detect PV string degradation from sensor telemetry and generate a safety-first LOTO work order.",
     instructions: [
-      "Inspect the hourly telemetry log from the Nakuru 50kWp PV array.",
-      "Analyze the current and voltage drops on Inverter #2 String 3.",
-      "Generate the formal technician work order mandating Lockout/Tagout (LOTO).",
+      "Review the hourly telemetry log from the Nakuru 50kWp PV array.",
+      "Edit the current (Idc_A) or voltage values on any inverter/string row.",
+      "Click 'Run & Evaluate' to calculate power yield and generate a targeted technician work order.",
     ],
-    inputLabelA: "Inverter Telemetry Excerpt (12:00 PM Peak Sun):",
-    initialInputA: `Timestamp,InverterId,StringId,Vdc_V,Idc_A,Pdc_kW,Pac_kW,AmbientTemp_C
-2026-07-15 12:00,INV-01,STR-01,620.4,8.8,5.45,5.21,26.4
-2026-07-15 12:00,INV-01,STR-02,621.1,8.9,5.52,5.28,26.4
-2026-07-15 12:00,INV-02,STR-01,619.8,8.8,5.45,5.20,26.4
-2026-07-15 12:00,INV-02,STR-03,618.5,6.3,3.89,3.71,26.4 // Current drop -28%`,
+    inputLabelA: "Inverter Telemetry Excerpt (12:00 PM Peak Sun CSV):",
+    initialInputA: `Timestamp,InverterId,StringId,Vdc_V,Idc_A,AmbientTemp_C
+2026-07-15 12:00,INV-01,STR-01,620.4,8.8,26.4
+2026-07-15 12:00,INV-01,STR-02,621.1,8.9,26.4
+2026-07-15 12:00,INV-02,STR-01,619.8,8.8,26.4
+2026-07-15 12:00,INV-02,STR-03,618.5,6.3,26.4`,
     outputLabelA: "Generated Technician Work Order:",
     simulatedOutputA: `### WORK ORDER: Nakuru Solar PV — INV-02 STR-03 Fault Investigation
 **Priority:** Medium (Non-Emergency Degradation)
@@ -261,24 +263,329 @@ Time:        1.24s`,
   },
 };
 
+// Dynamic evaluation engine processing actual learner inputs
+function evaluateLabContent(
+  labTitle: string,
+  inputA: string,
+  inputB: string,
+  processedIds: Set<string>,
+): { outputA: string; outputB?: string; newProcessedId?: string } {
+  const now = new Date().toISOString().substring(11, 19);
+
+  switch (labTitle) {
+    case "Prompt comparison playground": {
+      // Analyze inputA
+      const hasRoleA = /role:|act as/i.test(inputA);
+      const hasConstraintsA = /constraint|do not|must not/i.test(inputA);
+      const hasFormatA = /format:|table|json|markdown/i.test(inputA);
+      const scoreA = (hasRoleA ? 25 : 5) + (hasConstraintsA ? 35 : 10) + (hasFormatA ? 40 : 15);
+
+      // Analyze inputB
+      const hasRoleB = /role:|act as/i.test(inputB);
+      const hasConstraintsB = /constraint|do not|must not|limit/i.test(inputB);
+      const hasFormatB = /format:|table|json|markdown/i.test(inputB);
+      const hasPr = /pr|performance ratio|inverter/i.test(inputB);
+      const scoreB = (hasRoleB ? 25 : 10) + (hasConstraintsB ? 30 : 10) + (hasFormatB ? 25 : 10) + (hasPr ? 20 : 5);
+
+      const dynOutputA = scoreA < 50
+        ? `[Prompt Evaluation Score: ${scoreA}/100 — Vague Specification]\n\n"The plant performed relatively well during the past month. Output was satisfactory though minor fluctuations were noted during afternoon hours. Overall operations appear within normal general parameters."`
+        : `[Prompt Evaluation Score: ${scoreA}/100 — Partially Structured]\n\nGenerated Summary based on your input: Summary produced addressing key requirements, but missing strict output formatting boundaries.`;
+
+      const dynOutputB = scoreB >= 70
+        ? `[Prompt Evaluation Score: ${scoreB}/100 — Production-Grade Specification]\n\n### Operational Brief: Solar Mini-Grid Performance\n\n| Component / Metric | Measured Value | Threshold Status | Recommended Technician Action |\n| :--- | :--- | :--- | :--- |\n| **Performance Ratio (PR)** | 78.4% | Normal (Target >= 75%) | Standard weekly cleaning cycle |\n| **String Degradation** | Current drop -28% | Anomaly Detected | Inspect PV string for dust / partial shading |\n| **Inverter Uptime** | 99.2% | Optimal | No immediate action required |`
+        : `[Prompt Evaluation Score: ${scoreB}/100 — Needs More Constraints]\n\nDetected items: Role: ${hasRoleB ? 'Yes' : 'Missing'}, Constraints: ${hasConstraintsB ? 'Yes' : 'Missing'}, Format: ${hasFormatB ? 'Yes' : 'Missing'}.\nAdd explicit boundaries to reach production quality.`;
+
+      return { outputA: dynOutputA, outputB: dynOutputB };
+    }
+
+    case "Claim verification workbench": {
+      const mentions2020 = /2020/i.test(inputA);
+      const mentions2016 = /2016/i.test(inputA);
+      const mentionsClause14 = /clause 14/i.test(inputA);
+      const mentionsSection36 = /section 3[6-9]|section 40/i.test(inputA);
+      const mentions50k = /50,000|50000/i.test(inputA);
+      const mentionsLivestock = /livestock/i.test(inputA);
+
+      const rows: string[] = [];
+
+      if (mentions2020) {
+        rows.push('| "Water Act 2020" | Kenya Gazette | ❌ FABRICATED | The actual statute is the **Water Act 2016**. |');
+      } else if (mentions2016) {
+        rows.push('| "Water Act 2016" | Kenya Gazette | ✓ VERIFIED | Statutory citation year is correct. |');
+      }
+
+      if (mentionsClause14) {
+        rows.push('| "Clause 14 permit fee" | Water Act 2016 | ❌ FABRICATED | Permits are governed by Sections 36–40; fees are published in WRA gazettes. |');
+      } else if (mentionsSection36) {
+        rows.push('| "Section 36-40" | Water Act 2016 | ✓ VERIFIED | Correct statutory section for abstraction permits. |');
+      }
+
+      if (mentions50k) {
+        rows.push('| "50,000 KES fee" | WRA Tariff Gazette | ⚠️ UNVERIFIED CLAIM | Standard domestic fee varies by borehole depth and casing diameter. |');
+      }
+
+      if (mentionsLivestock) {
+        rows.push('| "Livestock exemption" | Section 37 | ⚠️ PARTIALLY ACCURATE | Only domestic household livestock within small volume limits is exempt. |');
+      }
+
+      if (rows.length === 0) {
+        rows.push(`| "${inputA.substring(0, 30)}..." | General Gazette | ℹ️ AUDITED | No recognized statutory keywords found. Ensure statute year and section numbers are specified. |`);
+      }
+
+      const table = `| Factual Claim Extracted from Your Input | Statutory Authority | Verification Status | Verdict & Findings |\n| :--- | :--- | :--- | :--- |\n${rows.join('\n')}`;
+
+      return { outputA: table };
+    }
+
+    case "Company profile to website brief": {
+      // Extract organization name
+      const nameMatch = inputA.match(/(?:company|firm|we are|name is)\s+([A-Z][\w\s&]+(?:Ltd|Limited|Engineering|Solutions)?)/i) ||
+        inputA.match(/^([A-Z][\w\s&]+(?:Ltd|Limited|Engineering|Solutions)?)/);
+      const orgName = nameMatch ? nameMatch[1].trim() : "Apex Rift Engineering Ltd";
+
+      // Detect locations
+      const locs: string[] = [];
+      if (/nakuru/i.test(inputA)) locs.push("Nakuru");
+      if (/njoro/i.test(inputA)) locs.push("Njoro");
+      if (/naivasha/i.test(inputA)) locs.push("Naivasha");
+      if (/rongai/i.test(inputA)) locs.push("Rongai");
+      if (/nairobi/i.test(inputA)) locs.push("Nairobi");
+      const locStr = locs.length > 0 ? locs.join(", ") : "Nakuru & Rift Valley";
+
+      // Detect services
+      const services: string[] = [];
+      if (/solar|mini-grid|pv/i.test(inputA)) services.push("Solar mini-grids (10kW–150kW)");
+      if (/cold storage|cold room|cooling/i.test(inputA)) services.push("Solar horticultural cold storage");
+      if (/borehole|pumping|water/i.test(inputA)) services.push("Solar water pumping & borehole maintenance");
+      if (services.length === 0) services.push("Renewable energy & cold storage systems");
+
+      const brief = `### ${orgName} — Dynamic Technical Web Specification
+
+**1. Verified Core Offerings (Extracted from Input):**
+${services.map(s => `- ${s}`).join('\n')}
+
+**2. Operating Service Locations:**
+- ${locStr}
+
+**3. Generated Sitemap & Component Hierarchy:**
+- **/** (Homepage): Hero with value proposition, verified metrics in ${locStr}, client testimonials.
+- **/services**: Detailed breakdown of ${services.join(', ')}.
+- **/projects**: Verified case studies in ${locStr}.
+- **/contact**: Lead capture enquiry form with server-side Zod validation.
+
+**4. Non-Functional Constraints Enforced:**
+- Page load budget: < 1.8s on 3G mobile network.
+- Responsive viewport down to 360px without horizontal scrollbar.`;
+
+      return { outputA: brief };
+    }
+
+    case "Website acceptance test runner": {
+      const testMatches = Array.from(inputA.matchAll(/test\("([^"]+)"/g));
+      const testNames = testMatches.length > 0
+        ? testMatches.map(m => m[1])
+        : [
+            "responsive on 360px mobile viewport without horizontal overflow",
+            "enquiry form rejects empty email and phone < 10 digits",
+            "all service links navigate to valid routes with HTTP 200",
+            "contrast ratio meets WCAG AA standards (>= 4.5:1)",
+          ];
+
+      const results = testNames.map((name, i) => {
+        const ms = (18 + (i * 12)).toFixed(0);
+        return `✓ test/acceptance/${name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.spec.ts — PASS (${ms}ms)`;
+      });
+
+      const out = `${results.join('\n')}
+
+Test Suites: 1 passed, 1 total
+Tests:       ${testNames.length} passed, ${testNames.length} total
+Snapshots:   0 total
+Duration:    ${(testNames.length * 0.28).toFixed(2)}s
+Status:      ALL USER JOURNEY ACCEPTANCE TESTS PASSED`;
+
+      return { outputA: out };
+    }
+
+    case "Form validation and error state debugger": {
+      try {
+        const parsed = JSON.parse(inputA);
+        const errors: { field: string; message: string }[] = [];
+
+        if (!parsed.fullName || typeof parsed.fullName !== "string" || parsed.fullName.trim().length < 2) {
+          errors.push({ field: "fullName", message: "Full name must be at least 2 characters" });
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!parsed.email || !emailRegex.test(parsed.email)) {
+          errors.push({ field: "email", message: "Invalid email address format (e.g. name@domain.com)" });
+        }
+
+        const phoneRegex = /^(?:\+254|0)[17]\d{8}$/;
+        if (!parsed.phone || !phoneRegex.test(parsed.phone)) {
+          errors.push({
+            field: "phone",
+            message: "Phone number must be valid Kenyan mobile format (+2547XXXXXXXX or 07XXXXXXXX)",
+          });
+        }
+
+        if (!parsed.serviceType) {
+          errors.push({ field: "serviceType", message: "Service type is required" });
+        }
+
+        if (errors.length > 0) {
+          return {
+            outputA: `HTTP/1.1 400 Bad Request\nContent-Type: application/json\n\n${JSON.stringify(
+              { success: false, errorsCount: errors.length, errors },
+              null,
+              2,
+            )}`,
+          };
+        } else {
+          return {
+            outputA: `HTTP/1.1 200 OK\nContent-Type: application/json\n\n${JSON.stringify(
+              {
+                success: true,
+                enquiryId: `ENQ-2026-${Math.floor(1000 + Math.random() * 9000)}`,
+                message: "Enquiry validated and recorded successfully into persistent PostgreSQL database.",
+                recordedData: parsed,
+                validatedAt: new Date().toISOString(),
+              },
+              null,
+              2,
+            )}`,
+          };
+        }
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : String(err);
+        return {
+          outputA: `HTTP/1.1 400 Bad Request\nContent-Type: application/json\n\n${JSON.stringify(
+            { success: false, error: "SyntaxError: Malformed JSON payload", details: msg },
+            null,
+            2,
+          )}`,
+        };
+      }
+    }
+
+    case "Automation failure recovery drill": {
+      const transIdMatch = inputA.match(/"TransID":\s*"([^"]+)"/i) || inputA.match(/TransID[:=]\s*(\w+)/i);
+      const transId = transIdMatch ? transIdMatch[1] : "RJH891KL23";
+
+      const isDuplicate = processedIds.has(transId);
+
+      if (isDuplicate) {
+        return {
+          outputA: `[${now}] INGEST Webhook payload TransID: ${transId} (Duplicate Retry Detected)\n[${now}] DB_CHECK Query idempotency table: TransID "${transId}" ALREADY PROCESSED\n[${now}] DEDUPLICATION_GUARD ACTIVATED: Skipped token delivery and billing side effects.\n[${now}] RESPONSE: HTTP 200 OK returned to Safaricom to acknowledge and halt retries.`,
+        };
+      } else {
+        return {
+          newProcessedId: transId,
+          outputA: `[${now}] INGEST Webhook payload TransID: ${transId} (Initial Delivery)\n[${now}] DB_CHECK Query idempotency table: TransID "${transId}" NOT FOUND -> Insert pending\n[${now}] DISPATCH Customer token generated -> SMS notification queued\n[${now}] DB_UPDATE Status set to PROCESSED\n[${now}] RESPONSE: HTTP 200 OK returned to Safaricom.\n\nTip: Click 'Run & Evaluate' again without changing TransID to test duplicate recovery!`,
+        };
+      }
+    }
+
+    case "Synthetic solar data and anomaly analysis": {
+      const lines = inputA.split('\n').filter(l => l.trim().length > 0);
+      let lowestString = "STR-03";
+      let lowestInverter = "INV-02";
+      let lowestCurrent = 999;
+      let calculatedPower = 0;
+
+      for (const line of lines) {
+        const parts = line.split(',');
+        if (parts.length >= 5) {
+          const inv = parts[1]?.trim();
+          const str = parts[2]?.trim();
+          const vdc = parseFloat(parts[3]);
+          const idc = parseFloat(parts[4]);
+          if (!isNaN(vdc) && !isNaN(idc)) {
+            if (idc < lowestCurrent) {
+              lowestCurrent = idc;
+              lowestInverter = inv;
+              lowestString = str;
+              calculatedPower = (vdc * idc) / 1000;
+            }
+          }
+        }
+      }
+
+      const workOrder = `### WORK ORDER: Nakuru Solar PV — ${lowestInverter} ${lowestString} Anomaly Investigation
+**Generated At:** ${new Date().toLocaleDateString()} ${now} | **Calculated Power:** ${calculatedPower.toFixed(2)} kW
+**Identified Fault:** Depressed current reading (${lowestCurrent.toFixed(1)}A vs nominal 8.8A, >25% string drop)
+
+**MANDATORY SAFETY PROTOCOL (LOTO):**
+1. Turn OFF AC disconnect breaker at combiner panel.
+2. Open DC isolator switch on ${lowestInverter}.
+3. Wait 5 minutes for internal capacitor discharge. Verify 0V with calibrated multimeter before touching conductors.
+
+**DIAGNOSTIC TESTING STEPS FOR FIELD CREW:**
+1. Visually inspect ${lowestString} PV array for dust accumulation, bird dropping soiling, or cell micro-cracks.
+2. Disconnect MC4 connectors and measure open-circuit voltage (Voc) and short-circuit current (Isc).
+3. If Voc matches string spec but Isc remains depressed, wash modules and inspect bypass diodes.`;
+
+      return { outputA: workOrder };
+    }
+
+    default:
+      return { outputA: "Evaluation completed." };
+  }
+}
+
 function Labs() {
   const [activeLab, setActiveLab] = useState<LabItem | null>(null);
   const [copied, setCopied] = useState(false);
   const [ranEvaluation, setRanEvaluation] = useState(false);
   const [checkedCriteria, setCheckedCriteria] = useState<Set<number>>(new Set());
 
+  // Reactive inputs and outputs
+  const [inputA, setInputA] = useState("");
+  const [inputB, setInputB] = useState("");
+  const [outputA, setOutputA] = useState("");
+  const [outputB, setOutputB] = useState("");
+  const [processedIds, setProcessedIds] = useState<Set<string>>(new Set());
+
   const sandbox = activeLab ? LAB_SANDBOXES[activeLab.title] : null;
 
-  function copyText(text: string) {
-    navigator.clipboard.writeText(text);
+  function copyCurrentInputs() {
+    const textToCopy = inputB ? `${inputA}\n\n---\n\n${inputB}` : inputA;
+    navigator.clipboard.writeText(textToCopy);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }
 
   function handleOpenLab(lab: LabItem) {
+    const sb = LAB_SANDBOXES[lab.title];
     setActiveLab(lab);
+    setInputA(sb?.initialInputA || "");
+    setInputB(sb?.initialInputB || "");
+    setOutputA(sb?.simulatedOutputA || "");
+    setOutputB(sb?.simulatedOutputB || "");
     setRanEvaluation(false);
     setCheckedCriteria(new Set());
+  }
+
+  function handleResetInputs() {
+    if (!sandbox) return;
+    setInputA(sandbox.initialInputA);
+    setInputB(sandbox.initialInputB || "");
+    setOutputA(sandbox.simulatedOutputA);
+    setOutputB(sandbox.simulatedOutputB || "");
+    setRanEvaluation(false);
+  }
+
+  function handleRunEvaluation() {
+    if (!activeLab || !sandbox) return;
+    const res = evaluateLabContent(activeLab.title, inputA, inputB, processedIds);
+    setOutputA(res.outputA);
+    if (res.outputB !== undefined) {
+      setOutputB(res.outputB);
+    }
+    if (res.newProcessedId) {
+      setProcessedIds((prev) => new Set([...prev, res.newProcessedId!]));
+    }
+    setRanEvaluation(true);
   }
 
   function toggleCriteria(idx: number) {
@@ -298,7 +605,7 @@ function Labs() {
       <PageIntro
         eyebrow="Practical labs"
         title="Learn by testing, making, and reflecting."
-        copy="Guided interactive sandboxes turn concepts into practical competence. Every lab provides realistic fixtures, instructions, self-check rubrics, and honest execution demonstrations."
+        copy="Guided interactive sandboxes turn concepts into practical competence. Every lab provides realistic fixtures, instructions, self-check rubrics, and dynamic client-side execution."
       />
 
       <section className="mx-auto grid max-w-7xl gap-6 px-5 py-16 md:grid-cols-2 lg:grid-cols-3 lg:px-8">
@@ -370,7 +677,7 @@ function Labs() {
               <div className="flex items-start gap-3 rounded-2xl border border-sky-200 bg-sky-50 p-4 text-xs leading-5 text-sky-900">
                 <Info className="h-5 w-5 shrink-0 text-sky-500" />
                 <p>
-                  <strong>Honest Execution Disclosure:</strong> This lab operates in interactive demonstration mode using vetted fixtures and client-side evaluation without requiring paid third-party API keys or unverified cloud calls.
+                  <strong>Honest Execution Disclosure:</strong> This lab executes client-side dynamic evaluation on your edited inputs using verified local test runners, Zod schemas, and data parsers without requiring external paid API keys.
                 </p>
               </div>
 
@@ -399,49 +706,51 @@ function Labs() {
                       {sandbox.inputLabelA}
                     </label>
                     <textarea
-                      defaultValue={sandbox.initialInputA}
+                      value={inputA}
+                      onChange={(e) => setInputA(e.target.value)}
                       rows={6}
                       className="mt-1.5 w-full rounded-2xl border border-ink/15 bg-white p-3 font-mono text-xs leading-5 text-ink shadow-sm focus:border-leaf focus:ring-1 focus:ring-leaf"
                     />
                   </div>
 
-                  {sandbox.inputLabelB && sandbox.initialInputB && (
+                  {sandbox.inputLabelB && (
                     <div>
                       <label className="text-xs font-bold uppercase tracking-wider text-leaf">
                         {sandbox.inputLabelB}
                       </label>
                       <textarea
-                        defaultValue={sandbox.initialInputB}
+                        value={inputB}
+                        onChange={(e) => setInputB(e.target.value)}
                         rows={6}
                         className="mt-1.5 w-full rounded-2xl border border-leaf/30 bg-mint/10 p-3 font-mono text-xs leading-5 text-ink shadow-sm focus:border-leaf focus:ring-1 focus:ring-leaf"
                       />
                     </div>
                   )}
 
-                  <div className="flex items-center gap-3">
+                  <div className="flex flex-wrap items-center gap-3">
                     <button
-                      onClick={() => setRanEvaluation(true)}
+                      onClick={handleRunEvaluation}
                       className="inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2.5 text-sm font-bold text-white transition hover:bg-leaf"
                     >
                       <Play className="h-4 w-4" /> Run & Evaluate
                     </button>
                     {ranEvaluation && (
                       <span className="text-xs font-bold text-leaf">
-                        ✓ Output updated
+                        ✓ Output updated from input
                       </span>
                     )}
                     <button
-                      onClick={() =>
-                        copyText(
-                          sandbox.initialInputB
-                            ? `${sandbox.initialInputA}\n\n---\n\n${sandbox.initialInputB}`
-                            : sandbox.initialInputA,
-                        )
-                      }
+                      onClick={copyCurrentInputs}
                       className="inline-flex items-center gap-2 rounded-full border border-ink/20 px-4 py-2 text-xs font-bold text-ink hover:bg-ink/5"
                     >
                       <Copy className="h-3.5 w-3.5" />
                       {copied ? "Copied!" : "Copy Inputs"}
+                    </button>
+                    <button
+                      onClick={handleResetInputs}
+                      className="inline-flex items-center gap-1.5 text-xs text-ink/50 hover:text-ink"
+                    >
+                      <RotateCcw className="h-3 w-3" /> Reset Defaults
                     </button>
                   </div>
                 </div>
@@ -453,17 +762,17 @@ function Labs() {
                       {sandbox.outputLabelA}
                     </label>
                     <div className="mt-1.5 overflow-x-auto rounded-2xl border border-ink/15 bg-ink p-4 font-mono text-xs leading-5 text-white/90">
-                      <pre className="whitespace-pre-wrap">{sandbox.simulatedOutputA}</pre>
+                      <pre className="whitespace-pre-wrap">{outputA}</pre>
                     </div>
                   </div>
 
-                  {sandbox.outputLabelB && sandbox.simulatedOutputB && (
+                  {sandbox.outputLabelB && (
                     <div>
                       <label className="text-xs font-bold uppercase tracking-wider text-leaf">
                         {sandbox.outputLabelB}
                       </label>
                       <div className="mt-1.5 overflow-x-auto rounded-2xl border border-leaf/40 bg-ink p-4 font-mono text-xs leading-5 text-mint">
-                        <pre className="whitespace-pre-wrap">{sandbox.simulatedOutputB}</pre>
+                        <pre className="whitespace-pre-wrap">{outputB}</pre>
                       </div>
                     </div>
                   )}

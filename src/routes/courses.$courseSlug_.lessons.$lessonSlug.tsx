@@ -150,7 +150,17 @@ function Lesson() {
   const lessonQuery = useApi<LessonPayload>(
     selected && !selected.id.startsWith(courseSlug) ? `/lessons/${selected.id}` : null,
   );
-  const [status, setStatus] = useState({ busy: false, done: false, error: "" });
+  const [status, setStatus] = useState<{
+    busy: boolean;
+    done: boolean;
+    synced: boolean;
+    error: string;
+  }>({
+    busy: false,
+    done: false,
+    synced: false,
+    error: "",
+  });
 
   const currentIdx = allLessons.findIndex(
     (l) => l.mi === mi && l.li === li,
@@ -161,24 +171,51 @@ function Lesson() {
 
   async function complete() {
     if (!lessonQuery.data && !selected) return;
-    setStatus({ busy: true, done: false, error: "" });
-    try {
-      if (lessonQuery.data) {
+    setStatus({ busy: true, done: false, synced: false, error: "" });
+    let synced = false;
+    const isUuid = (id?: string) =>
+      Boolean(id && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id));
+
+    const targetId = isUuid(lessonQuery.data?.id)
+      ? lessonQuery.data!.id
+      : isUuid(selected?.id)
+      ? selected!.id
+      : null;
+
+    if (targetId) {
+      try {
         await apiRequest("/progress", {
           method: "PATCH",
-          body: JSON.stringify({ lessonId: lessonQuery.data.id, completed: true }),
+          body: JSON.stringify({ lessonId: targetId, completed: true }),
         });
+        synced = true;
+      } catch {
+        // Attempt automatic course enrollment if not enrolled yet
+        if (course?.id && isUuid(course.id)) {
+          try {
+            await apiRequest(`/courses/${course.id}/enrol`, { method: "POST" });
+            await apiRequest("/progress", {
+              method: "PATCH",
+              body: JSON.stringify({ lessonId: targetId, completed: true }),
+            });
+            synced = true;
+          } catch {
+            synced = false;
+          }
+        }
       }
-      setStatus({ busy: false, done: true, error: "" });
-      localStorage.setItem(`done:${courseSlug}:${lessonSlug}`, "true");
-    } catch {
-      setStatus({
-        busy: false,
-        done: true,
-        error: "",
-      });
-      localStorage.setItem(`done:${courseSlug}:${lessonSlug}`, "true");
     }
+
+    try {
+      localStorage.setItem(`done:${courseSlug}:${lessonSlug}`, "true");
+      if (synced) {
+        localStorage.setItem(`synced:${courseSlug}:${lessonSlug}`, "true");
+      }
+    } catch {
+      // LocalStorage access fails in private modes or quota limit
+    }
+
+    setStatus({ busy: false, done: true, synced, error: "" });
   }
 
   if (courseQuery.loading && !course)
@@ -344,18 +381,32 @@ function Lesson() {
 
             {/* Completion & Navigation */}
             <div className="mt-14 flex flex-wrap items-center justify-between gap-4 border-t border-ink/10 pt-8">
-              <button
-                onClick={complete}
-                disabled={status.busy || isCompleted}
-                className={`inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-bold transition ${
-                  isCompleted
-                    ? "bg-leaf/15 text-leaf cursor-default"
-                    : "bg-leaf text-white hover:bg-leaf/85"
-                }`}
-              >
-                <Check className="h-4 w-4" />
-                {isCompleted ? "Lesson completed" : status.busy ? "Saving..." : "Mark as complete"}
-              </button>
+              <div className="flex flex-col gap-1.5">
+                <button
+                  onClick={complete}
+                  disabled={status.busy || isCompleted}
+                  className={`inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-bold transition ${
+                    isCompleted
+                      ? "bg-leaf/15 text-leaf cursor-default"
+                      : "bg-leaf text-white hover:bg-leaf/85"
+                  }`}
+                >
+                  <Check className="h-4 w-4" />
+                  {isCompleted
+                    ? "Lesson completed"
+                    : status.busy
+                    ? "Saving progress..."
+                    : "Mark as complete"}
+                </button>
+                {isCompleted && (
+                  <span className="text-xs text-ink/50 ml-1">
+                    {status.synced ||
+                    localStorage.getItem(`synced:${courseSlug}:${lessonSlug}`) === "true"
+                      ? "✓ Synced with your permanent academy profile"
+                      : "Saved in this browser (Sign in to record in permanent transcript)"}
+                  </span>
+                )}
+              </div>
 
               <div className="flex gap-3">
                 {prevLesson && (
