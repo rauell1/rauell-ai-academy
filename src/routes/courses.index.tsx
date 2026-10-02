@@ -5,7 +5,7 @@ import { PageIntro } from "@/components/Cards";
 import { type ApiCourse, useApi } from "@/lib/api";
 import { courses as staticCourses } from "@/data/academy";
 
-export const Route = createFileRoute("/courses")({ component: Courses });
+export const Route = createFileRoute("/courses/")({ component: Courses });
 
 function Courses() {
   const [level, setLevel] = useState("All");

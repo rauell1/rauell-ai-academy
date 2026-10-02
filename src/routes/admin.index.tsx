@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { apiRequest, type ApiCourse, useApi } from "@/lib/api";
 import { fieldClass, FormStatus } from "@/components/AuthCard";
-export const Route = createFileRoute("/admin")({ component: Admin });
+export const Route = createFileRoute("/admin/")({ component: Admin });
 function Admin() {
   const query = useApi<ApiCourse[]>("/admin/courses");
   const [state, setState] = useState({ busy: false, error: "", success: "" });

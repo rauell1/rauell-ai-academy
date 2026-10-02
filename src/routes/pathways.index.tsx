@@ -4,7 +4,7 @@ import { PageIntro } from "@/components/Cards";
 import { pathways as fallbackPathways } from "@/data/academy";
 import { useApi } from "@/lib/api";
 
-export const Route = createFileRoute("/pathways")({ component: Pathways });
+export const Route = createFileRoute("/pathways/")({ component: Pathways });
 
 type ApiPathway = {
   id?: string;

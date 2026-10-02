@@ -59,7 +59,10 @@ function PathwayDetail() {
       }
     : null;
 
-  const activePathway = pathway || fallbackDetail;
+  const activePathway =
+    pathway && pathway.title && Array.isArray(pathway.courses) && pathway.courses.length > 0
+      ? pathway
+      : fallbackDetail;
 
   if (loading && !activePathway)
     return (

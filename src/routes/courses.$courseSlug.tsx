@@ -66,7 +66,10 @@ function CourseDetail() {
       }
     : null;
 
-  const course = apiCourse || fallbackCourse;
+  const course =
+    apiCourse && apiCourse.title && Array.isArray(apiCourse.modules) && apiCourse.modules.length > 0
+      ? apiCourse
+      : fallbackCourse;
   const isEnrolled = course?.enrolled || action.done;
   const firstLessonSlug = "1-1";
 

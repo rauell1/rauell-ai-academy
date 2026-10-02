@@ -5,7 +5,6 @@ import {
   Check,
   ChevronDown,
   ChevronRight,
-  LogIn,
   Menu,
   X,
 } from "lucide-react";
@@ -15,7 +14,7 @@ import { LessonBlock, type Block } from "@/components/LessonBlock";
 import { courses as staticCourses } from "@/data/academy";
 
 export const Route = createFileRoute(
-  "/courses/$courseSlug/lessons/$lessonSlug",
+  "/courses/$courseSlug_/lessons/$lessonSlug",
 )({ component: Lesson });
 
 type LessonPayload = {
@@ -141,7 +140,7 @@ function Lesson() {
       }
       setStatus({ busy: false, done: true, error: "" });
       localStorage.setItem(`done:${courseSlug}:${lessonSlug}`, "true");
-    } catch (e) {
+    } catch {
       setStatus({
         busy: false,
         done: true,

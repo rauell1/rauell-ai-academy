@@ -5,11 +5,7 @@ import {
   Clock3,
   Copy,
   LockKeyhole,
-  Play,
-  RotateCcw,
-  Sparkles,
   X,
-  Zap,
 } from "lucide-react";
 import { useState } from "react";
 import { PageIntro } from "@/components/Cards";

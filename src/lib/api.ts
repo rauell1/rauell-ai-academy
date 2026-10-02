@@ -17,11 +17,17 @@ export async function apiRequest<T>(
     headers: { "content-type": "application/json", ...init?.headers },
     credentials: "include",
   });
-  const payload = await response
-    .json()
-    .catch(() => ({ error: "The server returned an invalid response." }));
+  let payload: any;
+  try {
+    payload = await response.json();
+  } catch {
+    throw new ApiError("The server returned an invalid response.", response.status);
+  }
   if (!response.ok)
+    throw new ApiError(payload?.error || "The request failed.", response.status);
+  if (payload && typeof payload === "object" && "error" in payload && !("id" in payload) && !("title" in payload) && !Array.isArray(payload)) {
     throw new ApiError(payload.error || "The request failed.", response.status);
+  }
   return payload as T;
 }
 export function useApi<T>(path: string | null) {

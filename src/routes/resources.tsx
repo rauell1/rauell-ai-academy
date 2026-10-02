@@ -6,7 +6,6 @@ import {
   Download,
   ExternalLink,
   FileCheck2,
-  Printer,
   X,
 } from "lucide-react";
 import { useState } from "react";
