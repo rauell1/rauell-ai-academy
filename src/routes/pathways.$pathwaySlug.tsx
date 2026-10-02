@@ -4,6 +4,10 @@ import {
   courses as staticCourses,
   pathways as staticPathways,
 } from "@/data/academy";
+import {
+  canonicalCourses,
+  getPathwayBySlug,
+} from "@/data/canonical-curriculum";
 import { useApi } from "@/lib/api";
 
 export const Route = createFileRoute("/pathways/$pathwaySlug")({
@@ -37,25 +41,62 @@ function PathwayDetail() {
     `/pathways/${pathwaySlug}`,
   );
 
+  const canonical = getPathwayBySlug(pathwaySlug);
   const staticFound = staticPathways.find((p) => p.slug === pathwaySlug);
-  const fallbackDetail: ApiPathwayDetail | null = staticFound
+
+  const fallbackCourses: PathwayCourse[] = canonical
+    ? (
+        canonical.courseSlugs
+          .map((cSlug, idx): PathwayCourse | null => {
+            const found = canonicalCourses.find(
+              (c) => c.slug === cSlug || (c.aliases && c.aliases.includes(cSlug)),
+            );
+            if (!found) return null;
+            return {
+              id: found.slug,
+              slug: found.slug,
+              title: found.title,
+              summary: found.summary || found.description,
+              level: found.level,
+              estimatedMinutes: found.estimatedMinutes,
+              skills: found.outcomes || [],
+              learningOutcomes: found.outcomes || [],
+              isRequired: true,
+              sortOrder: idx,
+            };
+          })
+          .filter((c): c is PathwayCourse => c !== null)
+      )
+    : staticFound
+    ? staticCourses.slice(0, staticFound.courses || 3).map((sc, idx) => ({
+        id: sc.slug,
+        slug: sc.slug,
+        title: sc.title,
+        summary: sc.description,
+        level: sc.level,
+        estimatedMinutes: 240,
+        skills: sc.outcomes || [],
+        learningOutcomes: sc.outcomes || [],
+        isRequired: true,
+        sortOrder: idx,
+      }))
+    : [];
+
+  const fallbackDetail: ApiPathwayDetail | null = canonical
+    ? {
+        id: canonical.slug,
+        slug: canonical.slug,
+        title: canonical.title,
+        description: canonical.description,
+        courses: fallbackCourses,
+      }
+    : staticFound
     ? {
         id: staticFound.slug,
         slug: staticFound.slug,
         title: staticFound.title,
         description: staticFound.copy,
-        courses: staticCourses.slice(0, staticFound.courses || 3).map((sc, idx) => ({
-          id: sc.slug,
-          slug: sc.slug,
-          title: sc.title,
-          summary: sc.description,
-          level: sc.level,
-          estimatedMinutes: 240,
-          skills: sc.outcomes || [],
-          learningOutcomes: sc.outcomes || [],
-          isRequired: true,
-          sortOrder: idx,
-        })),
+        courses: fallbackCourses,
       }
     : null;
 
@@ -196,6 +237,68 @@ function PathwayDetail() {
             );
           })}
         </div>
+
+        {/* Pathway Details & Capstone Section */}
+        {canonical && (
+          <div className="mt-16 space-y-12">
+            {/* Capstone Card */}
+            <div className="rounded-3xl border-2 border-leaf/30 bg-mint/15 p-8 lg:p-10">
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                <div>
+                  <span className="eyebrow text-leaf">Pathway Capstone</span>
+                  <h2 className="font-display mt-2 text-2xl font-bold text-ink lg:text-3xl">
+                    {canonical.capstoneTitle}
+                  </h2>
+                </div>
+                <span className="rounded-full bg-leaf px-4 py-1.5 text-xs font-bold text-white uppercase tracking-wider">
+                  Hands-on Portfolio Deliverable
+                </span>
+              </div>
+              <p className="mt-4 text-base leading-7 text-ink/75">
+                {canonical.capstoneDescription}
+              </p>
+
+              <div className="mt-8 border-t border-leaf/20 pt-6">
+                <h3 className="font-display text-sm font-bold uppercase tracking-wider text-ink/70">
+                  Evaluation Rubric & Grading Criteria (70% Pass Standard)
+                </h3>
+                <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+                  {canonical.capstoneRubric.map((item, idx) => (
+                    <li key={idx} className="flex items-start gap-2.5 text-sm text-ink/80">
+                      <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-leaf" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            {/* Learner Profile & Exit Skills */}
+            <div className="grid gap-8 md:grid-cols-2">
+              <div className="rounded-2xl border border-ink/10 bg-white p-6 shadow-sm">
+                <h3 className="font-display text-lg font-bold text-ink">Intended Learner & Prerequisites</h3>
+                <p className="mt-3 text-sm leading-6 text-ink/70">
+                  <strong className="text-ink">Target Audience:</strong> {canonical.intendedLearner}
+                </p>
+                <p className="mt-3 text-sm leading-6 text-ink/70">
+                  <strong className="text-ink">Entry Requirements:</strong> {canonical.entryRequirements}
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-ink/10 bg-white p-6 shadow-sm">
+                <h3 className="font-display text-lg font-bold text-ink">Observable Exit Skills</h3>
+                <ul className="mt-3 space-y-2 text-sm text-ink/75">
+                  {canonical.exitSkills.map((skill, idx) => (
+                    <li key={idx} className="flex items-start gap-2">
+                      <span className="font-bold text-leaf">✓</span>
+                      <span>{skill}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        )}
       </section>
     </>
   );

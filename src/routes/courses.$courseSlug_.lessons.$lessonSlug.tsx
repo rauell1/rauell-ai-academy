@@ -12,6 +12,7 @@ import { useState } from "react";
 import { apiRequest, type ApiCourse, type ApiModule, useApi } from "@/lib/api";
 import { LessonBlock, type Block } from "@/components/LessonBlock";
 import { courses as staticCourses } from "@/data/academy";
+import { getCourseBySlug, getLessonBySlug } from "@/data/canonical-curriculum";
 
 export const Route = createFileRoute(
   "/courses/$courseSlug_/lessons/$lessonSlug",
@@ -54,8 +55,38 @@ function Lesson() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Static fallback if API course data is unavailable
+  const canonicalCourse = getCourseBySlug(courseSlug);
   const staticFound = staticCourses.find((c) => c.slug === courseSlug);
-  const fallbackCourse: ApiCourse | null = staticFound
+  const fallbackCourse: ApiCourse | null = canonicalCourse
+    ? {
+        id: canonicalCourse.slug,
+        slug: canonicalCourse.slug,
+        title: canonicalCourse.title,
+        summary: canonicalCourse.summary || canonicalCourse.description,
+        description: canonicalCourse.description,
+        level: canonicalCourse.level,
+        estimatedMinutes: canonicalCourse.estimatedMinutes,
+        learningOutcomes: canonicalCourse.outcomes || [],
+        skills: ["AI Literacy", "Prompting", "Verification"],
+        state: "published",
+        enrolled: false,
+        modules: canonicalCourse.modules.map((m, mIdx) => ({
+          id: m.id || `${canonicalCourse.slug}-m${mIdx + 1}`,
+          title: m.title,
+          description: m.description || null,
+          sortOrder: mIdx,
+          lessons: m.lessons.map((l, lIdx) => ({
+            id: l.id || `${canonicalCourse.slug}-m${mIdx + 1}-l${lIdx + 1}`,
+            moduleId: m.id || `${canonicalCourse.slug}-m${mIdx + 1}`,
+            slug: l.slug || `${mIdx + 1}-${lIdx + 1}`,
+            title: l.title,
+            summary: l.summary || "Practical lesson covering core principles and hands-on exercises.",
+            estimatedMinutes: l.estimatedMinutes || 20,
+            sortOrder: lIdx,
+          })),
+        })),
+      }
+    : staticFound
     ? {
         id: staticFound.slug,
         slug: staticFound.slug,
@@ -76,7 +107,7 @@ function Lesson() {
           lessons: (m.lessons || []).map((lTitle, lIdx) => ({
             id: `${staticFound.slug}-m${mIdx + 1}-l${lIdx + 1}`,
             moduleId: `${staticFound.slug}-m${mIdx + 1}`,
-            slug: `${staticFound.slug}-m${mIdx + 1}-l${lIdx + 1}`,
+            slug: `${mIdx + 1}-${lIdx + 1}`,
             title: lTitle,
             summary: "Practical lesson covering core principles and hands-on exercises.",
             estimatedMinutes: 20,
@@ -175,7 +206,18 @@ function Lesson() {
       </div>
     );
 
-  // Fallback lesson payload if blocks are loading
+  // Canonical and static fallback lesson payload
+  const canonicalMatch = getLessonBySlug(courseSlug, lessonSlug);
+  const canonicalPayload: LessonPayload | null = canonicalMatch
+    ? {
+        id: canonicalMatch.lesson.id,
+        title: canonicalMatch.lesson.title,
+        summary: canonicalMatch.lesson.summary,
+        estimatedMinutes: canonicalMatch.lesson.estimatedMinutes,
+        blocks: canonicalMatch.lesson.blocks,
+      }
+    : null;
+
   const fallbackPayload: LessonPayload = {
     id: selected.id,
     title: selected.title,
@@ -216,7 +258,7 @@ function Lesson() {
     ],
   };
 
-  const lesson = lessonQuery.data || fallbackPayload;
+  const lesson = lessonQuery.data || canonicalPayload || fallbackPayload;
   const isCompleted = status.done || !!localStorage.getItem(`done:${courseSlug}:${lessonSlug}`);
 
   return (

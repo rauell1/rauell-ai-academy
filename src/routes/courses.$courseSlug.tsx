@@ -12,6 +12,7 @@ import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { apiRequest, type ApiCourse, useApi } from "@/lib/api";
 import { courses as staticCourses } from "@/data/academy";
+import { getCourseBySlug } from "@/data/canonical-curriculum";
 
 export const Route = createFileRoute("/courses/$courseSlug")({
   component: CourseDetail,
@@ -29,8 +30,38 @@ function CourseDetail() {
   const [action, setAction] = useState({ busy: false, error: "", done: false });
 
   // Static fallback if API course data is unavailable or loading
+  const canonicalCourse = getCourseBySlug(courseSlug);
   const staticFound = staticCourses.find((c) => c.slug === courseSlug);
-  const fallbackCourse: ApiCourse | null = staticFound
+  const fallbackCourse: ApiCourse | null = canonicalCourse
+    ? {
+        id: canonicalCourse.slug,
+        slug: canonicalCourse.slug,
+        title: canonicalCourse.title,
+        summary: canonicalCourse.summary || canonicalCourse.description,
+        description: canonicalCourse.description,
+        level: canonicalCourse.level,
+        estimatedMinutes: canonicalCourse.estimatedMinutes,
+        learningOutcomes: canonicalCourse.outcomes || [],
+        skills: ["AI Literacy", "Prompting", "Verification"],
+        state: "published",
+        enrolled: false,
+        modules: canonicalCourse.modules.map((m, mi) => ({
+          id: m.id || `${canonicalCourse.slug}-m${mi + 1}`,
+          title: m.title,
+          description: m.description || null,
+          sortOrder: mi,
+          lessons: m.lessons.map((l, li) => ({
+            id: l.id || `${canonicalCourse.slug}-m${mi + 1}-l${li + 1}`,
+            moduleId: m.id || `${canonicalCourse.slug}-m${mi + 1}`,
+            slug: l.slug || `${mi + 1}-${li + 1}`,
+            title: l.title,
+            summary: l.summary || "Practical lesson covering core principles and hands-on exercises.",
+            estimatedMinutes: l.estimatedMinutes || 20,
+            sortOrder: li,
+          })),
+        })),
+      }
+    : staticFound
     ? {
         id: staticFound.slug,
         slug: staticFound.slug,
@@ -56,7 +87,7 @@ function CourseDetail() {
           lessons: m.lessons.map((lTitle, li) => ({
             id: `${staticFound.slug}-m${mi + 1}-l${li + 1}`,
             moduleId: `${staticFound.slug}-m${mi + 1}`,
-            slug: `${staticFound.slug}-m${mi + 1}-l${li + 1}`,
+            slug: `${mi + 1}-${li + 1}`,
             title: lTitle,
             summary: "Practical lesson covering core principles and hands-on exercises.",
             estimatedMinutes: 20,

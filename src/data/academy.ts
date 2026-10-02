@@ -1,76 +1,153 @@
-import { Bot, BrainCircuit, BriefcaseBusiness, Droplets, Leaf, MessagesSquare, ShieldCheck, Sparkles, Workflow, Zap } from "lucide-react";
+import {
+  Bot,
+  CheckCircle2,
+  Layout,
+  ShieldCheck,
+  Sparkles,
+  Workflow,
+  Wrench,
+  Zap,
+} from "lucide-react";
+import {
+  canonicalCourses,
+  canonicalPathways,
+  type CanonicalCourse,
+  type CanonicalPathway,
+} from "./canonical-curriculum";
 
 export type Course = {
-  slug: string; title: string; description: string; level: "Beginner" | "Intermediate" | "Advanced";
-  duration: string; lessons: number; category: string; color: string; icon: typeof Bot; featured?: boolean;
-  outcomes: string[]; modules: { title: string; lessons: string[] }[];
+  slug: string;
+  title: string;
+  description: string;
+  level: "Beginner" | "Intermediate" | "Advanced";
+  duration: string;
+  lessons: number;
+  category: string;
+  color: string;
+  icon: typeof Bot;
+  featured?: boolean;
+  outcomes: string[];
+  modules: { title: string; lessons: string[] }[];
 };
 
-export const pathways = [
-  { slug: "ai-foundations", title: "AI Foundations", copy: "Build clear mental models, use AI confidently, and learn how to verify every output.", courses: 3, hours: 12, icon: BrainCircuit, color: "bg-mint" },
-  { slug: "ai-for-engineers", title: "AI for Engineers", copy: "Apply AI to energy, mobility, water, data, and complex engineering workflows.", courses: 4, hours: 18, icon: Zap, color: "bg-sky" },
-  { slug: "ai-for-business", title: "AI for Business", copy: "Turn repetitive work into reliable, human supervised systems that create value.", courses: 3, hours: 14, icon: BriefcaseBusiness, color: "bg-[#f4c6a6]" },
-  { slug: "agents-automation", title: "Agents and Automation", copy: "Design tool using agents, workflows, guardrails, and evaluation systems.", courses: 4, hours: 22, icon: Workflow, color: "bg-[#d6c9f2]" },
-];
+export type Pathway = {
+  slug: string;
+  title: string;
+  copy: string;
+  courses: number;
+  hours: number;
+  icon: typeof Bot;
+  color: string;
+};
 
-export const courses: Course[] = [
-  {
-    slug: "ai-foundations-for-everyone", title: "AI Foundations for Everyone", description: "Understand what modern AI can do, where it fails, and how to work with it safely and effectively.",
-    level: "Beginner", duration: "4h 30m", lessons: 12, category: "Foundations", color: "bg-mint", icon: BrainCircuit, featured: true,
-    outcomes: ["Explain how generative AI produces an answer", "Write clear instructions for common tasks", "Recognise hallucinations and verify claims", "Use AI responsibly with private information"],
-    modules: [
-      { title: "Understanding AI", lessons: ["What AI is and is not", "How generative AI works", "Models, context, and tokens"] },
-      { title: "Working with AI", lessons: ["The anatomy of a good prompt", "Context changes everything", "A simple prompt improvement loop"] },
-      { title: "Trust and verification", lessons: ["Why AI makes things up", "A practical verification checklist", "Privacy and responsible use"] },
-      { title: "Apply what you know", lessons: ["Case study: a water project", "Build your personal workflow", "Final knowledge check"] },
-    ]
-  },
-  {
-    slug: "prompt-engineering-in-practice", title: "Prompt Engineering in Practice", description: "Move beyond prompt tricks and learn a repeatable method for getting useful, testable results.",
-    level: "Beginner", duration: "3h 15m", lessons: 9, category: "Prompting", color: "bg-sky", icon: MessagesSquare, featured: true,
-    outcomes: ["Structure prompts around goals and constraints", "Create useful examples and rubrics", "Compare outputs systematically"],
-    modules: [{ title: "Prompt fundamentals", lessons: ["Goal, context, task", "Constraints and formats", "Examples that teach"] }, { title: "Test and improve", lessons: ["Build an evaluation rubric", "Compare two prompts", "Debug weak answers"] }, { title: "Project", lessons: ["Design a research assistant", "Test your assistant", "Reflection and next steps"] }]
-  },
-  {
-    slug: "responsible-ai-and-verification", title: "Responsible AI and Verification", description: "Build habits and systems that protect people, data, and decisions when AI is involved.",
-    level: "Intermediate", duration: "3h 40m", lessons: 10, category: "Responsible AI", color: "bg-[#f4c6a6]", icon: ShieldCheck,
-    outcomes: ["Assess risk before using AI", "Verify claims with primary sources", "Document limitations and human oversight"],
-    modules: [{ title: "Risk and responsibility", lessons: ["Who can be harmed?", "Bias in data and outputs", "Consent and private data"] }, { title: "Verification", lessons: ["Source quality", "Claim by claim checking", "Documenting confidence"] }, { title: "Governance", lessons: ["Human review", "Incident response", "Create your AI use policy", "Final assessment"] }]
-  },
-  {
-    slug: "ai-for-renewable-energy", title: "AI for Renewable Energy", description: "Explore forecasting, maintenance, site analysis, and decision support through practical energy cases.",
-    level: "Intermediate", duration: "5h 20m", lessons: 14, category: "Engineering", color: "bg-[#f5db78]", icon: Zap, featured: true,
-    outcomes: ["Frame energy problems for AI", "Prepare and inspect operational data", "Evaluate forecasts safely"],
-    modules: [{ title: "Energy use cases", lessons: ["Where AI adds value", "Forecasting demand", "Predictive maintenance"] }, { title: "Data and models", lessons: ["Inspect operational data", "Choose a baseline", "Evaluate a forecast", "Avoid data leakage"] }, { title: "Solar operations project", lessons: ["Define the challenge", "Prepare the data", "Prototype the assistant", "Create safety checks", "Present your findings", "Peer review", "Final reflection"] }]
-  },
-  {
-    slug: "ai-for-agriculture-water", title: "AI for Agriculture and Water", description: "Design grounded advisory tools for farms, water systems, and climate resilient communities.",
-    level: "Intermediate", duration: "4h 45m", lessons: 11, category: "Impact", color: "bg-[#bddf9b]", icon: Droplets,
-    outcomes: ["Design for local context", "Combine expert sources with AI", "Test advice for safety and usefulness"],
-    modules: [{ title: "Context first", lessons: ["Local knowledge matters", "Design for low bandwidth", "Language and accessibility"] }, { title: "Grounded advice", lessons: ["Reliable source collections", "Retrieval basics", "Citations and uncertainty", "Expert review"] }, { title: "Field project", lessons: ["Choose a user", "Prototype an advisor", "Field test plan", "Project submission"] }]
-  },
-  {
-    slug: "building-ai-agents", title: "Building Reliable AI Agents", description: "Create tool using agents with clear boundaries, observable steps, and human approval points.",
-    level: "Advanced", duration: "7h 30m", lessons: 16, category: "Build", color: "bg-[#d6c9f2]", icon: Bot,
-    outcomes: ["Design an agent workflow", "Add tools and permissions safely", "Evaluate reliability and cost"],
-    modules: [{ title: "Agent architecture", lessons: ["Workflows versus agents", "Tools and permissions", "State and memory", "Planning patterns"] }, { title: "Reliability", lessons: ["Structured outputs", "Retries and fallbacks", "Human approval", "Tracing and cost"] }, { title: "Capstone", lessons: ["Choose a system", "Write the specification", "Build the workflow", "Create evaluations", "Red team the agent", "Demo day", "Documentation", "Final review"] }]
-  },
-  {
-    slug: "ai-automation-masterclass", title: "AI Automation Masterclass", description: "Design end-to-end automation workflows using AI models, APIs, triggers, and human-in-the-loop controls.",
-    level: "Advanced", duration: "8h", lessons: 16, category: "Build", color: "bg-[#c9d6f2]", icon: Workflow,
-    outcomes: ["Design full automation workflows", "Connect models to APIs and triggers", "Implement human review checkpoints", "Test and monitor production automations"],
-    modules: [
-      { title: "Automation foundations", lessons: ["From scripts to workflows", "Triggers and actions", "State management", "Error handling"] },
-      { title: "AI integration", lessons: ["Connecting LLMs to data", "Structured outputs in pipelines", "Tool use patterns", "Rate limits and costs"] },
-      { title: "Safety and operations", lessons: ["Human approval checkpoints", "Audit logs and tracing", "Monitoring and alerting", "Rollback strategies"] },
-      { title: "Capstone project", lessons: ["Design your automation", "Build and test", "Security review", "Final presentation"] },
-    ]
-  },
-];
+// Map canonical pathways for backwards compatibility
+export const pathways: Pathway[] = canonicalPathways.map((p) => ({
+  slug: p.slug,
+  title: p.title,
+  copy: p.copy,
+  courses: p.courseSlugs.length,
+  hours: p.hours,
+  icon: p.icon,
+  color: p.color,
+}));
+
+// Map canonical courses for backwards compatibility
+export const courses: Course[] = canonicalCourses.map((c) => ({
+  slug: c.slug,
+  title: c.title,
+  description: c.description,
+  level: c.level,
+  duration: c.duration,
+  lessons: c.modules.reduce((sum, m) => sum + m.lessons.length, 0),
+  category: c.category,
+  color: c.color,
+  icon: c.icon,
+  featured: c.featured,
+  outcomes: c.outcomes,
+  modules: c.modules.map((m) => ({
+    title: m.title,
+    lessons: m.lessons.map((l) => l.title),
+  })),
+}));
 
 export const labs = [
-  { title: "Prompt comparison playground", copy: "Run two prompt structures against the same challenge, score the results, and explain what changed.", time: "25 min", level: "Beginner", icon: Sparkles, color: "bg-mint", status: "Ready" },
-  { title: "Hallucination detective", copy: "Investigate an AI generated briefing, find unsupported claims, and build a source trail.", time: "35 min", level: "Beginner", icon: ShieldCheck, color: "bg-sky", status: "Ready" },
-  { title: "Solar operations copilot", copy: "Design a safe assistant that helps a technician interpret solar site performance data.", time: "60 min", level: "Intermediate", icon: Zap, color: "bg-[#f5db78]", status: "Ready" },
-  { title: "Agricultural advisory builder", copy: "Create a local context prompt and safety rubric for crop and water advice.", time: "50 min", level: "Intermediate", icon: Leaf, color: "bg-[#bddf9b]", status: "Coming soon" },
+  {
+    id: "prompt-comparison",
+    title: "Prompt comparison playground",
+    badge: "[Interactive Demonstration]",
+    copy: "Run two prompt structures side-by-side against identical input datasets, score accuracy with rubrics, and observe token changes.",
+    time: "25 min",
+    level: "Beginner",
+    icon: Sparkles,
+    color: "bg-mint",
+    status: "Ready",
+  },
+  {
+    id: "claim-verification",
+    title: "Claim verification workbench",
+    badge: "[Interactive Demonstration]",
+    copy: "Audit an AI-generated water regulation brief, isolate factual claims into an audit table, check against the Kenyan Water Act 2016, and flag unsupported statements.",
+    time: "35 min",
+    level: "Beginner",
+    icon: ShieldCheck,
+    color: "bg-sky",
+    status: "Ready",
+  },
+  {
+    id: "company-profile-to-brief",
+    title: "Company profile to website brief",
+    badge: "[Interactive Demonstration]",
+    copy: "Convert the raw corporate profile of Apex Rift Engineering Ltd (Nakuru) into a structured technical web brief with verified provenance, user journeys, and component inventory.",
+    time: "40 min",
+    level: "Intermediate",
+    icon: Layout,
+    color: "bg-[#f5db78]",
+    status: "Ready",
+  },
+  {
+    id: "website-acceptance-testing",
+    title: "Website acceptance test runner",
+    badge: "[Interactive Demonstration]",
+    copy: "Run automated behavioral tests against client web deliverables: test 360px viewport responsiveness, keyboard navigation, broken links, and form validation error states.",
+    time: "30 min",
+    level: "Intermediate",
+    icon: CheckCircle2,
+    color: "bg-[#bddf9b]",
+    status: "Ready",
+  },
+  {
+    id: "form-validation-debugger",
+    title: "Form validation and error state debugger",
+    badge: "[Manual Experiment]",
+    copy: "Inspect and debug client and server-side Zod validation on an enquiry form: fix silent submit failures, sanitize phone numbers (+254), and prevent empty payloads.",
+    time: "35 min",
+    level: "Intermediate",
+    icon: Wrench,
+    color: "bg-[#f4c6a6]",
+    status: "Ready",
+  },
+  {
+    id: "automation-failure-recovery",
+    title: "Automation failure recovery drill",
+    badge: "[Manual Experiment]",
+    copy: "Simulate M-Pesa webhook network timeouts, duplicate event payloads, and API 429 rate limit exceptions; implement idempotency keys and error recovery directives.",
+    time: "45 min",
+    level: "Advanced",
+    icon: Workflow,
+    color: "bg-[#d6c9f2]",
+    status: "Ready",
+  },
+  {
+    id: "solar-telemetry-analysis",
+    title: "Synthetic solar data and anomaly analysis",
+    badge: "[Interactive Demonstration]",
+    copy: "Ingest hourly inverter telemetry from a 50kWp Nakuru solar mini-grid, compute daily Performance Ratio (PR), detect string clipping, and generate a safety-first LOTO work order.",
+    time: "50 min",
+    level: "Intermediate",
+    icon: Zap,
+    color: "bg-[#f5db78]",
+    status: "Ready",
+  },
 ];
+
+export { canonicalCourses, canonicalPathways, type CanonicalCourse, type CanonicalPathway };
