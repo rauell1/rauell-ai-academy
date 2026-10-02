@@ -1,0 +1,186 @@
+[
+  {
+    "id": "cs-nakuru-solar-microgrid",
+    "slug": "nakuru-solar-microgrid-telemetry",
+    "title": "Nakuru Solar Mini-Grid: Telemetry Anomaly Detection & Inverter Fault Triage",
+    "sourceSystem": "Rauell AI-OS Energy Subsystem",
+    "sector": "Energy & Infrastructure",
+    "location": "Nakuru County, Kenya",
+    "lastSyncedAt": "2026-10-02T17:26:04.857Z",
+    "version": "1.4.0",
+    "context": {
+      "facility": "Apex Rift Agribusiness Processing Park Mini-Grid",
+      "capacityKwp": 120,
+      "storageKwh": 240,
+      "inverters": [
+        "Solis-110K-5G-1",
+        "Solis-110K-5G-2"
+      ],
+      "gridConnection": "KPLC 11kV Feeder with Auto-Transfer Switch"
+    },
+    "incidentSummary": "Inverter #2 tripped intermittently during peak irradiance (12:45 - 13:30 EAT). Automated energy arbitrage agents misidentified the drop as grid load-shedding rather than DC overvoltage due to string imbalance.",
+    "sanitizedTelemetry": [
+      {
+        "timestamp": "2026-09-28T09:45:00Z",
+        "inverterId": "INV-02",
+        "dcVoltageV": 845.2,
+        "dcCurrentA": 22.1,
+        "acPowerKw": 18.2,
+        "internalTempC": 58.4,
+        "status": "NORMAL"
+      },
+      {
+        "timestamp": "2026-09-28T10:00:00Z",
+        "inverterId": "INV-02",
+        "dcVoltageV": 992.6,
+        "dcCurrentA": 26.4,
+        "acPowerKw": 25.8,
+        "internalTempC": 64.1,
+        "status": "WARN_HIGH_VOLTAGE"
+      },
+      {
+        "timestamp": "2026-09-28T10:15:00Z",
+        "inverterId": "INV-02",
+        "dcVoltageV": 1054,
+        "dcCurrentA": 0,
+        "acPowerKw": 0,
+        "internalTempC": 71.8,
+        "status": "FAULT_OVP_STRING_TRIP"
+      },
+      {
+        "timestamp": "2026-09-28T10:30:00Z",
+        "inverterId": "INV-02",
+        "dcVoltageV": 0,
+        "dcCurrentA": 0,
+        "acPowerKw": 0,
+        "internalTempC": 62,
+        "status": "SHUTDOWN_LOCKOUT"
+      }
+    ],
+    "rootCauseAnalysis": "String 4 on Array B was re-wired with 2 additional bifacial modules during maintenance without adjusting the maximum open-circuit voltage calculation (Voc at lowest ambient temperature 11°C reached 1,054V, exceeding the 1,000V inverter MPPT limit).",
+    "educationalApplication": {
+      "pathwaySlug": "energy-agriculture-water",
+      "courseSlug": "ai-for-renewable-energy",
+      "exercisePrompt": "Analyze the inverter telemetry log above. Generate a structured incident notification for the lead electrical engineer that clearly separates measured sensor facts from diagnostic hypotheses. Cite specific voltage thresholds.",
+      "evaluationRubric": [
+        "Identifies DC overvoltage (1,054V > 1,000V MPPT rating) as the immediate trip trigger.",
+        "Does not confuse DC array trip with KPLC national grid blackout.",
+        "Recommends physical string measurement and verification of Voc temperature coefficients before resetting the lockout."
+      ]
+    }
+  },
+  {
+    "id": "cs-mpesa-b2c-reconciliation",
+    "slug": "kericho-tea-mpesa-idempotency",
+    "title": "Kericho Tea Outgrowers: M-Pesa B2C Idempotency & Settlement Reconciliation",
+    "sourceSystem": "Rauell AI-OS Financial Operations Subsystem",
+    "sector": "Agribusiness & Financial Operations",
+    "location": "Kericho County, Kenya",
+    "lastSyncedAt": "2026-10-02T17:26:04.859Z",
+    "version": "2.1.0",
+    "context": {
+      "cooperative": "Highland Green Tea Outgrowers Society",
+      "activeFarmers": 1420,
+      "paymentRail": "Safaricom Daraja B2C API (Payment Request & Result IPN)",
+      "accountingSystem": "PostgreSQL Ledger with Double-Entry Transaction Tables"
+    },
+    "incidentSummary": "A network timeout between the cooperative gateway and Safaricom Daraja during afternoon weighbridge batch settlement caused 42 farmer transactions to be resent without idempotency headers, resulting in double payout risk flagged by automated ledger audit.",
+    "sanitizedTelemetry": [
+      {
+        "batchId": "BATCH-20260929-A",
+        "farmerId": "FARM-4081",
+        "amountKes": 8450,
+        "phone": "+254712***891",
+        "req1Timestamp": "14:10:02",
+        "res1": "TIMEOUT_504",
+        "req2Timestamp": "14:12:15",
+        "res2": "SUCCESS_RQE012",
+        "mpesaReceipt": "SJD7192KA1",
+        "status": "UNRECONCILED_SUSPECTED_DUPLICATE"
+      },
+      {
+        "batchId": "BATCH-20260929-A",
+        "farmerId": "FARM-4082",
+        "amountKes": 6200,
+        "phone": "+254722***310",
+        "req1Timestamp": "14:10:02",
+        "res1": "TIMEOUT_504",
+        "req2Timestamp": "14:12:16",
+        "res2": "SUCCESS_RQE013",
+        "mpesaReceipt": "SJD7192KA2",
+        "status": "UNRECONCILED_SUSPECTED_DUPLICATE"
+      }
+    ],
+    "rootCauseAnalysis": "Client-side retry logic generated a new UUID transaction reference on retry instead of reusing the initial `OriginatorConversationID`, preventing Daraja gateway from executing automatic deduplication.",
+    "educationalApplication": {
+      "pathwaySlug": "business-operations",
+      "courseSlug": "spreadsheet-and-operational-data",
+      "exercisePrompt": "Given the Daraja transaction log and bank settlement file, write an SQL query and prompt a reconciliation agent to identify identical payouts occurring within 15 minutes of the same phone number.",
+      "evaluationRubric": [
+        "Matches farmer phone and exact amount within a 15-minute sliding window.",
+        "Highlights the missing idempotency key as the structural design flaw.",
+        "Requires human accountant sign-off before executing reversal requests."
+      ]
+    }
+  },
+  {
+    "id": "cs-naivasha-water-compliance",
+    "slug": "naivasha-aquifer-compliance-monitoring",
+    "title": "Naivasha Basin: Aquifer Abstraction Permits & Salinity Compliance Monitoring",
+    "sourceSystem": "Rauell AI-OS Environmental & IoT Subsystem",
+    "sector": "Water & Agriculture",
+    "location": "Naivasha Sub-County, Nakuru, Kenya",
+    "lastSyncedAt": "2026-10-02T17:26:04.859Z",
+    "version": "1.2.0",
+    "context": {
+      "facility": "Lakeview Horticultural Outgrowers Scheme",
+      "boreholePermits": [
+        "WARMA/B/2024/0912",
+        "WARMA/B/2024/0913"
+      ],
+      "dailyLimitM3": 450,
+      "sensors": [
+        "Electromagnetic Flow Meter (Modbus RS485)",
+        "Toroidal Salinity Sensor (EC)"
+      ]
+    },
+    "incidentSummary": "Seasonal drop in regional water table triggered automated variable-speed booster pumps to draw brackish basement water, driving electrical conductivity past the 1,200 µS/cm irrigation limit while daily abstracted volume approached statutory permit cap.",
+    "sanitizedTelemetry": [
+      {
+        "hour": "06:00 - 10:00",
+        "boreholeId": "BH-01",
+        "volumeM3": 142.5,
+        "salinityMicroSiemens": 820,
+        "waterTableDepthM": 84.2,
+        "alert": "NONE"
+      },
+      {
+        "hour": "10:00 - 14:00",
+        "boreholeId": "BH-01",
+        "volumeM3": 188,
+        "salinityMicroSiemens": 1140,
+        "waterTableDepthM": 92.6,
+        "alert": "WARN_SALINITY_RISING"
+      },
+      {
+        "hour": "14:00 - 18:00",
+        "boreholeId": "BH-01",
+        "volumeM3": 112,
+        "salinityMicroSiemens": 1380,
+        "waterTableDepthM": 98.1,
+        "alert": "EXCEEDED_EC_THRESHOLD"
+      }
+    ],
+    "rootCauseAnalysis": "Deep drawdown during dry spell pulled high-mineral geothermal groundwater from lower volcanic strata. Automated irrigation agent continued pumping because total daily volume had not yet breached the 450 m3 WARMA permit limit.",
+    "educationalApplication": {
+      "pathwaySlug": "energy-agriculture-water",
+      "courseSlug": "ai-for-agriculture-water",
+      "exercisePrompt": "Draft a multi-variable operational rule that halts extraction when electrical conductivity crosses 1,150 µS/cm regardless of remaining water volume permit quota, and generate an incident log for the farm manager.",
+      "evaluationRubric": [
+        "Prioritizes crop soil salinity protection over maximum permitted water withdrawal.",
+        "Formulates a composite decision rule: IF EC > 1,150 OR Volume > 430 THEN Halt Extraction.",
+        "Cites WARMA compliance guidelines and soil salinity threshold tables."
+      ]
+    }
+  }
+]

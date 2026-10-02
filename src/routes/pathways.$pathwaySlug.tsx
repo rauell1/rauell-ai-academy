@@ -258,19 +258,29 @@ function PathwayDetail() {
                 {canonical.capstoneDescription}
               </p>
 
-              <div className="mt-8 border-t border-leaf/20 pt-6">
-                <h3 className="font-display text-sm font-bold uppercase tracking-wider text-ink/70">
-                  Evaluation Rubric & Grading Criteria (70% Pass Standard)
-                </h3>
-                <ul className="mt-4 grid gap-3 sm:grid-cols-2">
-                  {canonical.capstoneRubric.map((item, idx) => (
-                    <li key={idx} className="flex items-start gap-2.5 text-sm text-ink/80">
-                      <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-leaf" />
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
+              <div className="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-leaf/20 pt-6">
+                <div>
+                  <h3 className="font-display text-sm font-bold uppercase tracking-wider text-ink/70">
+                    Evaluation Rubric & Grading Criteria (70% Pass Standard)
+                  </h3>
+                </div>
+                <Link
+                  to="/projects/$projectId"
+                  params={{ projectId: canonical.slug }}
+                  className="inline-flex items-center gap-2 rounded-full bg-leaf px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-leaf/90"
+                >
+                  Open Capstone Workshop
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
               </div>
+              <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+                {canonical.capstoneRubric.map((item, idx) => (
+                  <li key={idx} className="flex items-start gap-2.5 text-sm text-ink/80">
+                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-leaf" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
 
             {/* Learner Profile & Exit Skills */}

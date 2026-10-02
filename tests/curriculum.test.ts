@@ -210,4 +210,76 @@ describe("Canonical Curriculum Specifications", () => {
       }
     }
   });
+
+  it("verifies Pathway B contains expanded lessons across B2, B3, and B4", () => {
+    const b2 = getCourseBySlug("prompt-patterns-and-structured-results");
+    const b3 = getCourseBySlug("prompt-evaluation-and-improvement");
+    const b4 = getCourseBySlug("specifications-for-ai-assisted-building");
+
+    expect(b2).toBeDefined();
+    expect(b3).toBeDefined();
+    expect(b4).toBeDefined();
+
+    const countLessons = (course: ReturnType<typeof getCourseBySlug>) =>
+      (course?.modules ?? []).reduce((acc, m) => acc + m.lessons.length, 0);
+
+    expect(countLessons(b2)).toBe(4);
+    expect(countLessons(b3)).toBe(4);
+    expect(countLessons(b4)).toBe(4);
+
+    for (const course of [b2, b3, b4]) {
+      for (const mod of course!.modules) {
+        for (const lesson of mod.lessons) {
+          expect(lesson.title.length).toBeGreaterThan(5);
+          expect(lesson.summary.length).toBeGreaterThan(10);
+          expect(lesson.blocks.length).toBeGreaterThanOrEqual(6);
+          const hasQuiz = lesson.blocks.some((b) => b.type === "knowledge_check");
+          const hasTakeaway = lesson.blocks.some((b) => b.type === "key_takeaway");
+          expect(hasQuiz, `Lesson ${lesson.title} missing quiz`).toBe(true);
+          expect(hasTakeaway, `Lesson ${lesson.title} missing takeaway`).toBe(true);
+        }
+      }
+    }
+  });
+
+  it("verifies Pathway D contains 16 expanded lessons across courses D1 through D4", () => {
+    const d1 = getCourseBySlug("mapping-work-and-automation");
+    const d2 = getCourseBySlug("research-writing-document-workflows");
+    const d3 = getCourseBySlug("spreadsheet-and-operational-data");
+    const d4 = getCourseBySlug("leads-reporting-decision-support");
+
+    expect(d1).toBeDefined();
+    expect(d2).toBeDefined();
+    expect(d3).toBeDefined();
+    expect(d4).toBeDefined();
+
+    const countLessons = (course: ReturnType<typeof getCourseBySlug>) =>
+      (course?.modules ?? []).reduce((acc, m) => acc + m.lessons.length, 0);
+
+    expect(countLessons(d1)).toBe(4);
+    expect(countLessons(d2)).toBe(4);
+    expect(countLessons(d3)).toBe(4);
+    expect(countLessons(d4)).toBe(4);
+
+    const totalPathwayDLessons = [d1, d2, d3, d4].reduce(
+      (acc, d) => acc + countLessons(d),
+      0,
+    );
+    expect(totalPathwayDLessons).toBe(16);
+
+    for (const course of [d1, d2, d3, d4]) {
+      for (const mod of course!.modules) {
+        for (const lesson of mod.lessons) {
+          expect(lesson.title.length).toBeGreaterThan(5);
+          expect(lesson.summary.length).toBeGreaterThan(10);
+          expect(lesson.blocks.length).toBeGreaterThanOrEqual(6);
+          const hasQuiz = lesson.blocks.some((b) => b.type === "knowledge_check");
+          const hasTakeaway = lesson.blocks.some((b) => b.type === "key_takeaway");
+          expect(hasQuiz, `Lesson ${lesson.title} missing quiz`).toBe(true);
+          expect(hasTakeaway, `Lesson ${lesson.title} missing takeaway`).toBe(true);
+        }
+      }
+    }
+  });
 });
+
