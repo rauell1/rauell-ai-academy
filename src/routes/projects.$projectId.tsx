@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { apiRequest } from "@/lib/api";
 import { canonicalPathways, getPathwayBySlug } from "@/data/canonical-curriculum";
+import { FormattedMessage } from "@/components/FormattedMessage";
 
 export const Route = createFileRoute("/projects/$projectId")({
   component: ProjectSubmissionWorkshop,
@@ -528,9 +529,10 @@ function ProjectSubmissionWorkshop() {
                         : "Academy Evaluator"}
                     </span>
                   </div>
-                  <div className="mt-2 text-xs leading-relaxed text-ink/80 whitespace-pre-wrap font-mono">
-                    {aiEvaluationResult.output}
-                  </div>
+                  <FormattedMessage
+                    content={aiEvaluationResult.output}
+                    className="mt-2 text-xs leading-relaxed text-ink/80"
+                  />
                 </div>
               )}
             </div>

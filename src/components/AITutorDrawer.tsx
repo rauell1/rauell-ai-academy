@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Bot, Send, X, Sparkles, RefreshCw, ChevronRight } from "lucide-react";
 import { apiRequest } from "@/lib/api";
+import { FormattedMessage } from "./FormattedMessage";
 
 interface Message {
   role: "user" | "assistant";
@@ -185,13 +186,7 @@ export function AITutorDrawer({
                         : "bg-zinc-100 text-zinc-800 rounded-bl-xs border border-zinc-200/60"
                     }`}
                   >
-                    <div className="prose prose-sm max-w-none dark:prose-invert">
-                      {m.content.split("\n\n").map((para, pIdx) => (
-                        <p key={pIdx} className="mb-2 last:mb-0">
-                          {para}
-                        </p>
-                      ))}
-                    </div>
+                    <FormattedMessage content={m.content} isUser={m.role === "user"} />
                   </div>
 
                   {m.role === "assistant" && (m.model || m.latencyMs) && (
