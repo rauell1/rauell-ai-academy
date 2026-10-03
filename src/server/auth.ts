@@ -6,7 +6,6 @@ import { getServerEnv } from "./env";
 import {
   accounts,
   profiles,
-  rateLimits,
   roles,
   sessions,
   userRoles,
@@ -22,14 +21,20 @@ export const auth = betterAuth({
   baseURL: env.APP_ORIGIN,
   basePath: "/api/auth",
   secret: env.BETTER_AUTH_SECRET,
-  trustedOrigins: Array.from(
-    new Set([
+  trustedOrigins: (request) => {
+    const origin = request?.headers?.get("origin");
+    const defaults = [
       env.APP_ORIGIN,
       "https://learn.rauell.systems",
+      "https://rauell.systems",
       "http://localhost:5173",
       "http://localhost:3000",
-    ]),
-  ),
+    ];
+    if (origin && (origin.endsWith(".vercel.app") || origin.endsWith(".rauell.systems"))) {
+      return [...defaults, origin];
+    }
+    return defaults;
+  },
   database: drizzleAdapter(db, {
     provider: "pg",
     schema: {
@@ -37,7 +42,6 @@ export const auth = betterAuth({
       session: sessions,
       account: accounts,
       verification: verifications,
-      rateLimit: rateLimits,
     },
   }),
   advanced: {
@@ -48,8 +52,11 @@ export const auth = betterAuth({
       sameSite: "lax",
       secure: env.NODE_ENV === "production",
     },
+    ipAddress: {
+      ipAddressHeaders: ["x-forwarded-for", "x-real-ip"],
+    },
   },
-  rateLimit: { enabled: true, window: 60, max: 15, storage: "database" },
+  rateLimit: { enabled: true, window: 60, max: 60, storage: "memory" },
   session: {
     expiresIn: 60 * 60 * 24 * 7,
     updateAge: 60 * 60 * 24,

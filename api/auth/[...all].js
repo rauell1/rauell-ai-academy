@@ -5,7 +5,8 @@ var __export = (target, all) => {
 };
 
 // src/server/routes/api-auth.ts
-import { toNodeHandler } from "better-auth/node";
+import { getRequestListener } from "@hono/node-server";
+import { Hono } from "hono";
 
 // src/server/auth.ts
 import { betterAuth } from "better-auth";
@@ -883,22 +884,27 @@ var auth = betterAuth({
   baseURL: env.APP_ORIGIN,
   basePath: "/api/auth",
   secret: env.BETTER_AUTH_SECRET,
-  trustedOrigins: Array.from(
-    /* @__PURE__ */ new Set([
+  trustedOrigins: (request) => {
+    const origin = request?.headers?.get("origin");
+    const defaults = [
       env.APP_ORIGIN,
       "https://learn.rauell.systems",
+      "https://rauell.systems",
       "http://localhost:5173",
       "http://localhost:3000"
-    ])
-  ),
+    ];
+    if (origin && (origin.endsWith(".vercel.app") || origin.endsWith(".rauell.systems"))) {
+      return [...defaults, origin];
+    }
+    return defaults;
+  },
   database: drizzleAdapter(db, {
     provider: "pg",
     schema: {
       user: users,
       session: sessions,
       account: accounts,
-      verification: verifications,
-      rateLimit: rateLimits
+      verification: verifications
     }
   }),
   advanced: {
@@ -908,9 +914,12 @@ var auth = betterAuth({
       httpOnly: true,
       sameSite: "lax",
       secure: env.NODE_ENV === "production"
+    },
+    ipAddress: {
+      ipAddressHeaders: ["x-forwarded-for", "x-real-ip"]
     }
   },
-  rateLimit: { enabled: true, window: 60, max: 15, storage: "database" },
+  rateLimit: { enabled: true, window: 60, max: 60, storage: "memory" },
   session: {
     expiresIn: 60 * 60 * 24 * 7,
     updateAge: 60 * 60 * 24,
@@ -1000,13 +1009,20 @@ If you did not request this, you can ignore this message.`,
 var config = {
   runtime: "nodejs"
 };
-var nodeHandler = toNodeHandler(auth);
+var app = new Hono();
+app.all("*", (c) => {
+  return auth.handler(c.req.raw);
+});
+var listener = getRequestListener(app.fetch);
 async function handler(req, res) {
   try {
     if (!res || typeof req.json === "function" && !req.headers?.host) {
       return await auth.handler(req);
     }
-    return await nodeHandler(req, res);
+    if (req.url && req.url.includes("[...all]") && req.headers?.["x-matched-path"]) {
+      req.url = req.headers["x-matched-path"];
+    }
+    return await listener(req, res);
   } catch (error) {
     console.error("Auth API Handler Exception:", error);
     if (res && typeof res.status === "function") {

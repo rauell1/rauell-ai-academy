@@ -1,18 +1,28 @@
-import { toNodeHandler } from "better-auth/node";
+import { getRequestListener } from "@hono/node-server";
+import { Hono } from "hono";
 import { auth } from "../auth";
 
 export const config = {
   runtime: "nodejs",
 };
 
-const nodeHandler = toNodeHandler(auth);
+const app = new Hono();
+
+app.all("*", (c) => {
+  return auth.handler(c.req.raw);
+});
+
+const listener = getRequestListener(app.fetch);
 
 export default async function handler(req: any, res?: any) {
   try {
     if (!res || (typeof req.json === "function" && !req.headers?.host)) {
       return await auth.handler(req);
     }
-    return await nodeHandler(req, res);
+    if (req.url && req.url.includes("[...all]") && req.headers?.["x-matched-path"]) {
+      req.url = req.headers["x-matched-path"];
+    }
+    return await listener(req, res);
   } catch (error) {
     console.error("Auth API Handler Exception:", error);
     if (res && typeof res.status === "function") {
