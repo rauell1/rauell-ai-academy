@@ -509,7 +509,7 @@ function ProjectSubmissionWorkshop() {
                   className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-ink px-4 py-2.5 text-xs font-bold text-white transition hover:bg-leaf disabled:opacity-50"
                 >
                   <Sparkles className="h-3.5 w-3.5 text-mint" />
-                  {isEvaluatingRubric ? "Analyzing with Llama 3.3..." : "Evaluate Draft with AI Rubric"}
+                  {isEvaluatingRubric ? "Analyzing with Llama 3.2 90B..." : "Evaluate Draft with AI Rubric"}
                 </button>
               </div>
 
@@ -521,7 +521,11 @@ function ProjectSubmissionWorkshop() {
                       AI Rubric Feedback
                     </span>
                     <span className="text-[10px] text-ink/50">
-                      {aiEvaluationResult.model?.includes("llama") ? "Llama 3.3 70B" : "Academy Evaluator"}
+                      {aiEvaluationResult.model?.includes("90b")
+                        ? "Llama 3.2 (90B Free Endpoint)"
+                        : aiEvaluationResult.model?.includes("llama")
+                        ? "Llama 3.2"
+                        : "Academy Evaluator"}
                     </span>
                   </div>
                   <div className="mt-2 text-xs leading-relaxed text-ink/80 whitespace-pre-wrap font-mono">

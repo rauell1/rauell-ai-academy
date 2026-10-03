@@ -48,7 +48,7 @@ aiApi.get("/ai/status", (c) => {
   return c.json({
     available: hasNvidia || hasNeonGateway,
     provider: hasNvidia ? "nvidia" : hasNeonGateway ? "neon_gateway" : "local_heuristic",
-    model: env.NVIDIA_MODEL || "meta/llama-3.3-70b-instruct",
+    model: env.NVIDIA_MODEL || "meta/llama-3.2-90b-vision-instruct",
     endpoint: hasNvidia ? env.NVIDIA_BASE_URL : env.NEON_AI_GATEWAY_BASE_URL || null,
   });
 });
@@ -124,7 +124,7 @@ aiApi.post("/ai/chat", zValidator("json", chatSchema), async (c) => {
   // Try NVIDIA NIM
   if (env.NVIDIA_API_KEY && env.NVIDIA_API_KEY.trim().length > 5) {
     try {
-      const model = input.model || env.NVIDIA_MODEL || "meta/llama-3.3-70b-instruct";
+      const model = input.model || env.NVIDIA_MODEL || "meta/llama-3.2-90b-vision-instruct";
       const reply = await callOpenAiCompatible({
         url: env.NVIDIA_BASE_URL,
         apiKey: env.NVIDIA_API_KEY,
@@ -202,7 +202,7 @@ aiApi.post("/ai/evaluate", zValidator("json", evaluateSchema), async (c) => {
   // Try NVIDIA NIM
   if (env.NVIDIA_API_KEY && env.NVIDIA_API_KEY.trim().length > 5) {
     try {
-      const model = input.model || env.NVIDIA_MODEL || "meta/llama-3.3-70b-instruct";
+      const model = input.model || env.NVIDIA_MODEL || "meta/llama-3.2-90b-vision-instruct";
       const response = await callOpenAiCompatible({
         url: env.NVIDIA_BASE_URL,
         apiKey: env.NVIDIA_API_KEY,

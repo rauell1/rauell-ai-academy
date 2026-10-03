@@ -29,7 +29,7 @@ export function AITutorDrawer({
     {
       role: "assistant",
       content: `Hello! I am your **Academy AI Mentor**. I am here to help you unpack concepts, review code, or explore practical examples for **${lessonTitle || "this lesson"}**.\n\nWhat would you like to explore?`,
-      model: "meta/llama-3.3-70b-instruct",
+      model: "meta/llama-3.2-90b-vision-instruct",
     },
   ]);
   const [input, setInput] = useState("");
@@ -196,7 +196,15 @@ export function AITutorDrawer({
 
                   {m.role === "assistant" && (m.model || m.latencyMs) && (
                     <div className="mt-1 flex items-center gap-2 px-1 text-[10px] text-zinc-400">
-                      <span>{m.model?.includes("llama") ? "Llama 3.3 (70B)" : m.model || "Academy Mentor"}</span>
+                      <span>
+                        {m.model?.includes("90b")
+                          ? "Llama 3.2 (90B Free Endpoint)"
+                          : m.model?.includes("11b")
+                          ? "Llama 3.2 (11B Free Endpoint)"
+                          : m.model?.includes("llama")
+                          ? "Llama 3.2"
+                          : m.model || "Academy Mentor"}
+                      </span>
                       {m.latencyMs && <span>• {(m.latencyMs / 1000).toFixed(2)}s</span>}
                       {m.isFallback && <span className="text-amber-600 font-medium">• Offline Mode</span>}
                     </div>
@@ -207,7 +215,7 @@ export function AITutorDrawer({
               {busy && (
                 <div className="flex items-center gap-2 text-xs text-zinc-400 py-2">
                   <RefreshCw className="h-3.5 w-3.5 animate-spin text-emerald-600" />
-                  <span>Thinking with Llama 3.3 70B...</span>
+                  <span>Thinking with Llama 3.2 90B...</span>
                 </div>
               )}
 

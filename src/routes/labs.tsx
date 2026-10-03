@@ -784,7 +784,7 @@ function Labs() {
                       }`}
                     >
                       <Sparkles className="h-3 w-3" />
-                      Live NVIDIA AI (Llama 3.3 70B)
+                      Live NVIDIA AI (Llama 3.2 90B Free Endpoint)
                     </button>
                     <button
                       onClick={() => setEvalMode("heuristic")}
@@ -802,7 +802,15 @@ function Labs() {
                 {evalMeta && (
                   <div className="inline-flex items-center gap-2 rounded-full bg-paper px-3 py-1 text-[11px] font-medium text-ink/80 border border-ink/10">
                     <span className="flex h-2 w-2 rounded-full bg-leaf"></span>
-                    <span>{evalMeta.model?.includes("llama") ? "Llama 3.3 (70B)" : evalMeta.model}</span>
+                    <span>
+                      {evalMeta.model?.includes("90b")
+                        ? "Llama 3.2 (90B Free Endpoint)"
+                        : evalMeta.model?.includes("11b")
+                        ? "Llama 3.2 (11B Free Endpoint)"
+                        : evalMeta.model?.includes("llama")
+                        ? "Llama 3.2"
+                        : evalMeta.model}
+                    </span>
                     {evalMeta.latencyMs && <span>• {(evalMeta.latencyMs / 1000).toFixed(2)}s</span>}
                     {evalMeta.isFallback && <span className="text-amber-700 font-semibold">• Offline Mode</span>}
                   </div>
@@ -848,7 +856,7 @@ function Labs() {
                       {isEvaluating ? (
                         <>
                           <RefreshCw className="h-4 w-4 animate-spin text-mint" />
-                          Running Evaluation...
+                          Evaluating with Llama 3.2 90B...
                         </>
                       ) : (
                         <>
