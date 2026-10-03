@@ -32,8 +32,8 @@ import { drizzle } from "drizzle-orm/neon-http";
 
 // src/server/env.ts
 import { z } from "zod";
-var DEFAULT_DATABASE_URL = "postgresql://neondb_owner:npg_Lsw0XAHbth9u@ep-polished-surf-aynkf6hb-pooler.c-5.us-east-2.aws.neon.tech/neondb?channel_binding=require&sslmode=require";
-var DEFAULT_BETTER_AUTH_SECRET = "b8f3a925d48440af6e10f59e47e9fe3d9e3be115dfe03042fc19b1467a3e1ded";
+var DEFAULT_DATABASE_URL = "postgresql://postgres:postgres@localhost:5432/rauell_academy";
+var DEFAULT_BETTER_AUTH_SECRET = "placeholder-auth-secret-replace-with-real-env-var-in-production";
 var serverEnvSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
   VERCEL_ENV: z.enum(["development", "preview", "production"]).optional(),

@@ -1,9 +1,9 @@
 import { z } from "zod";
 
 const DEFAULT_DATABASE_URL =
-  "postgresql://neondb_owner:npg_Lsw0XAHbth9u@ep-polished-surf-aynkf6hb-pooler.c-5.us-east-2.aws.neon.tech/neondb?channel_binding=require&sslmode=require";
+  "postgresql://postgres:postgres@localhost:5432/rauell_academy";
 const DEFAULT_BETTER_AUTH_SECRET =
-  "b8f3a925d48440af6e10f59e47e9fe3d9e3be115dfe03042fc19b1467a3e1ded";
+  "placeholder-auth-secret-replace-with-real-env-var-in-production";
 
 const serverEnvSchema = z.object({
   NODE_ENV: z
