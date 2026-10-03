@@ -18,7 +18,8 @@
     "db:bootstrap:super-admin": "tsx src/server/bootstrap-super-admin.ts",
     "db:seed:course:ai": "tsx src/server/seed-course-ai-automation.ts",
     "db:upload:videos": "tsx --env-file .env.local src/server/upload-videos-to-blob.ts",
-    "db:migrate:video-urls": "tsx --env-file .env.local src/server/migrate-video-urls.ts"
+    "db:migrate:video-urls": "tsx --env-file .env.local src/server/migrate-video-urls.ts",
+    "db:enable:rls": "tsx scripts/enable-rls.ts"
   },
   "dependencies": {
     "@hono/node-server": "^2.1.1",

@@ -2,10 +2,41 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { apiRequest, type ApiCourse, useApi } from "@/lib/api";
 import { fieldClass, FormStatus } from "@/components/AuthCard";
-export const Route = createFileRoute("/admin/")({ component: Admin });
+import { RequireAuth } from "@/components/RequireAuth";
+import { useRbac } from "@/lib/use-rbac";
+
+export const Route = createFileRoute("/admin/")({
+  component: () => (
+    <RequireAuth>
+      <Admin />
+    </RequireAuth>
+  ),
+});
+
 function Admin() {
+  const { data: rbac } = useRbac();
   const query = useApi<ApiCourse[]>("/admin/courses");
   const [state, setState] = useState({ busy: false, error: "", success: "" });
+
+  if (rbac && !rbac.isAdmin) {
+    return (
+      <section className="mx-auto max-w-2xl px-5 py-24 text-center">
+        <p className="eyebrow text-red-600">Access Restricted</p>
+        <h1 className="font-display mt-3 text-3xl font-bold">Administrator Access Required</h1>
+        <p className="mt-4 text-sm leading-6 text-ink/70">
+          Your account is verified with the{" "}
+          <strong>{rbac.roles.map((r) => r.name).join(", ") || "Learner"}</strong> role, which
+          does not have course administration permissions.
+        </p>
+        <Link
+          to="/my-learning"
+          className="mt-8 inline-block rounded-full bg-ink px-6 py-3 text-sm font-bold text-white hover:bg-ink/90 transition"
+        >
+          Return to My Learning
+        </Link>
+      </section>
+    );
+  }
   async function create(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setState({ busy: true, error: "", success: "" });

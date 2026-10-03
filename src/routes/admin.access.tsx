@@ -1,5 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { apiRequest, useApi } from "@/lib/api";
+import { RequireAuth } from "@/components/RequireAuth";
+import { useRbac } from "@/lib/use-rbac";
+
 type Access = {
   users: Array<{
     id: string;
@@ -10,11 +13,37 @@ type Access = {
   }>;
   roles: Array<{ id: string; key: string; name: string }>;
 };
+
 export const Route = createFileRoute("/admin/access")({
-  component: AccessAdmin,
+  component: () => (
+    <RequireAuth>
+      <AccessAdmin />
+    </RequireAuth>
+  ),
 });
+
 function AccessAdmin() {
+  const { data: rbac } = useRbac();
   const query = useApi<Access>("/admin/access");
+
+  if (rbac && !rbac.isSuperAdmin) {
+    return (
+      <section className="mx-auto max-w-2xl px-5 py-24 text-center">
+        <p className="eyebrow text-red-600">Access Restricted</p>
+        <h1 className="font-display mt-3 text-3xl font-bold">Super Administrator Required</h1>
+        <p className="mt-4 text-sm leading-6 text-ink/70">
+          User access control and role governance can only be accessed by Super Administrators.
+        </p>
+        <Link
+          to="/account"
+          className="mt-8 inline-block rounded-full bg-ink px-6 py-3 text-sm font-bold text-white hover:bg-ink/90 transition"
+        >
+          View Account Settings
+        </Link>
+      </section>
+    );
+  }
+
   async function assign(userId: string, roleId: string) {
     if (!roleId) return;
     await apiRequest(`/admin/users/${userId}/roles/${roleId}`, {

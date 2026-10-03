@@ -19,7 +19,11 @@ import {
   modules,
   pathways,
   pathwayCourses,
+  permissions,
   progressImports,
+  roles,
+  rolePermissions,
+  userRoles,
   users,
 } from "../schema";
 
@@ -516,5 +520,72 @@ learningApi.get("/dashboard", async (c) => {
     recommendedAction: enrolled.length
       ? "Continue your most recently active course."
       : "Choose your first course and enrol.",
+  });
+});
+
+learningApi.get("/auth/me", async (c) => {
+  const session = await sessionFor(c.req.raw.headers);
+  if (!session) return c.json({ error: "Authentication required." }, 401);
+  const db = getDb();
+
+  let userRoleRows = await db
+    .select({
+      id: roles.id,
+      key: roles.key,
+      name: roles.name,
+    })
+    .from(userRoles)
+    .innerJoin(roles, eq(userRoles.roleId, roles.id))
+    .where(eq(userRoles.userId, session.user.id));
+
+  // Self-heal: ensure every active user has at least the learner role
+  if (userRoleRows.length === 0) {
+    const [learnerRole] = await db
+      .select({ id: roles.id, key: roles.key, name: roles.name })
+      .from(roles)
+      .where(eq(roles.key, "learner"))
+      .limit(1);
+
+    if (learnerRole) {
+      await db
+        .insert(userRoles)
+        .values({
+          userId: session.user.id,
+          roleId: learnerRole.id,
+        })
+        .onConflictDoNothing();
+      userRoleRows = [learnerRole];
+    }
+  }
+
+  const permissionRows = await db
+    .select({ key: permissions.key })
+    .from(userRoles)
+    .innerJoin(roles, eq(userRoles.roleId, roles.id))
+    .innerJoin(rolePermissions, eq(roles.id, rolePermissions.roleId))
+    .innerJoin(permissions, eq(rolePermissions.permissionId, permissions.id))
+    .where(eq(userRoles.userId, session.user.id));
+
+  const roleKeys = userRoleRows.map((r) => r.key);
+  const isSuperAdmin = roleKeys.includes("super_administrator");
+  const isAdmin = isSuperAdmin || roleKeys.includes("administrator");
+  const isInstructor = isAdmin || roleKeys.includes("instructor");
+  const isEditor = isAdmin || roleKeys.includes("content_editor");
+  const isLearner = roleKeys.includes("learner") || true;
+
+  return c.json({
+    user: {
+      id: session.user.id,
+      name: session.user.name,
+      email: session.user.email,
+      emailVerified: session.user.emailVerified,
+    },
+    roles: userRoleRows,
+    permissions: Array.from(new Set(permissionRows.map((p) => p.key))),
+    isSuperAdmin,
+    isAdmin,
+    isInstructor,
+    isEditor,
+    isLearner,
   });
 });

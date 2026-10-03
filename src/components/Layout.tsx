@@ -2,6 +2,7 @@ import { Link, useLocation } from "@tanstack/react-router";
 import { ArrowUpRight, BookOpen, Menu, X } from "lucide-react";
 import { Component, type ReactNode, useEffect, useState } from "react";
 import { authClient } from "@/lib/auth-client";
+import { useRbac } from "@/lib/use-rbac";
 import { CommandPalette } from "./CommandPalette";
 
 class ErrorBoundary extends Component<
@@ -49,6 +50,7 @@ export function Header() {
   const [open, setOpen] = useState(false);
   const location = useLocation();
   const { data: session, isPending } = authClient.useSession();
+  const { data: rbac } = useRbac();
   useEffect(() => setOpen(false), [location.pathname]);
   return (
     <header className="sticky top-0 z-50 border-b border-ink/10 bg-cream/90 backdrop-blur-xl">
@@ -107,12 +109,37 @@ export function Header() {
           </a>
           {!isPending &&
             (session ? (
-              <Link
-                to="/my-learning"
-                className="rounded-full bg-mint px-5 py-2.5 text-sm font-extrabold text-ink transition hover:brightness-95"
-              >
-                My learning
-              </Link>
+              <div className="flex items-center gap-2">
+                {rbac?.isAdmin && (
+                  <Link
+                    to="/admin"
+                    className="rounded-full border border-ink/20 px-3.5 py-1.5 text-xs font-bold text-ink hover:bg-white transition"
+                  >
+                    Admin
+                  </Link>
+                )}
+                {rbac?.isInstructor && !rbac?.isAdmin && (
+                  <Link
+                    to="/instructor"
+                    className="rounded-full border border-ink/20 px-3.5 py-1.5 text-xs font-bold text-ink hover:bg-white transition"
+                  >
+                    Instructor
+                  </Link>
+                )}
+                <Link
+                  to="/my-learning"
+                  className="rounded-full bg-mint px-4 py-2 text-xs font-extrabold text-ink transition hover:brightness-95"
+                >
+                  My learning
+                </Link>
+                <Link
+                  to="/account"
+                  className="rounded-full border border-ink/20 bg-white/70 px-3.5 py-2 text-xs font-bold text-ink transition hover:bg-white"
+                  title="Your account"
+                >
+                  Account
+                </Link>
+              </div>
             ) : (
               <Link
                 to="/sign-in"
@@ -141,12 +168,53 @@ export function Header() {
               {label}
             </Link>
           ))}
-          <Link
-            to={session ? "/my-learning" : "/sign-in"}
-            className="mt-4 block rounded-full bg-mint px-5 py-3 text-center font-bold"
-          >
-            {session ? "My learning" : "Sign in"}
-          </Link>
+          {session ? (
+            <div className="mt-4 space-y-2">
+              {rbac?.isAdmin && (
+                <Link
+                  to="/admin"
+                  className="block rounded-full border border-ink/20 bg-white px-5 py-2.5 text-center font-bold text-ink"
+                >
+                  Course Administration
+                </Link>
+              )}
+              {rbac?.isSuperAdmin && (
+                <Link
+                  to="/admin/access"
+                  className="block rounded-full border border-ink/20 bg-white px-5 py-2.5 text-center font-bold text-ink"
+                >
+                  Access Management
+                </Link>
+              )}
+              {rbac?.isInstructor && (
+                <Link
+                  to="/instructor"
+                  className="block rounded-full border border-ink/20 bg-white px-5 py-2.5 text-center font-bold text-ink"
+                >
+                  Instructor Workspace
+                </Link>
+              )}
+              <Link
+                to="/my-learning"
+                className="block rounded-full bg-mint px-5 py-3 text-center font-bold"
+              >
+                My learning
+              </Link>
+              <Link
+                to="/account"
+                className="block rounded-full border border-ink/15 bg-white px-5 py-3 text-center font-bold"
+              >
+                Account settings
+              </Link>
+            </div>
+          ) : (
+            <Link
+              to="/sign-in"
+              className="mt-4 block rounded-full bg-mint px-5 py-3 text-center font-bold"
+            >
+              Sign in
+            </Link>
+          )}
         </nav>
       )}
     </header>

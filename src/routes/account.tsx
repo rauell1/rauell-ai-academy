@@ -2,9 +2,13 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { apiRequest } from "@/lib/api";
+import { useRbac } from "@/lib/use-rbac";
+
 export const Route = createFileRoute("/account")({ component: Account });
+
 function Account() {
   const { data: session, isPending } = authClient.useSession();
+  const { data: rbac } = useRbac();
   const nav = useNavigate();
   const [busy, setBusy] = useState(false);
   const [accountMessage, setAccountMessage] = useState("");
@@ -63,6 +67,85 @@ function Account() {
         >
           {busy ? "Signing out..." : "Sign out"}
         </button>
+      </div>
+      <div className="card mt-6 p-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <p className="eyebrow text-leaf">Access & Security</p>
+            <h2 className="font-display mt-1 text-2xl font-bold">Role & Permissions</h2>
+          </div>
+          {rbac && (
+            <div className="flex flex-wrap gap-2">
+              {rbac.roles.map((r) => (
+                <span
+                  key={r.id}
+                  className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wider ${
+                    r.key === "super_administrator"
+                      ? "bg-purple-100 text-purple-900 border border-purple-200"
+                      : r.key === "administrator"
+                        ? "bg-blue-100 text-blue-900 border border-blue-200"
+                        : r.key === "instructor"
+                          ? "bg-amber-100 text-amber-900 border border-amber-200"
+                          : r.key === "content_editor"
+                            ? "bg-teal-100 text-teal-900 border border-teal-200"
+                            : "bg-mint/40 text-ink border border-leaf/30"
+                  }`}
+                >
+                  {r.name}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <p className="mt-3 text-sm text-ink/70">
+          Your role grants you verified permissions across Rauell AI Academy modules, practical labs, and governance systems.
+        </p>
+
+        {rbac && rbac.permissions.length > 0 && (
+          <div className="mt-6 border-t border-ink/10 pt-5">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-ink/40">Active Capabilities</h3>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {rbac.permissions.map((perm) => (
+                <span
+                  key={perm}
+                  className="rounded-md bg-cream px-2.5 py-1 font-mono text-[11px] text-ink/80 border border-ink/10"
+                >
+                  {perm}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {rbac && (rbac.isAdmin || rbac.isInstructor) && (
+          <div className="mt-6 flex flex-wrap gap-3 border-t border-ink/10 pt-5">
+            {rbac.isSuperAdmin && (
+              <Link
+                to="/admin/access"
+                className="rounded-full bg-ink px-4 py-2 text-xs font-bold text-white hover:bg-ink/90 transition"
+              >
+                Manage User Access →
+              </Link>
+            )}
+            {rbac.isAdmin && (
+              <Link
+                to="/admin"
+                className="rounded-full border border-ink/20 px-4 py-2 text-xs font-bold hover:bg-white transition"
+              >
+                Course Administration →
+              </Link>
+            )}
+            {rbac.isInstructor && (
+              <Link
+                to="/instructor"
+                className="rounded-full border border-ink/20 px-4 py-2 text-xs font-bold hover:bg-white transition"
+              >
+                Instructor Workspace →
+              </Link>
+            )}
+          </div>
+        )}
       </div>
       <form
         className="mt-6 rounded-2xl border border-ink/10 p-6"

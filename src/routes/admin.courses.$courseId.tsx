@@ -3,6 +3,8 @@ import { useState } from "react";
 import { ChevronDown, ChevronUp, Pencil, Trash2, X } from "lucide-react";
 import { apiRequest, type ApiCourse, type ApiModule, useApi } from "@/lib/api";
 import { fieldClass } from "@/components/AuthCard";
+import { RequireAuth } from "@/components/RequireAuth";
+import { useRbac } from "@/lib/use-rbac";
 
 type AdminBlock = {
   id: string;
@@ -20,13 +22,36 @@ type AdminModule = Omit<ApiModule, "lessons"> & { lessons: AdminLesson[] };
 type AdminCourse = Omit<ApiCourse, "modules"> & { modules: AdminModule[] };
 
 export const Route = createFileRoute("/admin/courses/$courseId")({
-  component: Editor,
+  component: () => (
+    <RequireAuth>
+      <Editor />
+    </RequireAuth>
+  ),
 });
 
 function Editor() {
+  const { rbac } = { rbac: useRbac().data };
   const { courseId } = Route.useParams();
   const query = useApi<AdminCourse>(`/admin/courses/${courseId}`);
   const [message, setMessage] = useState("");
+
+  if (rbac && !rbac.isAdmin) {
+    return (
+      <section className="mx-auto max-w-2xl px-5 py-24 text-center">
+        <p className="eyebrow text-red-600">Access Restricted</p>
+        <h1 className="font-display mt-3 text-3xl font-bold">Administrator Access Required</h1>
+        <p className="mt-4 text-sm leading-6 text-ink/70">
+          Editing course curriculum and module structures requires Administrator privileges.
+        </p>
+        <Link
+          to="/my-learning"
+          className="mt-8 inline-block rounded-full bg-ink px-6 py-3 text-sm font-bold text-white hover:bg-ink/90 transition"
+        >
+          Return to My Learning
+        </Link>
+      </section>
+    );
+  }
 
   async function post(path: string, body: unknown) {
     setMessage("");

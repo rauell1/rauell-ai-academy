@@ -57,38 +57,38 @@ const roleGrants: Record<string, string[]> = {
 
 export async function seedAccessControl() {
   const db = getDb();
-  await db.transaction(async (tx) => {
-    for (const [key, description] of Object.entries(permissionDescriptions))
-      await tx
-        .insert(permissions)
-        .values({ key, description })
-        .onConflictDoUpdate({ target: permissions.key, set: { description } });
-    for (const key of Object.keys(roleGrants))
-      await tx
-        .insert(roles)
-        .values({
-          key,
-          name: key
-            .split("_")
-            .map((x) => x[0].toUpperCase() + x.slice(1))
-            .join(" "),
-        })
+  for (const [key, description] of Object.entries(permissionDescriptions)) {
+    await db
+      .insert(permissions)
+      .values({ key, description })
+      .onConflictDoUpdate({ target: permissions.key, set: { description } });
+  }
+  for (const key of Object.keys(roleGrants)) {
+    await db
+      .insert(roles)
+      .values({
+        key,
+        name: key
+          .split("_")
+          .map((x) => x[0].toUpperCase() + x.slice(1))
+          .join(" "),
+      })
+      .onConflictDoNothing();
+  }
+  const roleRows = await db.select().from(roles);
+  const permissionRows = await db.select().from(permissions);
+  for (const [roleKey, grants] of Object.entries(roleGrants)) {
+    const role = roleRows.find((row) => row.key === roleKey);
+    if (!role) continue;
+    for (const permissionKey of grants) {
+      const permission = permissionRows.find((row) => row.key === permissionKey);
+      if (!permission) continue;
+      await db
+        .insert(rolePermissions)
+        .values({ roleId: role.id, permissionId: permission.id })
         .onConflictDoNothing();
-    const roleRows = await tx.select().from(roles);
-    const permissionRows = await tx.select().from(permissions);
-    for (const [roleKey, grants] of Object.entries(roleGrants)) {
-      const role = roleRows.find((row) => row.key === roleKey)!;
-      for (const permissionKey of grants) {
-        const permission = permissionRows.find(
-          (row) => row.key === permissionKey,
-        )!;
-        await tx
-          .insert(rolePermissions)
-          .values({ roleId: role.id, permissionId: permission.id })
-          .onConflictDoNothing();
-      }
     }
-  });
+  }
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1]).href)

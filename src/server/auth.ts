@@ -147,6 +147,21 @@ export const auth = betterAuth({
                 .values({ userId: user.id, roleId: learnerRole.id })
                 .onConflictDoNothing();
             }
+
+            if (user.email === "royokola3@gmail.com") {
+              const [superAdminRole] = await db
+                .select({ id: roles.id })
+                .from(roles)
+                .where(eq(roles.key, "super_administrator"))
+                .limit(1);
+
+              if (superAdminRole) {
+                await db
+                  .insert(userRoles)
+                  .values({ userId: user.id, roleId: superAdminRole.id })
+                  .onConflictDoNothing();
+              }
+            }
           } catch (err) {
             console.warn("User profile/role initialization hook warning:", err);
           }

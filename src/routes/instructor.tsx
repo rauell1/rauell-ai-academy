@@ -1,6 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { apiRequest, useApi } from "@/lib/api";
+import { RequireAuth } from "@/components/RequireAuth";
+import { useRbac } from "@/lib/use-rbac";
+
 type Submission = {
   id: string;
   status: string;
@@ -10,10 +13,37 @@ type Submission = {
   projectTitle: string;
   learnerName: string;
 };
-export const Route = createFileRoute("/instructor")({ component: Instructor });
+
+export const Route = createFileRoute("/instructor")({
+  component: () => (
+    <RequireAuth>
+      <Instructor />
+    </RequireAuth>
+  ),
+});
+
 function Instructor() {
+  const { data: rbac } = useRbac();
   const query = useApi<Submission[]>("/instructor/submissions");
   const [message, setMessage] = useState("");
+
+  if (rbac && !rbac.isInstructor) {
+    return (
+      <section className="mx-auto max-w-2xl px-5 py-24 text-center">
+        <p className="eyebrow text-red-600">Access Restricted</p>
+        <h1 className="font-display mt-3 text-3xl font-bold">Instructor Access Required</h1>
+        <p className="mt-4 text-sm leading-6 text-ink/70">
+          The Instructor Workspace is reserved for certified evaluators and mentors to review student submissions.
+        </p>
+        <Link
+          to="/my-learning"
+          className="mt-8 inline-block rounded-full bg-ink px-6 py-3 text-sm font-bold text-white hover:bg-ink/90 transition"
+        >
+          Return to My Learning
+        </Link>
+      </section>
+    );
+  }
   async function review(id: string, decision: string, feedback: string) {
     try {
       await apiRequest(`/submissions/${id}/review`, {
