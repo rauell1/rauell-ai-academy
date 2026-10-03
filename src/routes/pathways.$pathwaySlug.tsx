@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, ArrowRight, Clock, CheckCircle2, BookOpen } from "lucide-react";
+import { ArrowLeft, ArrowRight, Clock, CheckCircle2, BookOpen, Lock } from "lucide-react";
 import {
   courses as staticCourses,
   pathways as staticPathways,
@@ -9,6 +9,7 @@ import {
   getPathwayBySlug,
 } from "@/data/canonical-curriculum";
 import { useApi } from "@/lib/api";
+import { authClient } from "@/lib/auth-client";
 
 export const Route = createFileRoute("/pathways/$pathwaySlug")({
   component: PathwayDetail,
@@ -37,6 +38,7 @@ type ApiPathwayDetail = {
 
 function PathwayDetail() {
   const { pathwaySlug } = Route.useParams();
+  const { data: session } = authClient.useSession();
   const { data: pathway, loading, error } = useApi<ApiPathwayDetail>(
     `/pathways/${pathwaySlug}`,
   );
@@ -264,14 +266,25 @@ function PathwayDetail() {
                     Evaluation Rubric & Grading Criteria (70% Pass Standard)
                   </h3>
                 </div>
-                <Link
-                  to="/projects/$projectId"
-                  params={{ projectId: canonical.slug }}
-                  className="inline-flex items-center gap-2 rounded-full bg-leaf px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-leaf/90"
-                >
-                  Open Capstone Workshop
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
+                {session ? (
+                  <Link
+                    to="/projects/$projectId"
+                    params={{ projectId: canonical.slug }}
+                    className="inline-flex items-center gap-2 rounded-full bg-leaf px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-leaf/90"
+                  >
+                    Open Capstone Workshop
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                ) : (
+                  <Link
+                    to="/sign-in"
+                    search={{ redirect: `/projects/${canonical.slug}` }}
+                    className="inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-leaf"
+                  >
+                    <Lock className="h-4 w-4 text-mint" />
+                    Sign in for Capstone
+                  </Link>
+                )}
               </div>
               <ul className="mt-4 grid gap-3 sm:grid-cols-2">
                 {canonical.capstoneRubric.map((item, idx) => (

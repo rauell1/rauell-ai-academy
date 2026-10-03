@@ -251,6 +251,10 @@ learningApi.get("/courses/:slug", async (c) => {
 });
 
 learningApi.get("/lessons/:id", async (c) => {
+  const session = await sessionFor(c.req.raw.headers);
+  if (!session) {
+    return c.json({ error: "Authentication required to access lesson content." }, 401);
+  }
   const db = getDb();
   const [lesson] = await db
     .select({

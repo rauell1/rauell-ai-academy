@@ -6,6 +6,7 @@ import {
   CheckCircle2,
   Clock3,
   Layers3,
+  Lock,
   PlayCircle,
 } from "lucide-react";
 import { useState } from "react";
@@ -236,23 +237,42 @@ function CourseDetail() {
                       {lessons.length} lesson{lessons.length !== 1 ? "s" : ""}
                     </span>
                   </div>
-                  {lessons.map((lesson, li) => (
-                    <Link
-                      key={lesson.id || li}
-                      to="/courses/$courseSlug/lessons/$lessonSlug"
-                      params={{
-                        courseSlug: course.slug,
-                        lessonSlug: `${mi + 1}-${li + 1}`,
-                      }}
-                      className="group flex items-center gap-3 border-b border-ink/5 px-5 py-4 last:border-0 hover:bg-mint/10 transition"
-                    >
-                      <PlayCircle className="h-4 w-4 text-ink/40 group-hover:text-leaf transition" />
-                      <span className="text-sm font-semibold text-ink group-hover:text-ink">
-                        {lesson.title}
-                      </span>
-                      <ArrowRight className="ml-auto h-4 w-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition" />
-                    </Link>
-                  ))}
+                  {lessons.map((lesson, li) => {
+                    const lessonPath = `/courses/${course.slug}/lessons/${mi + 1}-${li + 1}`;
+                    return session ? (
+                      <Link
+                        key={lesson.id || li}
+                        to="/courses/$courseSlug/lessons/$lessonSlug"
+                        params={{
+                          courseSlug: course.slug,
+                          lessonSlug: `${mi + 1}-${li + 1}`,
+                        }}
+                        className="group flex items-center gap-3 border-b border-ink/5 px-5 py-4 last:border-0 hover:bg-mint/10 transition"
+                      >
+                        <PlayCircle className="h-4 w-4 text-ink/40 group-hover:text-leaf transition" />
+                        <span className="text-sm font-semibold text-ink group-hover:text-ink">
+                          {lesson.title}
+                        </span>
+                        <ArrowRight className="ml-auto h-4 w-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition" />
+                      </Link>
+                    ) : (
+                      <Link
+                        key={lesson.id || li}
+                        to="/sign-in"
+                        search={{ redirect: lessonPath }}
+                        className="group flex items-center gap-3 border-b border-ink/5 px-5 py-4 last:border-0 hover:bg-paper transition"
+                        title="Sign in required to view lesson"
+                      >
+                        <Lock className="h-4 w-4 text-ink/35 group-hover:text-leaf transition" />
+                        <span className="text-sm font-semibold text-ink/75 group-hover:text-ink">
+                          {lesson.title}
+                        </span>
+                        <span className="ml-auto text-[11px] font-bold text-ink/40 group-hover:text-leaf flex items-center gap-1 transition">
+                          Account required <ArrowRight className="h-3 w-3" />
+                        </span>
+                      </Link>
+                    );
+                  })}
                 </div>
               );
             })}
@@ -260,32 +280,66 @@ function CourseDetail() {
 
           {(course.assessments?.length || course.projects?.length) ? (
             <div className="mt-10 grid gap-4 sm:grid-cols-2">
-              {course.assessments?.map((item) => (
-                <Link
-                  key={item.id}
-                  to="/assessments/$assessmentId"
-                  params={{ assessmentId: item.id }}
-                  className="card card-lift p-5"
-                >
-                  <p className="eyebrow text-leaf">Assessment</p>
-                  <h3 className="font-display mt-2 text-xl font-bold">
-                    {item.title}
-                  </h3>
-                </Link>
-              ))}
-              {course.projects?.map((item) => (
-                <Link
-                  key={item.id}
-                  to="/projects/$projectId"
-                  params={{ projectId: item.id }}
-                  className="card card-lift p-5"
-                >
-                  <p className="eyebrow text-leaf">Final project</p>
-                  <h3 className="font-display mt-2 text-xl font-bold">
-                    {item.title}
-                  </h3>
-                </Link>
-              ))}
+              {course.assessments?.map((item) => {
+                const assessPath = `/assessments/${item.id}`;
+                return session ? (
+                  <Link
+                    key={item.id}
+                    to="/assessments/$assessmentId"
+                    params={{ assessmentId: item.id }}
+                    className="card card-lift p-5"
+                  >
+                    <p className="eyebrow text-leaf">Assessment</p>
+                    <h3 className="font-display mt-2 text-xl font-bold">
+                      {item.title}
+                    </h3>
+                  </Link>
+                ) : (
+                  <Link
+                    key={item.id}
+                    to="/sign-in"
+                    search={{ redirect: assessPath }}
+                    className="card card-lift p-5"
+                  >
+                    <p className="eyebrow text-leaf flex items-center gap-1.5">
+                      <Lock className="h-3 w-3" /> Assessment (Sign in required)
+                    </p>
+                    <h3 className="font-display mt-2 text-xl font-bold">
+                      {item.title}
+                    </h3>
+                  </Link>
+                );
+              })}
+              {course.projects?.map((item) => {
+                const projPath = `/projects/${item.id}`;
+                return session ? (
+                  <Link
+                    key={item.id}
+                    to="/projects/$projectId"
+                    params={{ projectId: item.id }}
+                    className="card card-lift p-5"
+                  >
+                    <p className="eyebrow text-leaf">Final project</p>
+                    <h3 className="font-display mt-2 text-xl font-bold">
+                      {item.title}
+                    </h3>
+                  </Link>
+                ) : (
+                  <Link
+                    key={item.id}
+                    to="/sign-in"
+                    search={{ redirect: projPath }}
+                    className="card card-lift p-5"
+                  >
+                    <p className="eyebrow text-leaf flex items-center gap-1.5">
+                      <Lock className="h-3 w-3" /> Final project (Sign in required)
+                    </p>
+                    <h3 className="font-display mt-2 text-xl font-bold">
+                      {item.title}
+                    </h3>
+                  </Link>
+                );
+              })}
             </div>
           ) : null}
         </div>
@@ -331,17 +385,18 @@ function CourseDetail() {
             ) : (
               <div className="mt-6 space-y-3">
                 <Link
-                  to="/courses/$courseSlug/lessons/$lessonSlug"
-                  params={{ courseSlug: course.slug, lessonSlug: firstLessonSlug }}
+                  to="/sign-in"
+                  search={{ redirect: `/courses/${course.slug}/lessons/${firstLessonSlug}` }}
                   className="block rounded-full bg-leaf px-5 py-3.5 text-center text-sm font-bold text-white transition hover:bg-leaf/90 shadow-md"
                 >
-                  Start learning now →
+                  Sign in to start learning →
                 </Link>
                 <Link
-                  to="/sign-in"
+                  to="/register"
+                  search={{ redirect: `/courses/${course.slug}` }}
                   className="block rounded-full border border-ink/20 px-5 py-2.5 text-center text-xs font-bold text-ink transition hover:bg-paper"
                 >
-                  Sign in to save progress
+                  Create account to enrol
                 </Link>
               </div>
             )}

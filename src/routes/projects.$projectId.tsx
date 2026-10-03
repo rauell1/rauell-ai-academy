@@ -15,6 +15,7 @@ import {
 import { apiRequest } from "@/lib/api";
 import { canonicalPathways, getPathwayBySlug } from "@/data/canonical-curriculum";
 import { FormattedMessage } from "@/components/FormattedMessage";
+import { RequireAuth } from "@/components/RequireAuth";
 
 export const Route = createFileRoute("/projects/$projectId")({
   component: ProjectSubmissionWorkshop,
@@ -240,7 +241,13 @@ function ProjectSubmissionWorkshop() {
   }
 
   return (
-    <div className="min-h-screen bg-sand/30 pb-24">
+    <RequireAuth
+      title="Account Required for Capstone Workshop"
+      description="Access to capstone project briefs, evaluation rubrics, workspace submissions, and the automated AI rubric evaluator requires an active learner account."
+      backTo={`/pathways/${pathway.slug}`}
+      backLabel={`Return to ${pathway.title}`}
+    >
+      <div className="min-h-screen bg-sand/30 pb-24">
       {/* Header */}
       <header className="border-b border-ink/10 bg-ink text-white">
         <div className="mx-auto max-w-5xl px-5 py-12">
@@ -584,5 +591,6 @@ function ProjectSubmissionWorkshop() {
         </div>
       </main>
     </div>
+    </RequireAuth>
   );
 }

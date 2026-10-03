@@ -14,6 +14,7 @@ import { LessonBlock, type Block } from "@/components/LessonBlock";
 import { courses as staticCourses } from "@/data/academy";
 import { getCourseBySlug, getLessonBySlug } from "@/data/canonical-curriculum";
 import { AITutorDrawer } from "@/components/AITutorDrawer";
+import { RequireAuth } from "@/components/RequireAuth";
 
 export const Route = createFileRoute(
   "/courses/$courseSlug_/lessons/$lessonSlug",
@@ -300,7 +301,13 @@ function Lesson() {
   const isCompleted = status.done || !!localStorage.getItem(`done:${courseSlug}:${lessonSlug}`);
 
   return (
-    <div className="flex min-h-screen flex-col bg-paper">
+    <RequireAuth
+      title="Account Required to Access Lesson"
+      description="Lesson modules, interactive code checkpoints, exercises, and the AI Mentor are reserved for registered academy learners."
+      backTo={`/courses/${courseSlug}`}
+      backLabel={`Return to ${course?.title || "course"} overview`}
+    >
+      <div className="flex min-h-screen flex-col bg-paper">
       {/* Top bar */}
       <div className="sticky top-0 z-30 border-b border-ink/10 bg-ink px-5 py-3 text-white">
         <div className="mx-auto flex max-w-7xl items-center gap-4">
@@ -449,6 +456,7 @@ function Lesson() {
         keyTakeaway={lesson.summary || undefined}
       />
     </div>
+    </RequireAuth>
   );
 }
 

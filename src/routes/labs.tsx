@@ -1,9 +1,10 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import {
   ArrowRight,
   Clock3,
   Copy,
   Info,
+  Lock,
   Play,
   RotateCcw,
   Sparkles,
@@ -14,6 +15,8 @@ import { useState } from "react";
 import { PageIntro } from "@/components/Cards";
 import { labs } from "@/data/academy";
 import { apiRequest } from "@/lib/api";
+import { authClient } from "@/lib/auth-client";
+import { RequireAuth } from "@/components/RequireAuth";
 
 export const Route = createFileRoute("/labs")({ component: Labs });
 
@@ -537,6 +540,8 @@ Status:      ALL USER JOURNEY ACCEPTANCE TESTS PASSED`;
 }
 
 function Labs() {
+  const { data: session } = authClient.useSession();
+  const nav = useNavigate();
   const [activeLab, setActiveLab] = useState<LabItem | null>(null);
   const [copied, setCopied] = useState(false);
   const [ranEvaluation, setRanEvaluation] = useState(false);
@@ -567,6 +572,10 @@ function Labs() {
   }
 
   function handleOpenLab(lab: LabItem) {
+    if (!session) {
+      nav({ to: "/sign-in", search: { redirect: "/labs" } });
+      return;
+    }
     const sb = LAB_SANDBOXES[lab.title];
     setActiveLab(lab);
     setInputA(sb?.initialInputA || "");
@@ -681,6 +690,42 @@ function Labs() {
         copy="Guided interactive sandboxes turn concepts into practical competence. Every lab provides realistic fixtures, instructions, self-check rubrics, and dynamic client-side execution."
       />
 
+      {!session && (
+        <div className="mx-auto mt-6 max-w-7xl px-5 lg:px-8">
+          <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border-2 border-leaf/30 bg-mint/15 p-5">
+            <div className="flex items-center gap-3">
+              <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-leaf text-white shadow-sm">
+                <Lock className="h-5 w-5" />
+              </div>
+              <div>
+                <h3 className="font-display text-sm font-bold text-ink">
+                  Learner Account Required for Interactive Sandboxes
+                </h3>
+                <p className="text-xs text-ink/75">
+                  Sign in or create an account to launch live prompt playgrounds, audit statutory claims, and test AI evaluators.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2.5">
+              <Link
+                to="/sign-in"
+                search={{ redirect: "/labs" }}
+                className="rounded-full bg-ink px-4 py-2 text-xs font-bold text-white transition hover:bg-leaf shadow-sm"
+              >
+                Sign in
+              </Link>
+              <Link
+                to="/register"
+                search={{ redirect: "/labs" }}
+                className="rounded-full border border-ink/20 bg-white px-4 py-2 text-xs font-bold text-ink transition hover:bg-paper"
+              >
+                Create account
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
+
       <section className="mx-auto grid max-w-7xl gap-6 px-5 py-16 md:grid-cols-2 lg:grid-cols-3 lg:px-8">
         {labs.map((l) => {
           const I = l.icon;
@@ -707,12 +752,23 @@ function Labs() {
                 <h2 className="font-display mt-3 text-xl font-bold">{l.title}</h2>
                 <p className="mt-2 flex-1 text-sm leading-6 text-ink/62">{l.copy}</p>
                 <div className="mt-6 border-t border-ink/10 pt-4">
-                  <button
-                    onClick={() => handleOpenLab(l)}
-                    className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-ink px-5 py-2.5 text-sm font-bold text-white transition hover:bg-leaf"
-                  >
-                    Launch Lab <ArrowRight className="h-4 w-4" />
-                  </button>
+                  {session ? (
+                    <button
+                      onClick={() => handleOpenLab(l)}
+                      className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-ink px-5 py-2.5 text-sm font-bold text-white transition hover:bg-leaf"
+                    >
+                      Launch Lab <ArrowRight className="h-4 w-4" />
+                    </button>
+                  ) : (
+                    <Link
+                      to="/sign-in"
+                      search={{ redirect: "/labs" }}
+                      className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-ink/20 bg-paper px-5 py-2.5 text-sm font-bold text-ink transition hover:bg-ink hover:text-white"
+                    >
+                      <Lock className="h-4 w-4 text-leaf" />
+                      Sign in to Launch Lab
+                    </Link>
+                  )}
                 </div>
               </div>
             </article>
@@ -722,7 +778,13 @@ function Labs() {
 
       {/* Interactive Modal Sandbox */}
       {activeLab && sandbox && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 sm:p-6 overflow-y-auto">
+        <RequireAuth
+          title="Account Required for Interactive Sandbox"
+          description="Interactive lab sandboxes and AI evaluations require an active learner account."
+          backTo="/labs"
+          backLabel="Close"
+        >
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 sm:p-6 overflow-y-auto">
           <div className="relative my-8 flex max-h-[90vh] w-full max-w-5xl flex-col rounded-3xl bg-white shadow-2xl overflow-hidden">
             {/* Header */}
             <div className="flex items-center justify-between border-b border-ink/10 bg-ink px-6 py-4 text-white">
@@ -955,6 +1017,7 @@ function Labs() {
             </div>
           </div>
         </div>
+        </RequireAuth>
       )}
     </>
   );

@@ -8,11 +8,26 @@ import {
   type SubmitEvent,
 } from "@/components/AuthCard";
 import { authClient } from "@/lib/auth-client";
-export const Route = createFileRoute("/register")({ component: Register });
+
+type RegisterSearch = {
+  redirect?: string;
+};
+
+export const Route = createFileRoute("/register")({
+  validateSearch: (search: Record<string, unknown>): RegisterSearch => ({
+    redirect: typeof search.redirect === "string" ? search.redirect : undefined,
+  }),
+  component: Register,
+});
+
 function Register() {
+  const { redirect } = Route.useSearch();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+
+  const target = redirect && redirect.startsWith("/") ? redirect : "/my-learning";
+
   async function submit(e: SubmitEvent) {
     e.preventDefault();
     setBusy(true);
@@ -28,16 +43,18 @@ function Register() {
       name: String(data.get("name")),
       email: String(data.get("email")),
       password,
-      callbackURL: "/my-learning",
+      callbackURL: target,
     });
     setBusy(false);
-    if (result.error)
+    if (result.error) {
       setError(result.error.message || "We could not create the account.");
-    else
+    } else {
       setSuccess(
         "Account created. Check your email to verify your address before signing in.",
       );
+    }
   }
+
   return (
     <AuthCard
       title="Create your account"
@@ -96,7 +113,11 @@ function Register() {
       </form>
       <p className="mt-6 text-center text-sm text-ink/60">
         Already registered?{" "}
-        <Link to="/sign-in" className="font-bold text-ink">
+        <Link
+          to="/sign-in"
+          search={{ redirect }}
+          className="font-bold text-ink hover:underline"
+        >
           Sign in
         </Link>
       </p>

@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { getServerEnv } from "../env";
+import { getActiveSession } from "../permissions";
 
 export const aiApi = new Hono();
 
@@ -143,6 +144,11 @@ async function callOpenAiCompatible(params: {
 }
 
 aiApi.post("/ai/chat", zValidator("json", chatSchema), async (c) => {
+  const session = await getActiveSession(c.req.raw.headers);
+  if (!session) {
+    return c.json({ error: "Authentication required to consult the AI Mentor." }, 401);
+  }
+
   const startTime = Date.now();
   const input = c.req.valid("json");
   const env = getServerEnv();
@@ -234,6 +240,11 @@ aiApi.post("/ai/chat", zValidator("json", chatSchema), async (c) => {
 });
 
 aiApi.post("/ai/evaluate", zValidator("json", evaluateSchema), async (c) => {
+  const session = await getActiveSession(c.req.raw.headers);
+  if (!session) {
+    return c.json({ error: "Authentication required to run AI evaluations." }, 401);
+  }
+
   const startTime = Date.now();
   const input = c.req.valid("json");
   const env = getServerEnv();

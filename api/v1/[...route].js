@@ -1146,6 +1146,10 @@ learningApi.get("/courses/:slug", async (c) => {
   });
 });
 learningApi.get("/lessons/:id", async (c) => {
+  const session = await sessionFor(c.req.raw.headers);
+  if (!session) {
+    return c.json({ error: "Authentication required to access lesson content." }, 401);
+  }
   const db2 = getDb();
   const [lesson] = await db2.select({
     id: lessons.id,
@@ -1419,6 +1423,15 @@ var AuthorizationError = class extends Error {
     this.status = status;
   }
 };
+async function getActiveSession(headers) {
+  const session = await auth.api.getSession({
+    headers: headers instanceof Headers ? headers : fromNodeHeaders(headers)
+  });
+  if (!session) return null;
+  const db2 = getDb();
+  const [account] = await db2.select({ state: users.state }).from(users).where(eq3(users.id, session.user.id)).limit(1);
+  return account?.state === "active" ? session : null;
+}
 async function requirePermission(headers, permission) {
   const session = await auth.api.getSession({
     headers: headers instanceof Headers ? headers : fromNodeHeaders(headers)
@@ -2512,6 +2525,10 @@ async function callOpenAiCompatible(params) {
   }
 }
 aiApi.post("/ai/chat", zValidator3("json", chatSchema), async (c) => {
+  const session = await getActiveSession(c.req.raw.headers);
+  if (!session) {
+    return c.json({ error: "Authentication required to consult the AI Mentor." }, 401);
+  }
   const startTime = Date.now();
   const input = c.req.valid("json");
   const env2 = getServerEnv();
@@ -2589,6 +2606,10 @@ aiApi.post("/ai/chat", zValidator3("json", chatSchema), async (c) => {
   });
 });
 aiApi.post("/ai/evaluate", zValidator3("json", evaluateSchema), async (c) => {
+  const session = await getActiveSession(c.req.raw.headers);
+  if (!session) {
+    return c.json({ error: "Authentication required to run AI evaluations." }, 401);
+  }
   const startTime = Date.now();
   const input = c.req.valid("json");
   const env2 = getServerEnv();

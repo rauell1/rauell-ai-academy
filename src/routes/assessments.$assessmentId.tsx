@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { apiRequest } from "@/lib/api";
+import { RequireAuth } from "@/components/RequireAuth";
 type Attempt = {
   id: string;
   attemptNumber: number;
@@ -60,7 +61,13 @@ function Assessment() {
     }
   }
   return (
-    <section className="mx-auto max-w-3xl px-5 py-16">
+    <RequireAuth
+      title="Account Required for Assessment"
+      description="You must be signed in with a registered learner account to take course assessments and record your score."
+      backTo="/courses"
+      backLabel="Return to courses"
+    >
+      <section className="mx-auto max-w-3xl px-5 py-16">
       <p className="eyebrow text-leaf">Secure assessment</p>
       <h1 className="font-display mt-4 text-4xl font-bold">
         Course assessment
@@ -122,5 +129,6 @@ function Assessment() {
         </form>
       )}
     </section>
+    </RequireAuth>
   );
 }

@@ -38,6 +38,30 @@ export class AuthorizationError extends Error {
   }
 }
 
+export async function getActiveSession(
+  headers: IncomingHttpHeaders | Headers,
+) {
+  const session = await auth.api.getSession({
+    headers: headers instanceof Headers ? headers : fromNodeHeaders(headers),
+  });
+  if (!session) return null;
+  const db = getDb();
+  const [account] = await db
+    .select({ state: users.state })
+    .from(users)
+    .where(eq(users.id, session.user.id))
+    .limit(1);
+  return account?.state === "active" ? session : null;
+}
+
+export async function requireActiveSession(
+  headers: IncomingHttpHeaders | Headers,
+) {
+  const session = await getActiveSession(headers);
+  if (!session) throw new AuthorizationError(401, "Authentication required.");
+  return session;
+}
+
 export async function requirePermission(
   headers: IncomingHttpHeaders | Headers,
   permission: PermissionKey,
