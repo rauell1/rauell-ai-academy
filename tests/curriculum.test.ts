@@ -281,5 +281,86 @@ describe("Canonical Curriculum Specifications", () => {
       }
     }
   });
+
+  it("verifies Pathway E contains 16 expanded lessons across courses E1 through E4", () => {
+    const e1 = getCourseBySlug("automation-fundamentals");
+    const e2 = getCourseBySlug("visual-workflow-building");
+    const e3 = getCourseBySlug("reliable-ai-integration");
+    const e4 = getCourseBySlug("operating-and-evaluating-agents");
+
+    expect(e1).toBeDefined();
+    expect(e2).toBeDefined();
+    expect(e3).toBeDefined();
+    expect(e4).toBeDefined();
+
+    const countLessons = (course: ReturnType<typeof getCourseBySlug>) =>
+      (course?.modules ?? []).reduce((acc, m) => acc + m.lessons.length, 0);
+
+    expect(countLessons(e1)).toBe(4);
+    expect(countLessons(e2)).toBe(4);
+    expect(countLessons(e3)).toBe(4);
+    expect(countLessons(e4)).toBe(4);
+
+    const totalPathwayELessons = [e1, e2, e3, e4].reduce(
+      (acc, e) => acc + countLessons(e),
+      0,
+    );
+    expect(totalPathwayELessons).toBe(16);
+
+    for (const course of [e1, e2, e3, e4]) {
+      for (const mod of course!.modules) {
+        for (const lesson of mod.lessons) {
+          expect(lesson.title.length).toBeGreaterThan(5);
+          expect(lesson.summary.length).toBeGreaterThan(10);
+          expect(lesson.blocks.length).toBeGreaterThanOrEqual(6);
+          const hasQuiz = lesson.blocks.some((b) => b.type === "knowledge_check");
+          const hasTakeaway = lesson.blocks.some((b) => b.type === "key_takeaway");
+          expect(hasQuiz, `Lesson ${lesson.title} missing quiz`).toBe(true);
+          expect(hasTakeaway, `Lesson ${lesson.title} missing takeaway`).toBe(true);
+        }
+      }
+    }
+  });
+
+  it("verifies Pathway F contains 16 expanded lessons across courses F1 through F4", () => {
+    const f1 = getCourseBySlug("solar-and-microgrid-operations");
+    const f2 = getCourseBySlug("water-systems-and-agricultural-monitoring");
+    const f3 = getCourseBySlug("energy-water-nexus-productive-use");
+    const f4 = getCourseBySlug("emobility-fleet-battery-telemetry");
+
+    expect(f1).toBeDefined();
+    expect(f2).toBeDefined();
+    expect(f3).toBeDefined();
+    expect(f4).toBeDefined();
+
+    const countLessons = (course: ReturnType<typeof getCourseBySlug>) =>
+      (course?.modules ?? []).reduce((acc, m) => acc + m.lessons.length, 0);
+
+    expect(countLessons(f1)).toBe(4);
+    expect(countLessons(f2)).toBe(4);
+    expect(countLessons(f3)).toBe(4);
+    expect(countLessons(f4)).toBe(4);
+
+    const totalPathwayFLessons = [f1, f2, f3, f4].reduce(
+      (acc, f) => acc + countLessons(f),
+      0,
+    );
+    expect(totalPathwayFLessons).toBe(16);
+
+    for (const course of [f1, f2, f3, f4]) {
+      for (const mod of course!.modules) {
+        for (const lesson of mod.lessons) {
+          expect(lesson.title.length).toBeGreaterThan(5);
+          expect(lesson.summary.length).toBeGreaterThan(10);
+          expect(lesson.blocks.length).toBeGreaterThanOrEqual(6);
+          const hasQuiz = lesson.blocks.some((b) => b.type === "knowledge_check");
+          const hasTakeaway = lesson.blocks.some((b) => b.type === "key_takeaway");
+          expect(hasQuiz, `Lesson ${lesson.title} missing quiz`).toBe(true);
+          expect(hasTakeaway, `Lesson ${lesson.title} missing takeaway`).toBe(true);
+        }
+      }
+    }
+  });
 });
+
 

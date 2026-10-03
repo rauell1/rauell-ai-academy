@@ -3,13 +3,19 @@ import {
   BookMarked,
   CheckCircle2,
   Copy,
-  Download,
   ExternalLink,
   FileCheck2,
   X,
+  Radio,
+  Zap,
+  Droplets,
+  DollarSign,
+  Activity,
+  ShieldAlert,
 } from "lucide-react";
 import { useState } from "react";
 import { PageIntro } from "@/components/Cards";
+import livingCaseStudies from "@/data/fixtures/living-case-studies.json";
 
 export const Route = createFileRoute("/resources")({ component: Resources });
 
@@ -23,6 +29,8 @@ type ResourceItem = {
     items: string[];
   }[];
 };
+
+type CaseStudyItem = (typeof livingCaseStudies)[number];
 
 const RESOURCES_DATA: ResourceItem[] = [
   {
@@ -133,6 +141,7 @@ const RESOURCES_DATA: ResourceItem[] = [
 
 function Resources() {
   const [activeItem, setActiveItem] = useState<ResourceItem | null>(null);
+  const [activeCaseStudy, setActiveCaseStudy] = useState<CaseStudyItem | null>(null);
   const [copied, setCopied] = useState(false);
 
   function copyAll(item: ResourceItem) {
@@ -145,15 +154,86 @@ function Resources() {
     setTimeout(() => setCopied(false), 2000);
   }
 
+  function getSectorIcon(sector: string) {
+    if (sector.toLowerCase().includes("energy")) return Zap;
+    if (sector.toLowerCase().includes("water")) return Droplets;
+    return DollarSign;
+  }
+
   return (
     <>
       <PageIntro
         eyebrow="Resource library"
         title="Keep useful tools close."
-        copy="Interactive checklists, practical templates, reading guides, and reference materials to support your work beyond each lesson."
+        copy="Interactive checklists, practical templates, living case studies from AI-OS, and field-tested reference materials to support your work beyond each lesson."
       />
 
-      <section className="mx-auto max-w-5xl px-5 py-16">
+      {/* Living Case Studies from Rauell AI-OS */}
+      <section className="mx-auto max-w-5xl px-5 pt-12 pb-6">
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+          <div>
+            <div className="flex items-center gap-2">
+              <Radio className="h-4 w-4 animate-pulse text-leaf" />
+              <span className="eyebrow text-leaf">Living Case Studies (AI-OS ↔ Academy Pipeline)</span>
+            </div>
+            <h2 className="font-display mt-1 text-2xl font-bold text-ink">
+              Real Incident Telemetry & Post-Mortems
+            </h2>
+            <p className="mt-1 text-sm text-ink/65 max-w-2xl">
+              Sanitized operational incidents exported directly from Rauell AI-OS production subsystems in Kenya.
+            </p>
+          </div>
+          <span className="rounded-full bg-leaf/10 border border-leaf/30 px-3.5 py-1 text-xs font-bold text-leaf">
+            Updated via CI/CD Pipeline
+          </span>
+        </div>
+
+        <div className="grid gap-5 md:grid-cols-3">
+          {livingCaseStudies.map((cs) => {
+            const SectorIcon = getSectorIcon(cs.sector);
+            return (
+              <div
+                key={cs.id}
+                className="card flex flex-col justify-between p-6 transition hover:border-leaf/40 hover:shadow-md"
+              >
+                <div>
+                  <div className="flex items-center justify-between">
+                    <span className="inline-flex items-center gap-1 rounded-full bg-sand/60 px-2.5 py-0.5 text-xs font-bold text-ink/75">
+                      <SectorIcon className="h-3.5 w-3.5 text-leaf" />
+                      {cs.sector.split("&")[0].trim()}
+                    </span>
+                    <span className="text-xs text-ink/40 font-mono">v{cs.version}</span>
+                  </div>
+
+                  <h3 className="font-display mt-3 text-lg font-bold text-ink leading-snug">
+                    {cs.title}
+                  </h3>
+                  <p className="mt-2 text-xs leading-relaxed text-ink/65 line-clamp-3">
+                    {cs.incidentSummary}
+                  </p>
+                </div>
+
+                <div className="mt-5 border-t border-ink/10 pt-4 flex items-center justify-between">
+                  <span className="text-xs text-ink/50">{cs.location}</span>
+                  <button
+                    onClick={() => setActiveCaseStudy(cs)}
+                    className="inline-flex items-center gap-1.5 rounded-full bg-leaf px-3.5 py-1.5 text-xs font-bold text-white transition hover:bg-leaf/90"
+                  >
+                    Inspect Telemetry <Activity className="h-3 w-3" />
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* Standard Resource Toolkits */}
+      <section className="mx-auto max-w-5xl px-5 py-12">
+        <h2 className="font-display text-2xl font-bold text-ink mb-6">
+          Operational Toolkits & Verification Checklists
+        </h2>
+
         {RESOURCES_DATA.map((item) => {
           const Icon = item.icon;
           return (
@@ -178,15 +258,104 @@ function Resources() {
             </article>
           );
         })}
-
-        <div className="mt-10 rounded-2xl border border-dashed border-ink/25 p-8 text-center bg-white/50">
-          <Download className="mx-auto h-7 w-7 text-leaf" />
-          <p className="mt-3 font-bold text-ink">More field guides are being prepared.</p>
-          <p className="mt-1 text-sm text-ink/55">
-            Resources are reviewed and grounded in practical African engineering and business realities.
-          </p>
-        </div>
       </section>
+
+      {/* Case Study Detail Modal */}
+      {activeCaseStudy && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-ink/80 p-4 backdrop-blur-sm"
+          role="dialog"
+          aria-modal="true"
+        >
+          <div className="relative max-h-[92vh] w-full max-w-3xl overflow-y-auto rounded-[2rem] bg-paper p-6 shadow-2xl sm:p-8">
+            <div className="flex items-start justify-between gap-4 border-b border-ink/10 pb-5">
+              <div>
+                <span className="eyebrow text-leaf">
+                  Living Case Study: {activeCaseStudy.sourceSystem}
+                </span>
+                <h2 className="font-display mt-1 text-2xl font-bold text-ink sm:text-3xl">
+                  {activeCaseStudy.title}
+                </h2>
+                <p className="mt-1 text-xs text-ink/55">
+                  Location: {activeCaseStudy.location} | Synced: {new Date(activeCaseStudy.lastSyncedAt).toLocaleDateString()}
+                </p>
+              </div>
+              <button
+                onClick={() => setActiveCaseStudy(null)}
+                className="rounded-full p-2 text-ink/50 hover:bg-ink/10 hover:text-ink"
+                aria-label="Close modal"
+              >
+                <X className="h-6 w-6" />
+              </button>
+            </div>
+
+            <div className="mt-6 space-y-6">
+              {/* Incident Summary */}
+              <div className="rounded-2xl border border-amber-200 bg-amber-50/60 p-5">
+                <h3 className="font-display flex items-center gap-2 text-sm font-bold text-amber-900">
+                  <ShieldAlert className="h-4 w-4 text-amber-700" />
+                  Operational Incident Summary
+                </h3>
+                <p className="mt-2 text-xs leading-relaxed text-amber-900/85">
+                  {activeCaseStudy.incidentSummary}
+                </p>
+              </div>
+
+              {/* Sanitized Telemetry */}
+              <div className="rounded-2xl border border-ink/10 bg-white p-5 shadow-sm">
+                <h3 className="font-display text-sm font-bold text-ink mb-3">
+                  Sanitized Sensor Telemetry Log
+                </h3>
+                <div className="overflow-x-auto">
+                  <pre className="rounded-xl bg-ink/5 p-4 font-mono text-xs leading-relaxed text-ink/80">
+                    {JSON.stringify(activeCaseStudy.sanitizedTelemetry, null, 2)}
+                  </pre>
+                </div>
+              </div>
+
+              {/* Root Cause Analysis */}
+              <div className="rounded-2xl border border-ink/10 bg-white p-5 shadow-sm">
+                <h3 className="font-display text-sm font-bold text-ink">
+                  Root Cause Analysis (Post-Mortem)
+                </h3>
+                <p className="mt-2 text-xs leading-relaxed text-ink/75">
+                  {activeCaseStudy.rootCauseAnalysis}
+                </p>
+              </div>
+
+              {/* Educational Challenge & Rubric */}
+              <div className="rounded-2xl border border-leaf/30 bg-mint/20 p-5 shadow-sm">
+                <h3 className="font-display text-sm font-bold text-ink">
+                  Learner Hands-on Exercise Challenge
+                </h3>
+                <p className="mt-2 text-xs leading-relaxed text-ink/85 font-medium">
+                  {activeCaseStudy.educationalApplication.exercisePrompt}
+                </p>
+                <h4 className="font-display mt-4 text-xs font-bold uppercase tracking-wider text-ink/70">
+                  Evaluation Rubric Criteria:
+                </h4>
+                <ul className="mt-2 space-y-2">
+                  {activeCaseStudy.educationalApplication.evaluationRubric.map((r, idx) => (
+                    <li key={idx} className="flex items-start gap-2 text-xs text-ink/80">
+                      <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-leaf mt-0.5" />
+                      <span>{r}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            <div className="mt-8 flex justify-end border-t border-ink/10 pt-5">
+              <button
+                onClick={() => setActiveCaseStudy(null)}
+                className="rounded-full bg-ink px-6 py-2.5 text-xs font-bold text-white transition hover:bg-ink/85"
+              >
+                Close Case Study
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Resource Preview Modal */}
       {activeItem && (
