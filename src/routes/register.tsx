@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import {
   AuthCard,
@@ -22,6 +22,7 @@ export const Route = createFileRoute("/register")({
 
 function Register() {
   const { redirect } = Route.useSearch();
+  const nav = useNavigate();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -47,11 +48,21 @@ function Register() {
     });
     setBusy(false);
     if (result.error) {
-      setError(result.error.message || "We could not create the account.");
-    } else {
-      setSuccess(
-        "Account created. Check your email to verify your address before signing in.",
+      const msg = result.error.message || "";
+      const isDuplicate =
+        msg.toLowerCase().includes("exist") ||
+        msg.toLowerCase().includes("duplicate") ||
+        msg.toLowerCase().includes("already");
+      setError(
+        isDuplicate
+          ? "An account with this email address already exists. Please sign in below."
+          : msg || "We could not create the account. Please check your details and try again.",
       );
+    } else {
+      setSuccess("Account created successfully! Redirecting to your learning...");
+      setTimeout(() => {
+        nav({ to: target as any });
+      }, 650);
     }
   }
 

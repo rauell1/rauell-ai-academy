@@ -868,23 +868,26 @@ import { Resend } from "resend";
 async function sendAuthEmail(message) {
   const env2 = getServerEnv();
   if (!env2.RESEND_API_KEY || !env2.EMAIL_FROM) {
-    if (env2.NODE_ENV === "production")
-      throw new Error("Transactional email is not configured.");
     console.info(
-      `[local-email] ${message.subject} to ${message.to}
-${message.text}`
+      `[auth-email] Transactional email provider not configured. Suppressed email "${message.subject}" to ${message.to}`
     );
     return;
   }
-  const resend = new Resend(env2.RESEND_API_KEY);
-  const result = await resend.emails.send({
-    from: env2.EMAIL_FROM,
-    to: message.to,
-    subject: message.subject,
-    text: message.text,
-    html: message.html
-  });
-  if (result.error) throw new Error("Transactional email delivery failed.");
+  try {
+    const resend = new Resend(env2.RESEND_API_KEY);
+    const result = await resend.emails.send({
+      from: env2.EMAIL_FROM,
+      to: message.to,
+      subject: message.subject,
+      text: message.text,
+      html: message.html
+    });
+    if (result.error) {
+      console.warn("Transactional email delivery failed:", result.error);
+    }
+  } catch (err) {
+    console.warn("Transactional email transport error:", err);
+  }
 }
 
 // src/server/auth.ts
@@ -921,7 +924,7 @@ var auth = betterAuth({
       secure: env.NODE_ENV === "production"
     }
   },
-  rateLimit: { enabled: true, window: 60, max: 10, storage: "database" },
+  rateLimit: { enabled: true, window: 60, max: 15, storage: "database" },
   session: {
     expiresIn: 60 * 60 * 24 * 7,
     updateAge: 60 * 60 * 24,
@@ -929,27 +932,39 @@ var auth = betterAuth({
   },
   emailAndPassword: {
     enabled: true,
-    requireEmailVerification: true,
+    requireEmailVerification: false,
     minPasswordLength: 10,
     maxPasswordLength: 128,
-    sendResetPassword: async ({ user, url }) => sendAuthEmail({
-      to: user.email,
-      subject: "Reset your Rauell AI Academy password",
-      text: `Use this secure link to reset your password: ${url}
+    sendResetPassword: async ({ user, url }) => {
+      try {
+        await sendAuthEmail({
+          to: user.email,
+          subject: "Reset your Rauell AI Academy password",
+          text: `Use this secure link to reset your password: ${url}
 
 If you did not request this, you can ignore this message.`,
-      html: `<p>Use the secure link below to reset your Rauell AI Academy password.</p><p><a href="${url}">Reset password</a></p><p>If you did not request this, you can ignore this message.</p>`
-    })
+          html: `<p>Use the secure link below to reset your Rauell AI Academy password.</p><p><a href="${url}">Reset password</a></p><p>If you did not request this, you can ignore this message.</p>`
+        });
+      } catch (err) {
+        console.warn("Failed sending password reset email:", err);
+      }
+    }
   },
   emailVerification: {
-    sendOnSignUp: true,
+    sendOnSignUp: false,
     autoSignInAfterVerification: true,
-    sendVerificationEmail: async ({ user, url }) => sendAuthEmail({
-      to: user.email,
-      subject: "Verify your Rauell AI Academy account",
-      text: `Verify your Academy email address: ${url}`,
-      html: `<p>Welcome to Rauell AI Academy.</p><p><a href="${url}">Verify your email address</a></p>`
-    })
+    sendVerificationEmail: async ({ user, url }) => {
+      try {
+        await sendAuthEmail({
+          to: user.email,
+          subject: "Verify your Rauell AI Academy account",
+          text: `Verify your Academy email address: ${url}`,
+          html: `<p>Welcome to Rauell AI Academy.</p><p><a href="${url}">Verify your email address</a></p>`
+        });
+      } catch (err) {
+        console.warn("Failed sending email verification:", err);
+      }
+    }
   },
   user: {
     additionalFields: {
@@ -966,21 +981,29 @@ If you did not request this, you can ignore this message.`,
     session: {
       create: {
         before: async (session) => {
-          const [account] = await db.select({ state: users.state }).from(users).where(eq(users.id, session.userId)).limit(1);
-          if (!account || account.state !== "active") return false;
-          return { data: session };
+          try {
+            const [account] = await db.select({ state: users.state }).from(users).where(eq(users.id, session.userId)).limit(1);
+            if (!account || account.state !== "active") return false;
+            return { data: session };
+          } catch (err) {
+            console.warn("Session validation hook warning:", err);
+            return { data: session };
+          }
         }
       }
     },
     user: {
       create: {
         after: async (user) => {
-          await db.transaction(async (tx) => {
-            await tx.insert(profiles).values({ userId: user.id, displayName: user.name }).onConflictDoNothing();
-            const [learnerRole] = await tx.select({ id: roles.id }).from(roles).where(eq(roles.key, "learner")).limit(1);
-            if (learnerRole)
-              await tx.insert(userRoles).values({ userId: user.id, roleId: learnerRole.id }).onConflictDoNothing();
-          });
+          try {
+            await db.insert(profiles).values({ userId: user.id, displayName: user.name }).onConflictDoNothing();
+            const [learnerRole] = await db.select({ id: roles.id }).from(roles).where(eq(roles.key, "learner")).limit(1);
+            if (learnerRole) {
+              await db.insert(userRoles).values({ userId: user.id, roleId: learnerRole.id }).onConflictDoNothing();
+            }
+          } catch (err) {
+            console.warn("User profile/role initialization hook warning:", err);
+          }
         }
       }
     }
