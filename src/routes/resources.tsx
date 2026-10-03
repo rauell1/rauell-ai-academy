@@ -13,7 +13,7 @@ import {
   Activity,
   ShieldAlert,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PageIntro } from "@/components/Cards";
 import livingCaseStudies from "@/data/fixtures/living-case-studies.json";
 
@@ -142,7 +142,60 @@ const RESOURCES_DATA: ResourceItem[] = [
 function Resources() {
   const [activeItem, setActiveItem] = useState<ResourceItem | null>(null);
   const [activeCaseStudy, setActiveCaseStudy] = useState<CaseStudyItem | null>(null);
+  const [isStreaming, setIsStreaming] = useState(false);
+  const [streamedTelemetry, setStreamedTelemetry] = useState<any>(null);
   const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    if (!activeCaseStudy) {
+      setIsStreaming(false);
+      setStreamedTelemetry(null);
+      return;
+    }
+    setStreamedTelemetry(activeCaseStudy.sanitizedTelemetry);
+  }, [activeCaseStudy]);
+
+  useEffect(() => {
+    if (!isStreaming || !activeCaseStudy) return;
+
+    const interval = setInterval(() => {
+      setStreamedTelemetry((prev: any) => {
+        if (!prev) return prev;
+        const copy = JSON.parse(JSON.stringify(prev));
+        const nowIso = new Date().toISOString();
+
+        if (Array.isArray(copy)) {
+          return copy.map((row: any) => ({
+            ...row,
+            Timestamp: nowIso.slice(0, 19).replace("T", " "),
+            Idc_A:
+              typeof row.Idc_A === "number"
+                ? +(row.Idc_A + (Math.random() * 0.1 - 0.05)).toFixed(2)
+                : row.Idc_A,
+            Vdc_V:
+              typeof row.Vdc_V === "number"
+                ? +(row.Vdc_V + (Math.random() * 1.2 - 0.6)).toFixed(1)
+                : row.Vdc_V,
+          }));
+        } else if (typeof copy === "object") {
+          if ("current_drawdown_m" in copy) {
+            copy.current_drawdown_m = +(
+              copy.current_drawdown_m +
+              (Math.random() * 0.04 - 0.02)
+            ).toFixed(2);
+            copy.yield_m3_h = +(
+              copy.yield_m3_h +
+              (Math.random() * 0.2 - 0.1)
+            ).toFixed(1);
+          }
+          if ("timestamp" in copy) copy.timestamp = nowIso;
+        }
+        return copy;
+      });
+    }, 1500);
+
+    return () => clearInterval(interval);
+  }, [isStreaming, activeCaseStudy]);
 
   function copyAll(item: ResourceItem) {
     const text = `# ${item.title}\n\n${item.copy}\n\n` +
@@ -301,14 +354,40 @@ function Resources() {
                 </p>
               </div>
 
-              {/* Sanitized Telemetry */}
+              {/* Sanitized Telemetry with Live Stream Simulator */}
               <div className="rounded-2xl border border-ink/10 bg-white p-5 shadow-sm">
-                <h3 className="font-display text-sm font-bold text-ink mb-3">
-                  Sanitized Sensor Telemetry Log
-                </h3>
+                <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
+                  <h3 className="font-display text-sm font-bold text-ink">
+                    Sensor Telemetry Log
+                  </h3>
+                  <div className="flex items-center gap-2">
+                    {isStreaming && (
+                      <span className="flex items-center gap-1.5 rounded-full bg-emerald-100 px-2.5 py-0.5 text-[10px] font-bold text-emerald-800">
+                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-ping"></span>
+                        LIVE STREAMING (1.5s interval)
+                      </span>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => setIsStreaming((s) => !s)}
+                      className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold transition ${
+                        isStreaming
+                          ? "bg-emerald-600 text-white hover:bg-emerald-700"
+                          : "border border-ink/20 bg-white text-ink hover:bg-ink/5"
+                      }`}
+                    >
+                      <Radio className="h-3 w-3" />
+                      {isStreaming ? "Stop Live Stream" : "Simulate Live Telemetry Stream"}
+                    </button>
+                  </div>
+                </div>
                 <div className="overflow-x-auto">
                   <pre className="rounded-xl bg-ink/5 p-4 font-mono text-xs leading-relaxed text-ink/80">
-                    {JSON.stringify(activeCaseStudy.sanitizedTelemetry, null, 2)}
+                    {JSON.stringify(
+                      streamedTelemetry || activeCaseStudy.sanitizedTelemetry,
+                      null,
+                      2,
+                    )}
                   </pre>
                 </div>
               </div>

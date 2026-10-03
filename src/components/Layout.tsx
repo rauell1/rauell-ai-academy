@@ -2,6 +2,7 @@ import { Link, useLocation } from "@tanstack/react-router";
 import { ArrowUpRight, BookOpen, Menu, X } from "lucide-react";
 import { Component, type ReactNode, useEffect, useState } from "react";
 import { authClient } from "@/lib/auth-client";
+import { CommandPalette } from "./CommandPalette";
 
 class ErrorBoundary extends Component<
   { children: ReactNode },
@@ -84,6 +85,20 @@ export function Header() {
           ))}
         </nav>
         <div className="hidden items-center gap-3 lg:flex">
+          <button
+            onClick={() => {
+              window.dispatchEvent(
+                new KeyboardEvent("keydown", { key: "k", metaKey: true }),
+              );
+            }}
+            className="inline-flex items-center gap-2 rounded-full border border-ink/10 bg-white/80 px-3 py-1.5 text-xs font-medium text-ink/70 hover:border-ink/20 hover:text-ink transition"
+            title="Search courses, lessons, and labs"
+          >
+            <span>Search</span>
+            <kbd className="rounded bg-ink/5 px-1.5 py-0.5 font-mono text-[10px] text-ink/50">
+              ⌘K
+            </kbd>
+          </button>
           <a
             href="https://rauell.systems"
             className="inline-flex items-center gap-1 text-xs font-bold text-ink/60 hover:text-ink"
@@ -218,6 +233,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
         <ErrorBoundary>{children}</ErrorBoundary>
       </main>
       <Footer />
+      <CommandPalette />
     </>
   );
 }

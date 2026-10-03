@@ -2,6 +2,7 @@ import { getRequestListener } from "@hono/node-server";
 import { Hono } from "hono";
 import { learningApi } from "../api/learning";
 import { operationsApi } from "../api/operations";
+import { aiApi } from "../api/ai";
 import { AuthorizationError } from "../permissions";
 import { getServerEnv } from "../env";
 
@@ -51,6 +52,7 @@ app.onError((error, c) => {
 
 app.route("/", learningApi);
 app.route("/", operationsApi);
+app.route("/", aiApi);
 
 const listener = getRequestListener(app.fetch);
 

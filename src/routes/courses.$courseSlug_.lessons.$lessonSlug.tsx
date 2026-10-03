@@ -13,6 +13,7 @@ import { apiRequest, type ApiCourse, type ApiModule, useApi } from "@/lib/api";
 import { LessonBlock, type Block } from "@/components/LessonBlock";
 import { courses as staticCourses } from "@/data/academy";
 import { getCourseBySlug, getLessonBySlug } from "@/data/canonical-curriculum";
+import { AITutorDrawer } from "@/components/AITutorDrawer";
 
 export const Route = createFileRoute(
   "/courses/$courseSlug_/lessons/$lessonSlug",
@@ -440,6 +441,13 @@ function Lesson() {
           </article>
         </main>
       </div>
+
+      <AITutorDrawer
+        courseSlug={courseSlug}
+        lessonTitle={lesson.title}
+        pathwayTitle={course?.title}
+        keyTakeaway={lesson.summary || undefined}
+      />
     </div>
   );
 }

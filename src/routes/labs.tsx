@@ -6,11 +6,14 @@ import {
   Info,
   Play,
   RotateCcw,
+  Sparkles,
+  RefreshCw,
   X,
 } from "lucide-react";
 import { useState } from "react";
 import { PageIntro } from "@/components/Cards";
 import { labs } from "@/data/academy";
+import { apiRequest } from "@/lib/api";
 
 export const Route = createFileRoute("/labs")({ component: Labs });
 
@@ -537,6 +540,14 @@ function Labs() {
   const [activeLab, setActiveLab] = useState<LabItem | null>(null);
   const [copied, setCopied] = useState(false);
   const [ranEvaluation, setRanEvaluation] = useState(false);
+  const [isEvaluating, setIsEvaluating] = useState(false);
+  const [evalMode, setEvalMode] = useState<"ai" | "heuristic">("ai");
+  const [evalMeta, setEvalMeta] = useState<{
+    model?: string;
+    provider?: string;
+    latencyMs?: number;
+    isFallback?: boolean;
+  } | null>(null);
   const [checkedCriteria, setCheckedCriteria] = useState<Set<number>>(new Set());
 
   // Reactive inputs and outputs
@@ -563,6 +574,7 @@ function Labs() {
     setOutputA(sb?.simulatedOutputA || "");
     setOutputB(sb?.simulatedOutputB || "");
     setRanEvaluation(false);
+    setEvalMeta(null);
     setCheckedCriteria(new Set());
   }
 
@@ -573,10 +585,65 @@ function Labs() {
     setOutputA(sandbox.simulatedOutputA);
     setOutputB(sandbox.simulatedOutputB || "");
     setRanEvaluation(false);
+    setEvalMeta(null);
   }
 
-  function handleRunEvaluation() {
+  async function handleRunEvaluation() {
     if (!activeLab || !sandbox) return;
+    setIsEvaluating(true);
+    setRanEvaluation(false);
+
+    if (evalMode === "ai") {
+      let taskType:
+        | "prompt_comparison"
+        | "claim_verification"
+        | "spec_generation"
+        | "anomaly_triage"
+        | "rubric_evaluation" = "rubric_evaluation";
+      if (activeLab.title.toLowerCase().includes("prompt comparison")) {
+        taskType = "prompt_comparison";
+      } else if (activeLab.title.toLowerCase().includes("claim verification")) {
+        taskType = "claim_verification";
+      } else if (activeLab.title.toLowerCase().includes("company profile")) {
+        taskType = "spec_generation";
+      } else if (activeLab.title.toLowerCase().includes("solar data")) {
+        taskType = "anomaly_triage";
+      }
+
+      try {
+        const res = await apiRequest<{
+          output: string;
+          provider: string;
+          model: string;
+          isFallback: boolean;
+          latencyMs: number;
+        }>("/ai/evaluate", {
+          method: "POST",
+          body: JSON.stringify({
+            taskType,
+            labName: activeLab.title,
+            inputA,
+            inputB: inputB || undefined,
+            criteria: sandbox.criteria,
+          }),
+        });
+
+        setOutputA(res.output);
+        setEvalMeta({
+          model: res.model,
+          provider: res.provider,
+          latencyMs: res.latencyMs,
+          isFallback: res.isFallback,
+        });
+        setRanEvaluation(true);
+        setIsEvaluating(false);
+        return;
+      } catch (err) {
+        console.warn("Live AI evaluation request failed, falling back to local heuristic:", err);
+      }
+    }
+
+    // Local heuristic execution
     const res = evaluateLabContent(activeLab.title, inputA, inputB, processedIds);
     setOutputA(res.outputA);
     if (res.outputB !== undefined) {
@@ -585,7 +652,13 @@ function Labs() {
     if (res.newProcessedId) {
       setProcessedIds((prev) => new Set([...prev, res.newProcessedId!]));
     }
+    setEvalMeta({
+      model: "Academy Heuristic Engine",
+      provider: "local_heuristic",
+      isFallback: true,
+    });
     setRanEvaluation(true);
+    setIsEvaluating(false);
   }
 
   function toggleCriteria(idx: number) {
@@ -697,6 +770,45 @@ function Labs() {
                 </ol>
               </div>
 
+              {/* Execution Engine Selector */}
+              <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-ink/10 bg-white p-3.5 shadow-xs">
+                <div className="flex items-center gap-2.5">
+                  <span className="text-xs font-bold text-ink/70">Engine:</span>
+                  <div className="inline-flex rounded-full bg-ink/5 p-1 border border-ink/10">
+                    <button
+                      onClick={() => setEvalMode("ai")}
+                      className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold transition ${
+                        evalMode === "ai"
+                          ? "bg-leaf text-white shadow-xs"
+                          : "text-ink/60 hover:text-ink"
+                      }`}
+                    >
+                      <Sparkles className="h-3 w-3" />
+                      Live NVIDIA AI (Llama 3.3 70B)
+                    </button>
+                    <button
+                      onClick={() => setEvalMode("heuristic")}
+                      className={`rounded-full px-3 py-1 text-xs font-bold transition ${
+                        evalMode === "heuristic"
+                          ? "bg-ink text-white shadow-xs"
+                          : "text-ink/60 hover:text-ink"
+                      }`}
+                    >
+                      Fast Local Heuristic
+                    </button>
+                  </div>
+                </div>
+
+                {evalMeta && (
+                  <div className="inline-flex items-center gap-2 rounded-full bg-paper px-3 py-1 text-[11px] font-medium text-ink/80 border border-ink/10">
+                    <span className="flex h-2 w-2 rounded-full bg-leaf"></span>
+                    <span>{evalMeta.model?.includes("llama") ? "Llama 3.3 (70B)" : evalMeta.model}</span>
+                    {evalMeta.latencyMs && <span>• {(evalMeta.latencyMs / 1000).toFixed(2)}s</span>}
+                    {evalMeta.isFallback && <span className="text-amber-700 font-semibold">• Offline Mode</span>}
+                  </div>
+                )}
+              </div>
+
               {/* Sandboxed Inputs and Outputs */}
               <div className="grid gap-6 lg:grid-cols-2">
                 {/* Inputs Column */}
@@ -730,9 +842,19 @@ function Labs() {
                   <div className="flex flex-wrap items-center gap-3">
                     <button
                       onClick={handleRunEvaluation}
-                      className="inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2.5 text-sm font-bold text-white transition hover:bg-leaf"
+                      disabled={isEvaluating}
+                      className="inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2.5 text-sm font-bold text-white transition hover:bg-leaf disabled:opacity-50"
                     >
-                      <Play className="h-4 w-4" /> Run & Evaluate
+                      {isEvaluating ? (
+                        <>
+                          <RefreshCw className="h-4 w-4 animate-spin text-mint" />
+                          Running Evaluation...
+                        </>
+                      ) : (
+                        <>
+                          <Play className="h-4 w-4" /> Run & Evaluate
+                        </>
+                      )}
                     </button>
                     {ranEvaluation && (
                       <span className="text-xs font-bold text-leaf">

@@ -53,6 +53,13 @@ function ProjectSubmissionWorkshop() {
   const [error, setError] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [draftSavedAt, setDraftSavedAt] = useState<string | null>(null);
+  const [isEvaluatingRubric, setIsEvaluatingRubric] = useState(false);
+  const [aiEvaluationResult, setAiEvaluationResult] = useState<{
+    output: string;
+    model?: string;
+    latencyMs?: number;
+    isFallback?: boolean;
+  } | null>(null);
 
   // Load draft from localStorage on mount
   useEffect(() => {
@@ -117,6 +124,46 @@ function ProjectSubmissionWorkshop() {
     isVerificationValid &&
     isFailureValid &&
     rubricScorePercent >= 70;
+
+  async function handleEvaluateWithAI() {
+    setIsEvaluatingRubric(true);
+    setError("");
+
+    const submissionDraft = [
+      `Pathway: ${pathway.title} Capstone`,
+      `Problem Summary:\n${formData.problemSummary || "Not yet written"}`,
+      `Solution / Deliverable:\n${formData.solutionDeliverable || "Not yet written"}`,
+      `Verification Matrix:\n${formData.verificationMatrix || "Not yet written"}`,
+      `Failure Log:\n${formData.failureLog || "Not yet written"}`,
+    ].join("\n\n");
+
+    try {
+      const res = await apiRequest<{
+        output: string;
+        model: string;
+        latencyMs: number;
+        isFallback: boolean;
+      }>("/ai/evaluate", {
+        method: "POST",
+        body: JSON.stringify({
+          taskType: "rubric_evaluation",
+          inputA: submissionDraft,
+          criteria: pathway.capstoneRubric,
+        }),
+      });
+
+      setAiEvaluationResult({
+        output: res.output,
+        model: res.model,
+        latencyMs: res.latencyMs,
+        isFallback: res.isFallback,
+      });
+    } catch (err: any) {
+      setError("AI Evaluation failed: " + (err.message || "Network error"));
+    } finally {
+      setIsEvaluatingRubric(false);
+    }
+  }
 
   async function handleSave(final: boolean) {
     setError("");
@@ -453,6 +500,35 @@ function ProjectSubmissionWorkshop() {
                   </label>
                 ))}
               </div>
+
+              <div className="mt-4 pt-4 border-t border-leaf/20">
+                <button
+                  type="button"
+                  onClick={handleEvaluateWithAI}
+                  disabled={isEvaluatingRubric}
+                  className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-ink px-4 py-2.5 text-xs font-bold text-white transition hover:bg-leaf disabled:opacity-50"
+                >
+                  <Sparkles className="h-3.5 w-3.5 text-mint" />
+                  {isEvaluatingRubric ? "Analyzing with Llama 3.3..." : "Evaluate Draft with AI Rubric"}
+                </button>
+              </div>
+
+              {aiEvaluationResult && (
+                <div className="mt-4 rounded-xl border border-leaf/30 bg-white p-4 shadow-xs">
+                  <div className="flex items-center justify-between border-b border-ink/10 pb-2">
+                    <span className="font-bold text-xs text-ink flex items-center gap-1.5">
+                      <Sparkles className="h-3.5 w-3.5 text-leaf" />
+                      AI Rubric Feedback
+                    </span>
+                    <span className="text-[10px] text-ink/50">
+                      {aiEvaluationResult.model?.includes("llama") ? "Llama 3.3 70B" : "Academy Evaluator"}
+                    </span>
+                  </div>
+                  <div className="mt-2 text-xs leading-relaxed text-ink/80 whitespace-pre-wrap font-mono">
+                    {aiEvaluationResult.output}
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="rounded-2xl border border-ink/10 bg-white p-6 shadow-sm">
