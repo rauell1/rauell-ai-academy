@@ -29,8 +29,12 @@ const serverEnvSchema = z.object({
     .positive()
     .default(10 * 1024 * 1024),
   NVIDIA_API_KEY: z.string().optional(),
+  NVIDIA_API_KEY_1: z.string().optional(),
+  NVIDIA_API_KEY_2: z.string().optional(),
   NVIDIA_BASE_URL: z.string().url().default("https://integrate.api.nvidia.com/v1"),
   NVIDIA_MODEL: z.string().default("meta/llama-3.2-90b-vision-instruct"),
+  NVIDIA_MODEL_HEAVY: z.string().default("meta/llama-3.2-90b-vision-instruct"),
+  NVIDIA_MODEL_LIGHT: z.string().default("meta/llama-3.2-11b-vision-instruct"),
   NEON_AI_GATEWAY_TOKEN: z.string().optional(),
   NEON_AI_GATEWAY_BASE_URL: z.string().url().optional(),
 });

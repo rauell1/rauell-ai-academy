@@ -46,8 +46,12 @@ var serverEnvSchema = z.object({
   BLOB_READ_WRITE_TOKEN: z.string().optional(),
   MAX_PROJECT_UPLOAD_BYTES: z.coerce.number().int().positive().default(10 * 1024 * 1024),
   NVIDIA_API_KEY: z.string().optional(),
+  NVIDIA_API_KEY_1: z.string().optional(),
+  NVIDIA_API_KEY_2: z.string().optional(),
   NVIDIA_BASE_URL: z.string().url().default("https://integrate.api.nvidia.com/v1"),
   NVIDIA_MODEL: z.string().default("meta/llama-3.2-90b-vision-instruct"),
+  NVIDIA_MODEL_HEAVY: z.string().default("meta/llama-3.2-90b-vision-instruct"),
+  NVIDIA_MODEL_LIGHT: z.string().default("meta/llama-3.2-11b-vision-instruct"),
   NEON_AI_GATEWAY_TOKEN: z.string().optional(),
   NEON_AI_GATEWAY_BASE_URL: z.string().url().optional()
 });
@@ -2412,6 +2416,7 @@ var chatSchema = z4.object({
     pathwayTitle: z4.string().optional(),
     keyTakeaway: z4.string().optional()
   }).optional(),
+  tier: z4.enum(["heavy", "light"]).default("light"),
   model: z4.string().optional(),
   temperature: z4.number().min(0).max(1).optional()
 });
@@ -2428,17 +2433,50 @@ var evaluateSchema = z4.object({
   inputB: z4.string().max(1e4).optional(),
   criteria: z4.array(z4.string()).optional(),
   context: z4.record(z4.string(), z4.any()).optional(),
+  tier: z4.enum(["heavy", "light"]).default("heavy"),
   model: z4.string().optional()
 });
+function resolveCredentials(tier) {
+  const env2 = getServerEnv();
+  if (tier === "heavy") {
+    const key2 = env2.NVIDIA_API_KEY_1?.trim() || env2.NVIDIA_API_KEY?.trim() || env2.NVIDIA_API_KEY_2?.trim() || null;
+    return {
+      apiKey: key2,
+      model: env2.NVIDIA_MODEL_HEAVY || "meta/llama-3.2-90b-vision-instruct",
+      keySource: env2.NVIDIA_API_KEY_1 ? "NVIDIA_API_KEY_1 (Heavy)" : "NVIDIA_API_KEY"
+    };
+  }
+  const key = env2.NVIDIA_API_KEY_2?.trim() || env2.NVIDIA_API_KEY_1?.trim() || env2.NVIDIA_API_KEY?.trim() || null;
+  return {
+    apiKey: key,
+    model: env2.NVIDIA_MODEL_LIGHT || "meta/llama-3.2-11b-vision-instruct",
+    keySource: env2.NVIDIA_API_KEY_2 ? "NVIDIA_API_KEY_2 (Light)" : "NVIDIA_API_KEY"
+  };
+}
 aiApi.get("/ai/status", (c) => {
   const env2 = getServerEnv();
-  const hasNvidia = Boolean(env2.NVIDIA_API_KEY && env2.NVIDIA_API_KEY.trim().length > 5);
+  const heavy = resolveCredentials("heavy");
+  const light = resolveCredentials("light");
   const hasNeonGateway = Boolean(env2.NEON_AI_GATEWAY_TOKEN);
   return c.json({
-    available: hasNvidia || hasNeonGateway,
-    provider: hasNvidia ? "nvidia" : hasNeonGateway ? "neon_gateway" : "local_heuristic",
-    model: env2.NVIDIA_MODEL || "meta/llama-3.2-90b-vision-instruct",
-    endpoint: hasNvidia ? env2.NVIDIA_BASE_URL : env2.NEON_AI_GATEWAY_BASE_URL || null
+    available: Boolean(heavy.apiKey || light.apiKey || hasNeonGateway),
+    provider: heavy.apiKey || light.apiKey ? "nvidia" : hasNeonGateway ? "neon_gateway" : "local_heuristic",
+    model: heavy.model,
+    tiers: {
+      heavy: {
+        configured: Boolean(heavy.apiKey),
+        model: heavy.model,
+        keySource: heavy.keySource,
+        role: "Evaluations, Labs, and Capstone Rubric Assessment"
+      },
+      light: {
+        configured: Boolean(light.apiKey),
+        model: light.model,
+        keySource: light.keySource,
+        role: "In-Lesson Interactive AI Tutor Chat"
+      }
+    },
+    endpoint: env2.NVIDIA_BASE_URL
   });
 });
 async function callOpenAiCompatible(params) {
@@ -2493,12 +2531,13 @@ aiApi.post("/ai/chat", zValidator3("json", chatSchema), async (c) => {
     { role: "system", content: systemInstructions },
     ...input.messages
   ];
-  if (env2.NVIDIA_API_KEY && env2.NVIDIA_API_KEY.trim().length > 5) {
+  const creds = resolveCredentials(input.tier || "light");
+  if (creds.apiKey && creds.apiKey.trim().length > 5) {
     try {
-      const model = input.model || env2.NVIDIA_MODEL || "meta/llama-3.2-90b-vision-instruct";
+      const model = input.model || creds.model;
       const reply = await callOpenAiCompatible({
         url: env2.NVIDIA_BASE_URL,
-        apiKey: env2.NVIDIA_API_KEY,
+        apiKey: creds.apiKey,
         model,
         messages: fullMessages,
         temperature: input.temperature ?? 0.3,
@@ -2508,6 +2547,8 @@ aiApi.post("/ai/chat", zValidator3("json", chatSchema), async (c) => {
         message: reply,
         provider: "nvidia",
         model,
+        tier: input.tier || "light",
+        keySource: creds.keySource,
         isFallback: false,
         latencyMs: Date.now() - startTime
       });
@@ -2559,12 +2600,13 @@ aiApi.post("/ai/evaluate", zValidator3("json", evaluateSchema), async (c) => {
     },
     { role: "user", content: evalPrompt }
   ];
-  if (env2.NVIDIA_API_KEY && env2.NVIDIA_API_KEY.trim().length > 5) {
+  const creds = resolveCredentials(input.tier || "heavy");
+  if (creds.apiKey && creds.apiKey.trim().length > 5) {
     try {
-      const model = input.model || env2.NVIDIA_MODEL || "meta/llama-3.2-90b-vision-instruct";
+      const model = input.model || creds.model;
       const response = await callOpenAiCompatible({
         url: env2.NVIDIA_BASE_URL,
-        apiKey: env2.NVIDIA_API_KEY,
+        apiKey: creds.apiKey,
         model,
         messages,
         temperature: 0.1,
@@ -2574,6 +2616,8 @@ aiApi.post("/ai/evaluate", zValidator3("json", evaluateSchema), async (c) => {
         output: response,
         provider: "nvidia",
         model,
+        tier: input.tier || "heavy",
+        keySource: creds.keySource,
         isFallback: false,
         latencyMs: Date.now() - startTime
       });

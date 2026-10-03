@@ -84,4 +84,16 @@ describe("AI Integration & NVIDIA Gateway API (/api/v1/ai)", () => {
     expect(json).toHaveProperty("output");
     expect(json.output).toContain("Rubric Assessment");
   });
+
+  it("GET /ai/status reports both heavy and light model tiers", async () => {
+    const res = await aiApi.request("/ai/status");
+    expect(res.status).toBe(200);
+
+    const json = await res.json();
+    expect(json).toHaveProperty("tiers");
+    expect(json.tiers).toHaveProperty("heavy");
+    expect(json.tiers).toHaveProperty("light");
+    expect(json.tiers.heavy.model).toContain("90b");
+    expect(json.tiers.light.model).toContain("11b");
+  });
 });
