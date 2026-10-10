@@ -1,3 +1,4 @@
+import { AcademyLogo } from "./AcademyLogo";
 import type { FormEvent, ReactNode } from "react";
 
 export function AuthCard({
@@ -12,6 +13,7 @@ export function AuthCard({
   return (
     <section className="mx-auto max-w-md px-5 py-16 sm:py-24">
       <div className="card p-6 sm:p-8">
+        <AcademyLogo className="mb-5 h-14 w-14" />
         <p className="eyebrow text-leaf">Secure account</p>
         <h1 className="font-display mt-4 text-3xl font-bold">{title}</h1>
         <p className="mt-3 text-sm leading-6 text-ink/60">{copy}</p>

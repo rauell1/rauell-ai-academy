@@ -1,3 +1,4 @@
+import { AcademyLogo } from "./AcademyLogo";
 import { useState, useEffect, useMemo, useRef } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import {
@@ -362,7 +363,10 @@ export function CommandPalette() {
               select
             </span>
           </div>
-          <span>NVIDIA LLM & Academy Search</span>
+          <span className="inline-flex items-center gap-2">
+            <AcademyLogo decorative className="h-5 w-5" />
+            Academy Search
+          </span>
         </div>
       </div>
     </div>

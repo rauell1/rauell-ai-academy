@@ -1,5 +1,6 @@
+import { AcademyLogo } from "./AcademyLogo";
 import { useState, useRef, useEffect } from "react";
-import { Bot, Send, X, Sparkles, RefreshCw, ChevronRight } from "lucide-react";
+import { Bot, Send, X, RefreshCw, ChevronRight } from "lucide-react";
 import { apiRequest } from "@/lib/api";
 import { FormattedMessage } from "./FormattedMessage";
 
@@ -178,8 +179,8 @@ export function AITutorDrawer({
             {/* Header */}
             <div className="flex items-center justify-between border-b border-zinc-200 bg-zinc-50 px-4 py-3.5">
               <div className="flex items-center gap-2.5">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-700 text-white shadow-xs">
-                  <Sparkles className="h-4 w-4" />
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-paper shadow-xs">
+                  <AcademyLogo decorative className="h-6 w-6" />
                 </div>
                 <div>
                   <h3 className="font-semibold text-sm text-zinc-900 flex items-center gap-1.5">

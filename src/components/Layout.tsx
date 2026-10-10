@@ -1,5 +1,6 @@
+import { AcademyLogo } from "./AcademyLogo";
 import { Link, useLocation } from "@tanstack/react-router";
-import { ArrowUpRight, BookOpen, Menu, X } from "lucide-react";
+import { ArrowUpRight, Menu, X } from "lucide-react";
 import { Component, type ReactNode, useEffect, useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { useRbac } from "@/lib/use-rbac";
@@ -81,11 +82,7 @@ export function Header() {
           className="flex items-center gap-3"
           aria-label="Rauell AI Academy home"
         >
-          <img
-            src="/logo.png"
-            alt=""
-            className="h-9 w-9 rounded-lg object-contain"
-          />
+          <AcademyLogo decorative className="h-10 w-10" />
           <div className="leading-none">
             <div className="font-display text-[18px] font-bold">Rauell</div>
             <div className="mt-1 text-[9px] font-bold uppercase tracking-[.23em] text-ink/55">
@@ -273,7 +270,10 @@ export function Footer() {
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
           <div className="lg:col-span-2">
             <div className="flex items-center gap-3">
-              <img src="/logo.png" alt="" className="h-10 w-10 rounded-lg" />
+              <AcademyLogo
+                decorative
+                className="h-11 w-11 rounded-xl bg-paper p-1"
+              />
               <div>
                 <p className="font-display text-xl font-bold">
                   Rauell AI Academy
@@ -357,9 +357,9 @@ export function AppLayout({ children }: { children: ReactNode }) {
 export function LogoMark({ className = "" }: { className?: string }) {
   return (
     <div
-      className={`grid place-items-center rounded-2xl bg-ink text-mint ${className}`}
+      className={`grid place-items-center rounded-2xl bg-paper ${className}`}
     >
-      <BookOpen className="h-1/2 w-1/2" />
+      <AcademyLogo className="h-4/5 w-4/5" />
     </div>
   );
 }

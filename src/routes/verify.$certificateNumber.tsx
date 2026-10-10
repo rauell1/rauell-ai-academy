@@ -1,5 +1,6 @@
+import { AcademyLogo } from "@/components/AcademyLogo";
 import { createFileRoute } from "@tanstack/react-router";
-import { Award, CheckCircle2, XCircle } from "lucide-react";
+import { CheckCircle2, XCircle } from "lucide-react";
 import { useApi } from "@/lib/api";
 type Verification = {
   status: "valid" | "revoked" | "expired";
@@ -110,7 +111,7 @@ function Verify() {
         </div>
       </div>
       <div className="mt-6 flex items-center justify-center gap-2 text-sm text-ink/50">
-        <Award className="h-4 w-4" />
+        <AcademyLogo decorative className="h-7 w-7" />
         Rauell AI Academy public verification
       </div>
     </section>

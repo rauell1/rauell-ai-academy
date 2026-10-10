@@ -1,12 +1,6 @@
+import { AcademyLogo } from "./AcademyLogo";
 import { Link, useLocation } from "@tanstack/react-router";
-import {
-  ArrowLeft,
-  CheckCircle2,
-  Lock,
-  LogIn,
-  Sparkles,
-  UserPlus,
-} from "lucide-react";
+import { ArrowLeft, CheckCircle2, Lock, LogIn, UserPlus } from "lucide-react";
 import React, { type ReactNode } from "react";
 import { authClient } from "@/lib/auth-client";
 
@@ -49,8 +43,8 @@ export function RequireAuth({
           <div className="grid h-20 w-20 place-items-center rounded-3xl bg-leaf/10 border-2 border-leaf/30 text-leaf shadow-sm">
             <Lock className="h-9 w-9 text-leaf" />
           </div>
-          <div className="absolute -bottom-1 -right-1 grid h-7 w-7 place-items-center rounded-full bg-ink text-mint shadow">
-            <Sparkles className="h-4 w-4" />
+          <div className="absolute -bottom-1 -right-1 grid h-7 w-7 place-items-center rounded-full bg-paper shadow">
+            <AcademyLogo decorative className="h-5 w-5" />
           </div>
         </div>
 
