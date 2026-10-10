@@ -231,7 +231,9 @@ function DashboardContent({ data }: { data: DashboardData }) {
                     </span>
                   </div>
                 </div>
-                <p className="text-xs font-semibold text-ink/60">Course progress</p>
+                <p className="text-xs font-semibold text-ink/60">
+                  Course progress
+                </p>
               </div>
               <div className="mt-5 flex flex-wrap items-center gap-4">
                 <Link

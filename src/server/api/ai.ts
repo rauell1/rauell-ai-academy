@@ -7,12 +7,15 @@ import { getActiveSession } from "../permissions";
 export const aiApi = new Hono();
 
 const chatSchema = z.object({
-  messages: z.array(
-    z.object({
-      role: z.enum(["system", "user", "assistant"]),
-      content: z.string().min(1).max(8000),
-    }),
-  ).min(1).max(20),
+  messages: z
+    .array(
+      z.object({
+        role: z.enum(["system", "user", "assistant"]),
+        content: z.string().min(1).max(8000),
+      }),
+    )
+    .min(1)
+    .max(20),
   context: z
     .object({
       courseSlug: z.string().optional(),
@@ -55,7 +58,9 @@ function resolveCredentials(tier: "heavy" | "light") {
     return {
       apiKey: key,
       model: env.NVIDIA_MODEL_HEAVY || "meta/llama-3.2-90b-vision-instruct",
-      keySource: env.NVIDIA_API_KEY_1 ? "NVIDIA_API_KEY_1 (Heavy)" : "NVIDIA_API_KEY",
+      keySource: env.NVIDIA_API_KEY_1
+        ? "NVIDIA_API_KEY_1 (Heavy)"
+        : "NVIDIA_API_KEY",
     };
   }
 
@@ -68,7 +73,9 @@ function resolveCredentials(tier: "heavy" | "light") {
   return {
     apiKey: key,
     model: env.NVIDIA_MODEL_LIGHT || "meta/llama-3.2-11b-vision-instruct",
-    keySource: env.NVIDIA_API_KEY_2 ? "NVIDIA_API_KEY_2 (Light)" : "NVIDIA_API_KEY",
+    keySource: env.NVIDIA_API_KEY_2
+      ? "NVIDIA_API_KEY_2 (Light)"
+      : "NVIDIA_API_KEY",
   };
 }
 
@@ -80,7 +87,12 @@ aiApi.get("/ai/status", (c) => {
 
   return c.json({
     available: Boolean(heavy.apiKey || light.apiKey || hasNeonGateway),
-    provider: (heavy.apiKey || light.apiKey) ? "nvidia" : hasNeonGateway ? "neon_gateway" : "local_heuristic",
+    provider:
+      heavy.apiKey || light.apiKey
+        ? "nvidia"
+        : hasNeonGateway
+          ? "neon_gateway"
+          : "local_heuristic",
     model: heavy.model,
     tiers: {
       heavy: {
@@ -112,24 +124,29 @@ async function callOpenAiCompatible(params: {
   const timer = setTimeout(() => controller.abort(), 20000);
 
   try {
-    const res = await fetch(`${params.url.replace(/\/+$/, "")}/chat/completions`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${params.apiKey}`,
+    const res = await fetch(
+      `${params.url.replace(/\/+$/, "")}/chat/completions`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${params.apiKey}`,
+        },
+        body: JSON.stringify({
+          model: params.model,
+          messages: params.messages,
+          temperature: params.temperature ?? 0.2,
+          max_tokens: params.maxTokens ?? 1500,
+        }),
+        signal: controller.signal,
       },
-      body: JSON.stringify({
-        model: params.model,
-        messages: params.messages,
-        temperature: params.temperature ?? 0.2,
-        max_tokens: params.maxTokens ?? 1500,
-      }),
-      signal: controller.signal,
-    });
+    );
 
     if (!res.ok) {
       const errText = await res.text().catch(() => "");
-      throw new Error(`LLM upstream error ${res.status}: ${errText.slice(0, 200)}`);
+      throw new Error(
+        `LLM upstream error ${res.status}: ${errText.slice(0, 200)}`,
+      );
     }
 
     const json = (await res.json()) as any;
@@ -146,7 +163,10 @@ async function callOpenAiCompatible(params: {
 aiApi.post("/ai/chat", zValidator("json", chatSchema), async (c) => {
   const session = await getActiveSession(c.req.raw.headers);
   if (!session) {
-    return c.json({ error: "Authentication required to consult the AI Mentor." }, 401);
+    return c.json(
+      { error: "Authentication required to consult the AI Mentor." },
+      401,
+    );
   }
 
   const startTime = Date.now();
@@ -161,9 +181,13 @@ aiApi.post("/ai/chat", zValidator("json", chatSchema), async (c) => {
     "- Explain technical terms using plain English and real-world Kenyan/African analogies.",
     "- Guide learners with the Socratic method when they are debugging or learning.",
     "- Emphasize verification, primary sources, schemas, and defensive design.",
-    input.context?.lessonTitle ? `Current Lesson Context: "${input.context.lessonTitle}"` : "",
+    input.context?.lessonTitle
+      ? `Current Lesson Context: "${input.context.lessonTitle}"`
+      : "",
     input.context?.courseSlug ? `Course: ${input.context.courseSlug}` : "",
-    input.context?.keyTakeaway ? `Key Concept: ${input.context.keyTakeaway}` : "",
+    input.context?.keyTakeaway
+      ? `Key Concept: ${input.context.keyTakeaway}`
+      : "",
   ]
     .filter(Boolean)
     .join("\n");
@@ -197,7 +221,10 @@ aiApi.post("/ai/chat", zValidator("json", chatSchema), async (c) => {
         latencyMs: Date.now() - startTime,
       });
     } catch (err) {
-      console.warn("NVIDIA NIM API call failed, falling back to offline mentor:", err);
+      console.warn(
+        "NVIDIA NIM API call failed, falling back to offline mentor:",
+        err,
+      );
     }
   }
 
@@ -222,12 +249,16 @@ aiApi.post("/ai/chat", zValidator("json", chatSchema), async (c) => {
         latencyMs: Date.now() - startTime,
       });
     } catch (err) {
-      console.warn("Neon AI Gateway call failed, falling back to offline mentor:", err);
+      console.warn(
+        "Neon AI Gateway call failed, falling back to offline mentor:",
+        err,
+      );
     }
   }
 
   // Intelligent Contextual Offline Mentor Fallback
-  const lastUserMsg = [...input.messages].reverse().find((m) => m.role === "user")?.content || "";
+  const lastUserMsg =
+    [...input.messages].reverse().find((m) => m.role === "user")?.content || "";
   const offlineReply = generateOfflineMentorReply(lastUserMsg, input.context);
 
   return c.json({
@@ -242,7 +273,10 @@ aiApi.post("/ai/chat", zValidator("json", chatSchema), async (c) => {
 aiApi.post("/ai/evaluate", zValidator("json", evaluateSchema), async (c) => {
   const session = await getActiveSession(c.req.raw.headers);
   if (!session) {
-    return c.json({ error: "Authentication required to run AI evaluations." }, 401);
+    return c.json(
+      { error: "Authentication required to run AI evaluations." },
+      401,
+    );
   }
 
   const startTime = Date.now();
@@ -283,7 +317,10 @@ aiApi.post("/ai/evaluate", zValidator("json", evaluateSchema), async (c) => {
         latencyMs: Date.now() - startTime,
       });
     } catch (err) {
-      console.warn("NVIDIA evaluation failed, falling back to local evaluator:", err);
+      console.warn(
+        "NVIDIA evaluation failed, falling back to local evaluator:",
+        err,
+      );
     }
   }
 
@@ -383,7 +420,11 @@ function generateOfflineMentorReply(
 ): string {
   const queryLower = userQuery.toLowerCase();
 
-  if (queryLower.includes("clipping") || queryLower.includes("soiling") || queryLower.includes("solar")) {
+  if (
+    queryLower.includes("clipping") ||
+    queryLower.includes("soiling") ||
+    queryLower.includes("solar")
+  ) {
     return `### Solar Telemetry Insights
 
 In solar PV operations, distinguishing between **inverter clipping** and **soiling/string degradation** is critical:
@@ -401,7 +442,11 @@ In solar PV operations, distinguishing between **inverter clipping** and **soili
 *Next Step:* Try adjusting the current values in the Solar Anomaly Lab to generate an automated work order.`;
   }
 
-  if (queryLower.includes("zod") || queryLower.includes("schema") || queryLower.includes("json")) {
+  if (
+    queryLower.includes("zod") ||
+    queryLower.includes("schema") ||
+    queryLower.includes("json")
+  ) {
     return `### Structured Schemas with Zod
 
 When integrating AI with production systems or APIs (like M-Pesa or CRM endpoints), never accept freeform text. Enforce runtime validation:
@@ -424,7 +469,11 @@ export type PaymentCallback = z.infer<typeof PaymentCallbackSchema>;
 - It provides typed error messages that can be fed back into an automatic repair loop.`;
   }
 
-  if (queryLower.includes("idempotency") || queryLower.includes("webhook") || queryLower.includes("duplicate")) {
+  if (
+    queryLower.includes("idempotency") ||
+    queryLower.includes("webhook") ||
+    queryLower.includes("duplicate")
+  ) {
     return `### Idempotency in Production Workflows
 
 An operation is **idempotent** if performing it multiple times produces the exact same outcome as running it once.
@@ -458,7 +507,9 @@ When building practical AI systems, always keep these three operational principl
 How would you like to apply this to your current exercise?`;
 }
 
-function generateLocalEvaluation(input: z.infer<typeof evaluateSchema>): string {
+function generateLocalEvaluation(
+  input: z.infer<typeof evaluateSchema>,
+): string {
   switch (input.taskType) {
     case "prompt_comparison":
       return `### Automated Comparative Evaluation

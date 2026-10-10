@@ -147,21 +147,25 @@ export const pathwayFCourses: CanonicalCourse[] = [
       "Model peak tariff arbitrage against Kenya Power time-of-use tariffs.",
     ],
     prerequisites: "Spreadsheet & Operational Data Analysis (Course D3).",
-    targetAudience: "Energy engineers, solar installers, operations technicians, and mini-grid operators.",
+    targetAudience:
+      "Energy engineers, solar installers, operations technicians, and mini-grid operators.",
     modules: [
       {
         id: "f1-m1",
         title: "Microgrid Telemetry & Fault Diagnosis",
-        description: "Diagnosing PV array and inverter anomalies using IoT telemetry.",
+        description:
+          "Diagnosing PV array and inverter anomalies using IoT telemetry.",
         lessons: [
           {
             id: "f1-m1-l1",
             slug: "1-1",
             title: "PV string telemetry and inverter fault triage",
-            summary: "Analyzing string voltages, currents, and inverter trip codes in real-world solar systems.",
+            summary:
+              "Analyzing string voltages, currents, and inverter trip codes in real-world solar systems.",
             estimatedMinutes: 25,
             blocks: buildLessonBlocks({
-              problemHeading: "Diagnosing Silent Power Losses in Commercial Solar",
+              problemHeading:
+                "Diagnosing Silent Power Losses in Commercial Solar",
               scenarioTitle: "The Mysterious 25% Power Drop at Noon",
               scenarioText:
                 "A 120kWp solar mini-grid in Nakuru experiences an intermittent 25% drop in power generation every sunny day between 12:30 PM and 1:30 PM. Technicians blame Kenya Power grid fluctuations, but actual solar logs reveal Inverter #2 is tripping on DC overvoltage because string open-circuit voltage calculations ignored cold-temperature coefficients.",
@@ -184,7 +188,8 @@ export const pathwayFCourses: CanonicalCourse[] = [
               exerciseHeading: "Exercise: String Anomaly Triage",
               exerciseTask:
                 "Given a table of 4 string readings (Str 1: 620V / 8.8A; Str 2: 621V / 8.9A; Str 3: 618V / 6.2A; Str 4: 622V / 8.8A), identify the anomaly, probable cause, and generate a safety-first technician work order.",
-              quizQuestion: "What does it indicate if one PV string on an inverter produces 6.2A while three identical parallel strings produce 8.8A under midday sunshine?",
+              quizQuestion:
+                "What does it indicate if one PV string on an inverter produces 6.2A while three identical parallel strings produce 8.8A under midday sunshine?",
               quizOptions: [
                 "The sun is shining brighter on the other three strings.",
                 "A localized fault on that string—such as heavy dust soiling, partial tree shading, damaged bypass diodes, or a defective module.",
@@ -202,8 +207,10 @@ export const pathwayFCourses: CanonicalCourse[] = [
           {
             id: "f1-m1-l2",
             slug: "1-2",
-            title: "Solar irradiance forecasting and performance ratio auditing",
-            summary: "Calculating Performance Ratio (PR) and weather-adjusted solar yield benchmarks.",
+            title:
+              "Solar irradiance forecasting and performance ratio auditing",
+            summary:
+              "Calculating Performance Ratio (PR) and weather-adjusted solar yield benchmarks.",
             estimatedMinutes: 25,
             blocks: buildLessonBlocks({
               problemHeading: "Separating Weather Dips from Hardware Failures",
@@ -229,7 +236,8 @@ export const pathwayFCourses: CanonicalCourse[] = [
               exerciseHeading: "Exercise: Performance Ratio Calculation",
               exerciseTask:
                 "A 100 kWp solar array in Kericho generates 390 kWh on a day with 5.2 Peak Sun Hours measured by satellite telemetry. Calculate the Performance Ratio (PR) and determine if cleaning is required (threshold PR < 76%).",
-              quizQuestion: "What is the Performance Ratio (PR) of a solar PV system?",
+              quizQuestion:
+                "What is the Performance Ratio (PR) of a solar PV system?",
               quizOptions: [
                 "The percentage of days in a year that the sun shines.",
                 "The ratio of actual generated electricity to the theoretical maximum generation based on measured sunlight irradiance.",
@@ -248,7 +256,8 @@ export const pathwayFCourses: CanonicalCourse[] = [
             id: "f1-m1-l3",
             slug: "1-3",
             title: "Battery state of charge (SoC) and degradation management",
-            summary: "Managing lithium iron phosphate (LiFePO4) cycle life, depth of discharge, and C-rates.",
+            summary:
+              "Managing lithium iron phosphate (LiFePO4) cycle life, depth of discharge, and C-rates.",
             estimatedMinutes: 25,
             blocks: buildLessonBlocks({
               problemHeading: "The Rapid Death of Abused Battery Banks",
@@ -274,7 +283,8 @@ export const pathwayFCourses: CanonicalCourse[] = [
               exerciseHeading: "Exercise: Battery Health Strategy",
               exerciseTask:
                 "Draft an automated control rule for an off-grid lodge in Samburu that preserves battery health by adjusting night-time non-essential loads based on current State of Charge and temperature.",
-              quizQuestion: "Why should a commercial lithium mini-grid battery system generally maintain a minimum 15% to 20% State of Charge reserve?",
+              quizQuestion:
+                "Why should a commercial lithium mini-grid battery system generally maintain a minimum 15% to 20% State of Charge reserve?",
               quizOptions: [
                 "Because batteries explode if they are empty.",
                 "To prevent deep-discharge cell stress, extend overall cycle lifespan, and maintain an emergency power reserve.",
@@ -293,7 +303,8 @@ export const pathwayFCourses: CanonicalCourse[] = [
             id: "f1-m1-l4",
             slug: "1-4",
             title: "Peak tariff arbitrage and Kenya Power grid integration",
-            summary: "Optimizing time-of-use (TOU) tariffs, auto-transfer switches, and diesel generator reduction.",
+            summary:
+              "Optimizing time-of-use (TOU) tariffs, auto-transfer switches, and diesel generator reduction.",
             estimatedMinutes: 25,
             blocks: buildLessonBlocks({
               problemHeading: "Paying Peak Electricity Tariffs Unnecessarily",
@@ -319,7 +330,8 @@ export const pathwayFCourses: CanonicalCourse[] = [
               exerciseHeading: "Exercise: Calculate Peak Shaving Savings",
               exerciseTask:
                 "Calculate monthly savings for a factory shaving 40 kW off their evening peak load (4 hours/day, 26 days/month) when peak grid tariff is 24 KES/kWh and off-peak charging cost is 12 KES/kWh.",
-              quizQuestion: "What is 'peak shaving' in commercial energy management?",
+              quizQuestion:
+                "What is 'peak shaving' in commercial energy management?",
               quizOptions: [
                 "Disconnecting the solar panels completely during hot weather.",
                 "Using batteries or on-site solar to reduce electricity consumption from the grid during high-tariff peak hours.",
@@ -366,7 +378,8 @@ export const pathwayFCourses: CanonicalCourse[] = [
       "Apply computer vision models to identify crop diseases and pest infestations.",
     ],
     prerequisites: "Spreadsheet & Operational Data Analysis (Course D3).",
-    targetAudience: "Farm managers, agronomists, water engineers, and environmental officers.",
+    targetAudience:
+      "Farm managers, agronomists, water engineers, and environmental officers.",
     modules: [
       {
         id: "f2-m1",
@@ -376,8 +389,10 @@ export const pathwayFCourses: CanonicalCourse[] = [
           {
             id: "f2-m1-l1",
             slug: "1-1",
-            title: "Groundwater aquifer abstraction and WARMA statutory compliance",
-            summary: "Tracking borehole meter telemetry against Kenya Water Resources Authority permit caps.",
+            title:
+              "Groundwater aquifer abstraction and WARMA statutory compliance",
+            summary:
+              "Tracking borehole meter telemetry against Kenya Water Resources Authority permit caps.",
             estimatedMinutes: 25,
             blocks: buildLessonBlocks({
               problemHeading: "Statutory Fines and Aquifer Depletion",
@@ -403,7 +418,8 @@ export const pathwayFCourses: CanonicalCourse[] = [
               exerciseHeading: "Exercise: Design a WARMA Compliance Dashboard",
               exerciseTask:
                 "Design a daily compliance monitoring report that tracks borehole yield, daily permit quota percentage, and drawdown recovery rate for a commercial tea estate in Kericho.",
-              quizQuestion: "What is the primary statutory consequence of exceeding borehole abstraction limits set by the Water Resources Authority (WARMA) in Kenya?",
+              quizQuestion:
+                "What is the primary statutory consequence of exceeding borehole abstraction limits set by the Water Resources Authority (WARMA) in Kenya?",
               quizOptions: [
                 "You are required to plant five eucalyptus trees.",
                 "Severe statutory fines, borehole decommissioning or sealing, and revocation of commercial export permits.",
@@ -421,11 +437,14 @@ export const pathwayFCourses: CanonicalCourse[] = [
           {
             id: "f2-m1-l2",
             slug: "1-2",
-            title: "Electrical conductivity (salinity) and water quality telemetry",
-            summary: "Monitoring TDS and salinity to protect crops from irreversible soil poisoning.",
+            title:
+              "Electrical conductivity (salinity) and water quality telemetry",
+            summary:
+              "Monitoring TDS and salinity to protect crops from irreversible soil poisoning.",
             estimatedMinutes: 25,
             blocks: buildLessonBlocks({
-              problemHeading: "The Silent Poisoning of Fertile Greenhouse Soils",
+              problemHeading:
+                "The Silent Poisoning of Fertile Greenhouse Soils",
               scenarioTitle: "The Salty Borehole Catastrophe",
               scenarioText:
                 "A rose farm near Lake Naivasha drills a new deep borehole (180m). Initial water testing was clean. During dry months, the regional water table drops, drawing geothermal mineralized water. The farm irrigates with water containing 1,800 µS/cm electrical conductivity for two weeks, causing leaf-tip burn and 40% crop rejection at Amsterdam auctions.",
@@ -448,7 +467,8 @@ export const pathwayFCourses: CanonicalCourse[] = [
               exerciseHeading: "Exercise: Water Blending Ratio Calculation",
               exerciseTask:
                 "Calculate the blending ratio required to mix high-salinity borehole water (1,400 µS/cm) with rainwater reservoir water (100 µS/cm) to produce 100 m³ of irrigation water at exactly 800 µS/cm.",
-              quizQuestion: "Why is water with an Electrical Conductivity (EC) above 1,500 µS/cm dangerous for commercial horticultural crops?",
+              quizQuestion:
+                "Why is water with an Electrical Conductivity (EC) above 1,500 µS/cm dangerous for commercial horticultural crops?",
               quizOptions: [
                 "It makes the irrigation pipes freeze.",
                 "High dissolved mineral salt concentrations create osmotic pressure that prevents plant roots from absorbing water, causing leaf scorch and stunted yield.",
@@ -466,15 +486,19 @@ export const pathwayFCourses: CanonicalCourse[] = [
           {
             id: "f2-m1-l3",
             slug: "1-3",
-            title: "Smart irrigation scheduling and evapotranspiration modeling",
-            summary: "Balancing crop water demand using the Penman-Monteith equation and soil moisture probes.",
+            title:
+              "Smart irrigation scheduling and evapotranspiration modeling",
+            summary:
+              "Balancing crop water demand using the Penman-Monteith equation and soil moisture probes.",
             estimatedMinutes: 25,
             blocks: buildLessonBlocks({
-              problemHeading: "Over-Irrigation, Root Rot, and Wasted Pumping Energy",
+              problemHeading:
+                "Over-Irrigation, Root Rot, and Wasted Pumping Energy",
               scenarioTitle: "The Flooded Avocado Orchard",
               scenarioText:
                 "An avocado orchard in Murang'a runs drip irrigation on a fixed timer: 4 hours every morning regardless of weather. Following a 3-day heavy downpour, the timer continues pumping. Saturated soil leads to Phytophthora root rot, killing 250 mature Hass avocado trees and wasting thousands of kilowatt-hours.",
-              conceptHeading: "Evapotranspiration (ET0) & Soil Moisture Triggers",
+              conceptHeading:
+                "Evapotranspiration (ET0) & Soil Moisture Triggers",
               conceptIntro:
                 "Smart irrigation replaces fixed timers with demand-based scheduling. Crop water requirement is calculated using reference evapotranspiration (ET0 from weather stations) multiplied by crop coefficient (Kc), verified by multi-depth capacitive soil moisture probes.",
               conceptPoints: [
@@ -493,7 +517,8 @@ export const pathwayFCourses: CanonicalCourse[] = [
               exerciseHeading: "Exercise: Calculate Irrigation Pulse Duration",
               exerciseTask:
                 "Given an orchard area of 2 hectares, crop evapotranspiration of 4.5 mm/day, and drip system flow rate of 18 m³/hour, calculate the required daily pumping hours.",
-              quizQuestion: "What happens when you irrigate purely on a fixed clock timer without measuring soil moisture or weather forecasts?",
+              quizQuestion:
+                "What happens when you irrigate purely on a fixed clock timer without measuring soil moisture or weather forecasts?",
               quizOptions: [
                 "The crops will automatically harvest themselves.",
                 "You waste expensive pumped energy and risk fungal root rot during rainy periods, or underwater crops during extreme dry spells.",
@@ -512,10 +537,12 @@ export const pathwayFCourses: CanonicalCourse[] = [
             id: "f2-m1-l4",
             slug: "1-4",
             title: "Crop health and pest/disease computer vision triage",
-            summary: "Detecting fall armyworm, leaf rust, and nutrient deficiencies from mobile and drone imagery.",
+            summary:
+              "Detecting fall armyworm, leaf rust, and nutrient deficiencies from mobile and drone imagery.",
             estimatedMinutes: 25,
             blocks: buildLessonBlocks({
-              problemHeading: "Delayed Detection of Fast-Spreading Agricultural Outbreaks",
+              problemHeading:
+                "Delayed Detection of Fast-Spreading Agricultural Outbreaks",
               scenarioTitle: "The Devastated Maize Field in Kitale",
               scenarioText:
                 "A maize farm in Trans-Nzoia is infested by fall armyworm. The farm scouts inspect only edge rows once a week. By the time visual defoliation is noticed by managers, the larvae have bored into the central whorls of 60% of the crop, making standard pesticide sprays ineffective and destroying 800 bags of yield.",
@@ -532,13 +559,15 @@ export const pathwayFCourses: CanonicalCourse[] = [
               exampleBadTitle: "Unconstrained Generic Diagnosis",
               exampleBadText:
                 "'Your crop has bugs. Spray heavy insecticide immediately until all insects are gone.'",
-              exampleGoodTitle: "Structured Integrated Pest Management (IPM) Report",
+              exampleGoodTitle:
+                "Structured Integrated Pest Management (IPM) Report",
               exampleGoodText:
                 "### Mobile Scout Triage Report — Block B4\n- **Identified Pest:** Fall Armyworm (*Spodoptera frugiperda*) — 2nd Instar Larvae (Confidence: 94%)\n- **Severity Level:** Moderate (Infestation detected in 12% of sampled plants)\n- **Action Protocol:** Spot-spray bio-pesticide (*Bacillus thuringiensis* / Neem extract) directly into central whorls within 48 hours.\n- **Statutory Warning:** Observe minimum 14-day Pre-Harvest Interval (PHI) for export compliance.",
               exerciseHeading: "Exercise: Build an IPM Decision Tree",
               exerciseTask:
                 "Construct a prompt and decision matrix that guides a field scout photographing yellowing tomato leaves to distinguish bacterial wilt from spider mite damage and calcium deficiency.",
-              quizQuestion: "Why should crop disease triage models be capable of offline edge execution on mobile phones?",
+              quizQuestion:
+                "Why should crop disease triage models be capable of offline edge execution on mobile phones?",
               quizOptions: [
                 "Because mobile phone batteries last longer without internet.",
                 "Because agricultural fields in rural East Africa frequently have zero cellular data connectivity, requiring diagnostic models to run locally on-device.",
@@ -584,18 +613,22 @@ export const pathwayFCourses: CanonicalCourse[] = [
       "Calculate clean technology project payback, internal rate of return (IRR), and carbon offsets.",
     ],
     prerequisites: "Solar & Microgrid Operations (Course F1).",
-    targetAudience: "Infrastructure developers, agricultural project directors, and renewable energy consultants.",
+    targetAudience:
+      "Infrastructure developers, agricultural project directors, and renewable energy consultants.",
     modules: [
       {
         id: "f3-m1",
         title: "Productive Energy Infrastructure",
-        description: "Deploying solar power to drive agricultural processing and water supply.",
+        description:
+          "Deploying solar power to drive agricultural processing and water supply.",
         lessons: [
           {
             id: "f3-m1-l1",
             slug: "1-1",
-            title: "Solar-powered water pumping systems and variable frequency drives",
-            summary: "Direct-drive PV pumping, VFD modulation, and head-loss hydraulic calculations.",
+            title:
+              "Solar-powered water pumping systems and variable frequency drives",
+            summary:
+              "Direct-drive PV pumping, VFD modulation, and head-loss hydraulic calculations.",
             estimatedMinutes: 25,
             blocks: buildLessonBlocks({
               problemHeading: "Pumping Water Without Expensive Battery Banks",
@@ -621,7 +654,8 @@ export const pathwayFCourses: CanonicalCourse[] = [
               exerciseHeading: "Exercise: Total Dynamic Head Sizing",
               exerciseTask:
                 "Calculate Total Dynamic Head (TDH) for a borehole with static depth 90m, dynamic drawdown 25m, tank elevation 15m, and piping friction loss equivalent to 8m head. Specify required pump power for 12 m³/hour flow rate.",
-              quizQuestion: "Why is direct-drive solar pumping with a Variable Frequency Drive (VFD) superior to battery-based pumping in remote arid regions?",
+              quizQuestion:
+                "Why is direct-drive solar pumping with a Variable Frequency Drive (VFD) superior to battery-based pumping in remote arid regions?",
               quizOptions: [
                 "Because VFDs work in total darkness.",
                 "Storing water in an elevated tank eliminates costly, fragile electrochemical batteries that degrade rapidly in high ambient temperatures.",
@@ -640,7 +674,8 @@ export const pathwayFCourses: CanonicalCourse[] = [
             id: "f3-m1-l2",
             slug: "1-2",
             title: "Agricultural cold chain and mini-grid thermal storage",
-            summary: "Thermal buffering, cold rooms, and compressor duty cycle management in rural grids.",
+            summary:
+              "Thermal buffering, cold rooms, and compressor duty cycle management in rural grids.",
             estimatedMinutes: 25,
             blocks: buildLessonBlocks({
               problemHeading: "Post-Harvest Rot vs Mini-Grid Sizing",
@@ -666,7 +701,8 @@ export const pathwayFCourses: CanonicalCourse[] = [
               exerciseHeading: "Exercise: Thermal Storage Duty Cycle Plan",
               exerciseTask:
                 "Design a 24-hour compressor operational schedule for a 20-ton tomato cold room in Nyeri powered by a 30kWp solar mini-grid, maximizing thermal storage during peak sunlight hours.",
-              quizQuestion: "What is the primary benefit of using Phase Change Material (PCM) thermal storage in solar cold rooms?",
+              quizQuestion:
+                "What is the primary benefit of using Phase Change Material (PCM) thermal storage in solar cold rooms?",
               quizOptions: [
                 "It makes the tomatoes turn red faster.",
                 "It stores cooling energy during peak midday solar generation, allowing compressors to be shut down during expensive evening hours without losing temperature.",
@@ -685,7 +721,8 @@ export const pathwayFCourses: CanonicalCourse[] = [
             id: "f3-m1-l3",
             slug: "1-3",
             title: "Productive Use of Energy (PUE) business modeling",
-            summary: "Milling, hulling, welding, and anchor loads that make rural mini-grids profitable.",
+            summary:
+              "Milling, hulling, welding, and anchor loads that make rural mini-grids profitable.",
             estimatedMinutes: 25,
             blocks: buildLessonBlocks({
               problemHeading: "The Rural Mini-Grid Financial Trap",
@@ -711,7 +748,8 @@ export const pathwayFCourses: CanonicalCourse[] = [
               exerciseHeading: "Exercise: PUE Tariff Structure Design",
               exerciseTask:
                 "Design a time-differentiated tariff for a 60kWp mini-grid that incentivizes a local grain milling cooperative to shift diesel milling to electric midday solar milling.",
-              quizQuestion: "Why are Productive Use of Energy (PUE) commercial loads essential for the long-term survival of rural solar mini-grids?",
+              quizQuestion:
+                "Why are Productive Use of Energy (PUE) commercial loads essential for the long-term survival of rural solar mini-grids?",
               quizOptions: [
                 "Because households refuse to pay for electricity.",
                 "Commercial machinery consumes high daytime solar volume, generating the utility revenues required to maintain, service, and amortize the infrastructure.",
@@ -729,11 +767,14 @@ export const pathwayFCourses: CanonicalCourse[] = [
           {
             id: "f3-m1-l4",
             slug: "1-4",
-            title: "Multi-resource infrastructure project financing and verification",
-            summary: "Modeling cash flows, levelized cost of energy (LCOE), and carbon verification.",
+            title:
+              "Multi-resource infrastructure project financing and verification",
+            summary:
+              "Modeling cash flows, levelized cost of energy (LCOE), and carbon verification.",
             estimatedMinutes: 25,
             blocks: buildLessonBlocks({
-              problemHeading: "Securing Capital for Clean Energy Infrastructure",
+              problemHeading:
+                "Securing Capital for Clean Energy Infrastructure",
               scenarioTitle: "The Rejected Commercial Loan Application",
               scenarioText:
                 "A Kenyan developer designs an innovative solar water and cold storage hub in Makueni. They apply for a 20M KES commercial loan, but provide only equipment quotes without a Levelized Cost of Energy (LCOE) model, debt service coverage ratio (DSCR), or verifiable carbon offset methodology. The bank rejects the application within 48 hours.",
@@ -756,7 +797,8 @@ export const pathwayFCourses: CanonicalCourse[] = [
               exerciseHeading: "Exercise: Financial Feasibility Summary",
               exerciseTask:
                 "Build an executive 1-page bankable financial summary for a 50kW solar cold storage facility, including CAPEX, projected annual cash flows, LCOE, and DSCR.",
-              quizQuestion: "What does a Debt Service Coverage Ratio (DSCR) of 1.35x mean to an infrastructure project financier?",
+              quizQuestion:
+                "What does a Debt Service Coverage Ratio (DSCR) of 1.35x mean to an infrastructure project financier?",
               quizOptions: [
                 "The project is 35% over budget.",
                 "The project's net operating income is 1.35 times greater than annual loan repayment obligations, providing a comfortable 35% safety margin against default.",
@@ -802,21 +844,26 @@ export const pathwayFCourses: CanonicalCourse[] = [
       "Implement IoT telematics, geofencing, remote immobilization, and PAYGO lease rules.",
     ],
     prerequisites: "Solar & Microgrid Operations (Course F1).",
-    targetAudience: "Fleet operators, IoT engineers, automotive technicians, and clean mobility developers.",
+    targetAudience:
+      "Fleet operators, IoT engineers, automotive technicians, and clean mobility developers.",
     modules: [
       {
         id: "f4-m1",
         title: "Fleet Telematics & Battery Swapping",
-        description: "Operating commercial electric vehicle fleets and battery swap infrastructure.",
+        description:
+          "Operating commercial electric vehicle fleets and battery swap infrastructure.",
         lessons: [
           {
             id: "f4-m1-l1",
             slug: "1-1",
-            title: "Electric motorcycle (boda boda) duty cycles and range modeling",
-            summary: "Analyzing energy consumption (Wh/km), passenger loads, and elevation profiles.",
+            title:
+              "Electric motorcycle (boda boda) duty cycles and range modeling",
+            summary:
+              "Analyzing energy consumption (Wh/km), passenger loads, and elevation profiles.",
             estimatedMinutes: 25,
             blocks: buildLessonBlocks({
-              problemHeading: "Predicting Real-World Range in African Traffic Conditions",
+              problemHeading:
+                "Predicting Real-World Range in African Traffic Conditions",
               scenarioTitle: "The Stranded Commuter in Upper Hill",
               scenarioText:
                 "An electric boda boda manufacturer advertises an 80 km range on a 2.4 kWh battery pack. A rider picks up a 95 kg passenger with luggage and drives up the steep hills of Upper Hill Nairobi in stop-and-go traffic. The battery dies at kilometer 48, leaving rider and passenger stranded in the rain.",
@@ -839,7 +886,8 @@ export const pathwayFCourses: CanonicalCourse[] = [
               exerciseHeading: "Exercise: Fleet Route Energy Budget",
               exerciseTask:
                 "Model the energy consumption for a courier motorcycle completing an 18 km route in Nairobi with 3 steep hill climbs and 6 courier deliveries.",
-              quizQuestion: "What is the primary operational metric used to quantify energy efficiency on an electric motorcycle?",
+              quizQuestion:
+                "What is the primary operational metric used to quantify energy efficiency on an electric motorcycle?",
               quizOptions: [
                 "Liters per 100 kilometers.",
                 "Watt-hours per kilometer (Wh/km).",
@@ -858,7 +906,8 @@ export const pathwayFCourses: CanonicalCourse[] = [
             id: "f4-m1-l2",
             slug: "1-2",
             title: "Battery swap station logistics and charging optimization",
-            summary: "Balancing swap station inventory, charge speeds, and local grid transformer loads.",
+            summary:
+              "Balancing swap station inventory, charge speeds, and local grid transformer loads.",
             estimatedMinutes: 25,
             blocks: buildLessonBlocks({
               problemHeading: "Long Rider Queues and Transformer Blackouts",
@@ -884,7 +933,8 @@ export const pathwayFCourses: CanonicalCourse[] = [
               exerciseHeading: "Exercise: Swap Station Inventory Sizing",
               exerciseTask:
                 "Calculate the required number of battery packs and charging bays for a swap station serving 60 electric motorcycles averaging 2 swaps per day with a 2-hour standard charge cycle.",
-              quizQuestion: "Why should a battery swap station allow fully charged batteries to cool down for 15 minutes before dispensing to a rider?",
+              quizQuestion:
+                "Why should a battery swap station allow fully charged batteries to cool down for 15 minutes before dispensing to a rider?",
               quizOptions: [
                 "To let the paint dry.",
                 "Chemical charging generates internal cell heat; dispensing a hot battery into a motorcycle subjected to heavy load accelerates thermal degradation and triggers temperature cutoffs.",
@@ -903,7 +953,8 @@ export const pathwayFCourses: CanonicalCourse[] = [
             id: "f4-m1-l3",
             slug: "1-3",
             title: "Battery cell telemetry and thermal anomaly detection",
-            summary: "Detecting internal resistance variance, cell voltage imbalance, and thermal runaway risks.",
+            summary:
+              "Detecting internal resistance variance, cell voltage imbalance, and thermal runaway risks.",
             estimatedMinutes: 25,
             blocks: buildLessonBlocks({
               problemHeading: "Preventing Catastrophic Battery Pack Fires",
@@ -929,7 +980,8 @@ export const pathwayFCourses: CanonicalCourse[] = [
               exerciseHeading: "Exercise: Cell Telemetry Log Audit",
               exerciseTask:
                 "Inspect a 20-cell telemetry log from a 72V LiFePO4 battery pack. Identify the specific anomalous cell number, calculate its voltage deviation, and write the quarantine protocol.",
-              quizQuestion: "What is an unmistakable early warning sign of severe lithium cell damage before thermal runaway occurs?",
+              quizQuestion:
+                "What is an unmistakable early warning sign of severe lithium cell damage before thermal runaway occurs?",
               quizOptions: [
                 "The battery casing becomes shiny.",
                 "A significant cell voltage variance (>50mV) combined with a rapid temperature rate-of-rise (>1.5°C/min) during charging.",
@@ -947,15 +999,19 @@ export const pathwayFCourses: CanonicalCourse[] = [
           {
             id: "f4-m1-l4",
             slug: "1-4",
-            title: "Fleet geofencing, remote immobilization, and PAYGO financing",
-            summary: "Managing asset tracking, payment lockouts, and cellular dead-zone edge logic.",
+            title:
+              "Fleet geofencing, remote immobilization, and PAYGO financing",
+            summary:
+              "Managing asset tracking, payment lockouts, and cellular dead-zone edge logic.",
             estimatedMinutes: 25,
             blocks: buildLessonBlocks({
-              problemHeading: "Asset Protection vs Highway Safety in Rural Africa",
+              problemHeading:
+                "Asset Protection vs Highway Safety in Rural Africa",
               scenarioTitle: "The Dangerous Highway Cutoff",
               scenarioText:
                 "A Pay-As-You-Go (PAYGO) electric motorcycle leasing company programs an automated payment lockout: if daily loan payment is 1 minute overdue, send an instant cellular immobilization signal to cut motor controller power. A rider is overtaking a lorry on the Nakuru-Eldoret highway when their loan expires; the motor abruptly cuts out, nearly causing a fatal collision.",
-              conceptHeading: "Responsible Telematics & PAYGO Safety Boundaries",
+              conceptHeading:
+                "Responsible Telematics & PAYGO Safety Boundaries",
               conceptIntro:
                 "IoT telematics units on electric vehicles enable asset tracking, geofence security against theft, and lease payment enforcement. However, immobilization must prioritize human life and road safety above financial debt collection.",
               conceptPoints: [
@@ -968,13 +1024,15 @@ export const pathwayFCourses: CanonicalCourse[] = [
               exampleBadTitle: "Direct Instant Motor Cutoff",
               exampleBadText:
                 "// Dangerous! Cuts power instantly regardless of vehicle speed!\napp.post('/loan-expired', async (req) => {\n  await sendIotCommand(bikeId, 'CUT_MOTOR_POWER');\n});",
-              exampleGoodTitle: "Safety-Interlocked Safe Parking Immobilization",
+              exampleGoodTitle:
+                "Safety-Interlocked Safe Parking Immobilization",
               exampleGoodText:
                 "// Secure, road-safe immobilization execution\nconst telemetry = await getLatestIotTelemetry(bikeId);\n\nif (telemetry.speedKmH > 0 || telemetry.ignitionOn) {\n  await sendIotCommand(bikeId, 'ARM_IMMOBILIZATION_ON_PARK');\n  await sendAudioBuzzerWarning(bikeId, 'Payment overdue. Motor will lock once parked.');\n} else {\n  await sendIotCommand(bikeId, 'ENGAGE_IMMOBILIZER');\n  await logAuditAction(bikeId, 'Vehicle safely immobilized while parked.');\n}",
               exerciseHeading: "Exercise: Write a Road-Safe PAYGO Policy",
               exerciseTask:
                 "Draft an engineering specification for a PAYGO motorcycle IoT controller defining speed interlocks, audio countdown warnings, and cellular dead-zone grace limits.",
-              quizQuestion: "Why must an automated PAYGO vehicle immobilization command NEVER execute while the motorcycle is traveling at speed?",
+              quizQuestion:
+                "Why must an automated PAYGO vehicle immobilization command NEVER execute while the motorcycle is traveling at speed?",
               quizOptions: [
                 "Because cutting motor power while moving can cause the rider to lose control or be hit by following vehicles, creating severe risk of fatal accidents.",
                 "Because the GPS antenna will overheat.",

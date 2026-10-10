@@ -22,11 +22,15 @@ function Admin() {
     return (
       <section className="mx-auto max-w-2xl px-5 py-24 text-center">
         <p className="eyebrow text-red-600">Access Restricted</p>
-        <h1 className="font-display mt-3 text-3xl font-bold">Administrator Access Required</h1>
+        <h1 className="font-display mt-3 text-3xl font-bold">
+          Administrator Access Required
+        </h1>
         <p className="mt-4 text-sm leading-6 text-ink/70">
           Your account is verified with the{" "}
-          <strong>{rbac.roles.map((r) => r.name).join(", ") || "Learner"}</strong> role, which
-          does not have course administration permissions.
+          <strong>
+            {rbac.roles.map((r) => r.name).join(", ") || "Learner"}
+          </strong>{" "}
+          role, which does not have course administration permissions.
         </p>
         <Link
           to="/my-learning"

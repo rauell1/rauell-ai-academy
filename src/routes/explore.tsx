@@ -22,7 +22,8 @@ type DiagnosticQuestion = {
   options: {
     label: string;
     description: string;
-    targetPathway: "ai-foundations" | "business-operations" | "ai-web-development";
+    targetPathway:
+      "ai-foundations" | "business-operations" | "ai-web-development";
   }[];
 };
 
@@ -33,17 +34,20 @@ const DIAGNOSTIC_QUESTIONS: DiagnosticQuestion[] = [
     options: [
       {
         label: "Build solid fundamentals & verify AI outputs",
-        description: "I want to understand what AI can and cannot do, write clear prompts, and avoid costly factual mistakes.",
+        description:
+          "I want to understand what AI can and cannot do, write clear prompts, and avoid costly factual mistakes.",
         targetPathway: "ai-foundations",
       },
       {
         label: "Streamline workplace operations & data",
-        description: "I want to clean messy spreadsheets, synthesize reports, triage customer enquiries, and improve office workflows.",
+        description:
+          "I want to clean messy spreadsheets, synthesize reports, triage customer enquiries, and improve office workflows.",
         targetPathway: "business-operations",
       },
       {
         label: "Build client websites and digital products",
-        description: "I want to use AI pair programming to design, build, and deploy production-ready web products and user interfaces.",
+        description:
+          "I want to use AI pair programming to design, build, and deploy production-ready web products and user interfaces.",
         targetPathway: "ai-web-development",
       },
     ],
@@ -54,38 +58,45 @@ const DIAGNOSTIC_QUESTIONS: DiagnosticQuestion[] = [
     options: [
       {
         label: "Non-technical / Beginner",
-        description: "I have no programming background; I work with everyday web browsers, documents, and messaging tools.",
+        description:
+          "I have no programming background; I work with everyday web browsers, documents, and messaging tools.",
         targetPathway: "ai-foundations",
       },
       {
         label: "Operations, spreadsheets, and business tools",
-        description: "I am comfortable with spreadsheets, business processes, and formulas, but don't write full application code.",
+        description:
+          "I am comfortable with spreadsheets, business processes, and formulas, but don't write full application code.",
         targetPathway: "business-operations",
       },
       {
         label: "Builder, designer, or aspiring developer",
-        description: "I know basic HTML/CSS or want to dive straight into building web pages, components, and interactive apps.",
+        description:
+          "I know basic HTML/CSS or want to dive straight into building web pages, components, and interactive apps.",
         targetPathway: "ai-web-development",
       },
     ],
   },
   {
     id: 3,
-    question: "Which deliverable would create the greatest value for you in the next 30 days?",
+    question:
+      "Which deliverable would create the greatest value for you in the next 30 days?",
     options: [
       {
         label: "A verified workplace brief and personal prompt workflow",
-        description: "A professional brief synthesized from raw files with a complete claim-verification table and personal SOP.",
+        description:
+          "A professional brief synthesized from raw files with a complete claim-verification table and personal SOP.",
         targetPathway: "ai-foundations",
       },
       {
         label: "An automated lead qualification & operational workflow",
-        description: "A customer enquiry triage system, cleaned operational spreadsheet, or scholarship tracking pipeline.",
+        description:
+          "A customer enquiry triage system, cleaned operational spreadsheet, or scholarship tracking pipeline.",
         targetPathway: "business-operations",
       },
       {
         label: "A live, deployed website or client web application",
-        description: "A production website for a Kenyan business (e.g. Apex Rift Engineering) with validated forms and tests.",
+        description:
+          "A production website for a Kenyan business (e.g. Apex Rift Engineering) with validated forms and tests.",
         targetPathway: "ai-web-development",
       },
     ],
@@ -129,7 +140,12 @@ const RECOMMENDATION_DETAILS = {
 };
 
 function Explore() {
-  const [answers, setAnswers] = useState<Record<number, "ai-foundations" | "business-operations" | "ai-web-development">>({});
+  const [answers, setAnswers] = useState<
+    Record<
+      number,
+      "ai-foundations" | "business-operations" | "ai-web-development"
+    >
+  >({});
   const [currentStep, setCurrentStep] = useState(0);
 
   const tracks = [
@@ -165,21 +181,27 @@ function Explore() {
     {} as Record<string, number>,
   );
 
-  let recommendedKey: "ai-foundations" | "business-operations" | "ai-web-development" = "ai-foundations";
+  let recommendedKey:
+    "ai-foundations" | "business-operations" | "ai-web-development" =
+    "ai-foundations";
   let maxCount = -1;
   for (const [k, count] of Object.entries(counts)) {
     if (count > maxCount) {
       maxCount = count;
-      recommendedKey = k as "ai-foundations" | "business-operations" | "ai-web-development";
+      recommendedKey = k as
+        "ai-foundations" | "business-operations" | "ai-web-development";
     }
   }
 
-  const isCompleted = Object.keys(answers).length === DIAGNOSTIC_QUESTIONS.length;
+  const isCompleted =
+    Object.keys(answers).length === DIAGNOSTIC_QUESTIONS.length;
   const currentQ = DIAGNOSTIC_QUESTIONS[currentStep];
   const rec = RECOMMENDATION_DETAILS[recommendedKey];
   const RecIcon = rec.icon;
 
-  function handleSelect(target: "ai-foundations" | "business-operations" | "ai-web-development") {
+  function handleSelect(
+    target: "ai-foundations" | "business-operations" | "ai-web-development",
+  ) {
     setAnswers((prev) => ({ ...prev, [currentQ.id]: target }));
     if (currentStep < DIAGNOSTIC_QUESTIONS.length - 1) {
       setCurrentStep((s) => s + 1);
@@ -236,7 +258,10 @@ function Explore() {
                     Question {currentStep + 1} of {DIAGNOSTIC_QUESTIONS.length}
                   </span>
                   <span>
-                    {Math.round(((currentStep + 1) / DIAGNOSTIC_QUESTIONS.length) * 100)}% Complete
+                    {Math.round(
+                      ((currentStep + 1) / DIAGNOSTIC_QUESTIONS.length) * 100,
+                    )}
+                    % Complete
                   </span>
                 </div>
 
@@ -279,11 +304,15 @@ function Explore() {
                   <span className="rounded-full bg-leaf px-3 py-1 text-xs font-bold text-white uppercase tracking-wider">
                     Recommended Match
                   </span>
-                  <span className="text-xs font-bold text-ink/50">{rec.code}</span>
+                  <span className="text-xs font-bold text-ink/50">
+                    {rec.code}
+                  </span>
                 </div>
 
                 <div className="mt-4 flex flex-col gap-6 sm:flex-row sm:items-center">
-                  <div className={`grid h-16 w-16 shrink-0 place-items-center rounded-2xl ${rec.color} shadow-sm`}>
+                  <div
+                    className={`grid h-16 w-16 shrink-0 place-items-center rounded-2xl ${rec.color} shadow-sm`}
+                  >
                     <RecIcon className="h-8 w-8" />
                   </div>
                   <div className="flex-1">

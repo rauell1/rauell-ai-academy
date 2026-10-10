@@ -1,4 +1,9 @@
-import { BriefcaseBusiness, FileSpreadsheet, Search, Layout } from "lucide-react";
+import {
+  BriefcaseBusiness,
+  FileSpreadsheet,
+  Search,
+  Layout,
+} from "lucide-react";
 import type { Block } from "@/components/LessonBlock";
 import type { CanonicalCourse } from "./canonical-curriculum";
 
@@ -80,7 +85,11 @@ function buildLessonBlocks(opts: {
       title: "Comparison: Ad-Hoc Workplace Routine vs Disciplined System",
       plainText: null,
       config: {
-        headers: ["Unverified Ad-Hoc Attempt", "Disciplined Operational Standard", "Why It Matters"],
+        headers: [
+          "Unverified Ad-Hoc Attempt",
+          "Disciplined Operational Standard",
+          "Why It Matters",
+        ],
         rows: [
           [
             opts.comparisonWeak,
@@ -167,8 +176,10 @@ export const courseD1: CanonicalCourse = {
     "Calculate automation ROI in staff hours saved and error reduction value.",
     "Establish human-in-the-loop checkpoints for legal and financial accountability.",
   ],
-  prerequisites: "None. Open to business professionals, managers, and coordinators.",
-  targetAudience: "Operations managers, administrative officers, team leads, and consultants.",
+  prerequisites:
+    "None. Open to business professionals, managers, and coordinators.",
+  targetAudience:
+    "Operations managers, administrative officers, team leads, and consultants.",
   modules: [
     {
       id: "d1-m1",
@@ -179,11 +190,13 @@ export const courseD1: CanonicalCourse = {
           id: "d1-m1-l1",
           slug: "1-1",
           title: "Operational process audits and bottleneck identification",
-          summary: "Step-by-step workflow mapping across departments to find high-leverage friction points.",
+          summary:
+            "Step-by-step workflow mapping across departments to find high-leverage friction points.",
           estimatedMinutes: 25,
           blocks: buildLessonBlocks({
             problemHeading: "Automating the Wrong Steps in a Broken Process",
-            scenarioTitle: "Workplace Scenario: The Nakuru Grain Depot Automation Fiasco",
+            scenarioTitle:
+              "Workplace Scenario: The Nakuru Grain Depot Automation Fiasco",
             scenarioText:
               "An agricultural depot manager in Nakuru wanted to 'use AI' to speed up grain intake. They installed an automated customer chatbot. But the actual bottleneck was physical truck weighing and paper moisture testing certificates. The chatbot sat unused while 40 trucks queued down the highway waiting for manual stamp approvals. Automating the wrong step wasted KES 350,000 without saving a single minute.",
             conceptHeading: "The Operational Process Audit Protocol",
@@ -196,8 +209,10 @@ export const courseD1: CanonicalCourse = {
 | 2. Moisture Audit | Lab technician enters meter moisture % | 2 mins | 250 deliveries | Manual entry delays | LOW: Physical sensor input |
 | 3. Payment Batch | Accountant copies weight into M-Pesa B2C | 8 mins | 250 payments | Manual copy-paste fatigue | HIGH: Automated reconciliation script |
 | 4. Regulatory Filing | Coordinator compiles monthly county tax | 14 hours | 1 per month | High stress at month-end | HIGH: Automated report synthesis |`,
-            comparisonWeak: "Randomly adopting AI tools for tasks that are not operational bottlenecks.",
-            comparisonStrong: "Conducting systematic workflow audits to isolate high-friction bottlenecks before choosing tools.",
+            comparisonWeak:
+              "Randomly adopting AI tools for tasks that are not operational bottlenecks.",
+            comparisonStrong:
+              "Conducting systematic workflow audits to isolate high-friction bottlenecks before choosing tools.",
             exerciseTitle: "Audit a Customer Order Workflow",
             exerciseText:
               "Map the 5-step order fulfillment process of a regional dairy cooperative. Identify the primary bottleneck and classify its automation suitability.",
@@ -225,11 +240,14 @@ export const courseD1: CanonicalCourse = {
           id: "d1-m1-l2",
           slug: "1-2",
           title: "High-leverage task selection: rules vs probabilistic AI",
-          summary: "When to use standard spreadsheets/APIs versus generative language models.",
+          summary:
+            "When to use standard spreadsheets/APIs versus generative language models.",
           estimatedMinutes: 25,
           blocks: buildLessonBlocks({
-            problemHeading: "Using an LLM for Tasks Better Solved by a Simple Formula",
-            scenarioTitle: "Workplace Scenario: Asking AI to Add Up 100 Invoice Totals",
+            problemHeading:
+              "Using an LLM for Tasks Better Solved by a Simple Formula",
+            scenarioTitle:
+              "Workplace Scenario: Asking AI to Add Up 100 Invoice Totals",
             scenarioText:
               "A finance officer pasted 100 receipt totals into an AI chatbot and asked: 'What is the sum?' The AI confidently gave an answer: 'KES 482,150.00'. When the accountant checked with an Excel `=SUM()` formula, the real total was KES 504,820.00. The AI had skipped three rows and rounded numbers incorrectly because language models predict tokens, not arithmetic.",
             conceptHeading: "The Rules vs AI Selection Matrix",
@@ -244,8 +262,10 @@ export const courseD1: CanonicalCourse = {
 2. Does the task require strict mathematical calculation or exact database integrity?
    - YES -> Use AI to EXTRACT structured entities, then pass to deterministic code for calculation!
    - NO -> Task can be performed directly by LLM with structured prompt.`,
-            comparisonWeak: "Asking an LLM to perform financial arithmetic or exact database joins.",
-            comparisonStrong: "Using LLMs for language parsing and using deterministic code/formulas for all mathematical calculations.",
+            comparisonWeak:
+              "Asking an LLM to perform financial arithmetic or exact database joins.",
+            comparisonStrong:
+              "Using LLMs for language parsing and using deterministic code/formulas for all mathematical calculations.",
             exerciseTitle: "Classify 5 Business Tasks",
             exerciseText:
               "Classify 5 common workplace tasks (Calculating VAT, Summarizing customer emails, Reconciling bank statements, Drafting a job description, Checking inventory quantities) into Rules vs AI.",
@@ -273,11 +293,14 @@ export const courseD1: CanonicalCourse = {
           id: "d1-m1-l3",
           slug: "1-3",
           title: "Automation ROI calculation: hours saved vs error liability",
-          summary: "Building realistic cost-benefit models for AI workflow investments.",
+          summary:
+            "Building realistic cost-benefit models for AI workflow investments.",
           estimatedMinutes: 25,
           blocks: buildLessonBlocks({
-            problemHeading: "Underestimating the Cost of AI Errors in Operations",
-            scenarioTitle: "Workplace Scenario: The KES 20,000 Software Saving That Cost KES 400,000",
+            problemHeading:
+              "Underestimating the Cost of AI Errors in Operations",
+            scenarioTitle:
+              "Workplace Scenario: The KES 20,000 Software Saving That Cost KES 400,000",
             scenarioText:
               "A logistics company automated customs duty declarations using an unmonitored AI prompt to save 4 hours of clerk time per week (worth KES 15,000/month). The AI misclassified imported solar inverters under an incorrect tariff code. The Kenya Revenue Authority (KRA) flagged the shipment at Mombasa port, resulting in demurrage fees and penalties totaling KES 420,000.",
             conceptHeading: "The Net Automation ROI Formula",
@@ -297,8 +320,10 @@ export const courseD1: CanonicalCourse = {
    - Total Annual Costs: KES 120,000
 
 3. NET ANNUAL BENEFIT: KES 360,000 (300% ROI, 3.2-month payback period).`,
-            comparisonWeak: "Assuming automation is 100% free savings and ignoring human verification time and error risk.",
-            comparisonStrong: "Modeling net ROI factoring in API costs, verification overhead, and risk mitigation.",
+            comparisonWeak:
+              "Assuming automation is 100% free savings and ignoring human verification time and error risk.",
+            comparisonStrong:
+              "Modeling net ROI factoring in API costs, verification overhead, and risk mitigation.",
             exerciseTitle: "Calculate Automation ROI for a SACCO",
             exerciseText:
               "Calculate the net annual ROI for automating loan document completeness checks for a 2,000-member cooperative saving 400 staff hours annually.",
@@ -325,15 +350,19 @@ export const courseD1: CanonicalCourse = {
         {
           id: "d1-m1-l4",
           slug: "1-4",
-          title: "Implementation risk assessment and human-in-the-loop safeguards",
-          summary: "Designing approval gates, financial thresholds, and audit trails for high-stakes workflows.",
+          title:
+            "Implementation risk assessment and human-in-the-loop safeguards",
+          summary:
+            "Designing approval gates, financial thresholds, and audit trails for high-stakes workflows.",
           estimatedMinutes: 25,
           blocks: buildLessonBlocks({
             problemHeading: "Autonomous AI Executing Irreversible Actions",
-            scenarioTitle: "Workplace Scenario: The Automated M-Pesa Refund Loop",
+            scenarioTitle:
+              "Workplace Scenario: The Automated M-Pesa Refund Loop",
             scenarioText:
               "An e-commerce firm connected an AI agent directly to their M-Pesa B2C payout API to handle customer returns without human approval. An attacker sent a crafted email claiming ten damaged solar lanterns with fake serial numbers. The autonomous agent immediately disbursed KES 85,000 to the attacker's phone number without human authorization.",
-            conceptHeading: "The Human-in-the-Loop (HITL) Guardrail Architecture",
+            conceptHeading:
+              "The Human-in-the-Loop (HITL) Guardrail Architecture",
             conceptText:
               "High-stakes business operations must enforce strict approval boundaries:\n\n1. Autonomous Zone (Low Stakes): Read-only operations, search, draft generation, data extraction.\n2. Threshold Zone (Medium Stakes): Financial disbursements under a safe limit (e.g. KES 500) or standard customer status notifications.\n3. Human Approval Zone (High Stakes): Any action that moves money (>KES 1,000), deletes data, cancels contracts, or publishes legal filings requires an authenticated human coordinator to click 'Approve' with a timestamped audit log.",
             exampleTitle: "Human Approval Gate Pattern",
@@ -356,8 +385,10 @@ export async function executeCustomerDisbursement(payout: PayoutRequest) {
   // Safe low-value automated execution
   return await dispatchMpesaB2C(payout);
 }`,
-            comparisonWeak: "Giving AI autonomous authority to disburse funds, delete data, or sign contracts.",
-            comparisonStrong: "Enforcing hard financial thresholds, supervisor approval gates, and immutable audit logs.",
+            comparisonWeak:
+              "Giving AI autonomous authority to disburse funds, delete data, or sign contracts.",
+            comparisonStrong:
+              "Enforcing hard financial thresholds, supervisor approval gates, and immutable audit logs.",
             exerciseTitle: "Design an Approval Gate Matrix",
             exerciseText:
               "Define the human approval gates for an agricultural cooperative: loan approvals, fertilizer voucher distribution, and membership cancellations.",
@@ -411,8 +442,10 @@ export const courseD2: CanonicalCourse = {
     "Tailor professional resumes and capability statements without hallucinating credentials.",
     "Implement rigorous claim-by-claim verification tables for C-suite deliverables.",
   ],
-  prerequisites: "Understanding and Using AI (Course A1) or Clear Instructions (Course A2).",
-  targetAudience: "Executive assistants, policy analysts, researchers, consultants, and business development managers.",
+  prerequisites:
+    "Understanding and Using AI (Course A1) or Clear Instructions (Course A2).",
+  targetAudience:
+    "Executive assistants, policy analysts, researchers, consultants, and business development managers.",
   modules: [
     {
       id: "d2-m1",
@@ -423,11 +456,14 @@ export const courseD2: CanonicalCourse = {
           id: "d2-m1-l1",
           slug: "1-1",
           title: "Executive briefing synthesis from disparate PDFs and memos",
-          summary: "Transforming 50-page audits and scattered memos into a 1-page decision memo.",
+          summary:
+            "Transforming 50-page audits and scattered memos into a 1-page decision memo.",
           estimatedMinutes: 25,
           blocks: buildLessonBlocks({
-            problemHeading: "Drowning in Lengthy PDFs with Upcoming Board Deadlines",
-            scenarioTitle: "Workplace Scenario: The 90-Page Lake Basin Water Audit",
+            problemHeading:
+              "Drowning in Lengthy PDFs with Upcoming Board Deadlines",
+            scenarioTitle:
+              "Workplace Scenario: The 90-Page Lake Basin Water Audit",
             scenarioText:
               "An executive assistant has 3 hours before a board meeting to summarize a 90-page technical audit of the Lake Basin Borehole Cluster. If they ask an AI: 'Summarize this PDF', the model generates a generic 5-paragraph essay that omits the three critical findings: pump cavitation in Station 4, uncollected water revenue in Kisumu West, and an upcoming statutory NEMA license expiration.",
             conceptHeading: "The 1-Page Executive Decision Memo Framework",
@@ -454,7 +490,8 @@ TASK: Synthesize a 1-page Executive Decision Memo strictly following this format
 ## 4. IMMEDIATE ACTION ITEMS (Owner & Timeline)
 1. [Action] | Owner: [Role] | Due: [Date]`,
             comparisonWeak: "Prompting: 'Give me a summary of this report.'",
-            comparisonStrong: "Enforcing an actionable Executive Decision Memo structure with page citations and owner action items.",
+            comparisonStrong:
+              "Enforcing an actionable Executive Decision Memo structure with page citations and owner action items.",
             exerciseTitle: "Draft a 1-Page Decision Memo",
             exerciseText:
               "Using a provided 15-page agricultural audit transcript from Uasin Gishu, synthesize a 1-page Executive Decision Memo with BLUF, metrics, and owner-assigned action items.",
@@ -481,12 +518,15 @@ TASK: Synthesize a 1-page Executive Decision Memo strictly following this format
         {
           id: "d2-m1-l2",
           slug: "1-2",
-          title: "Grant and tender proposals grounded in statutory requirements",
-          summary: "Aligning proposal drafts with donor rubrics and Public Procurement Act guidelines.",
+          title:
+            "Grant and tender proposals grounded in statutory requirements",
+          summary:
+            "Aligning proposal drafts with donor rubrics and Public Procurement Act guidelines.",
           estimatedMinutes: 25,
           blocks: buildLessonBlocks({
             problemHeading: "Disqualified Tender Bids Due to Non-Compliance",
-            scenarioTitle: "Workplace Scenario: The Disqualified Solar Mini-Grid Bid",
+            scenarioTitle:
+              "Workplace Scenario: The Disqualified Solar Mini-Grid Bid",
             scenarioText:
               "A renewable energy firm spent three weeks preparing a tender bid for a county rural electrification project. An AI helped write the proposal text. The AI used beautiful prose, but failed to address Section 4.2 of the Kenya Public Procurement and Asset Disposal Act regarding mandatory local content quotas (minimum 40% local labor). The tender committee disqualified the bid in the preliminary evaluation round.",
             conceptHeading: "Rubric-Grounded Tender & Grant Drafting",
@@ -503,8 +543,10 @@ TASK: Draft Section 3.2 (Local Community Capacity Building) strictly optimized t
 1. Address 40% local labor quota pursuant to Kenya Public Procurement Act.
 2. Outline specific 30-day technical apprenticeship for Nakuru County polytechnic graduates.
 3. Reference specific past training execution at Baraka Tea Estate project.`,
-            comparisonWeak: "Writing generic proposal prose without referencing the donor's scoring rubric.",
-            comparisonStrong: "Structuring proposal sections to mirror the exact statutory evaluation matrix point-for-point.",
+            comparisonWeak:
+              "Writing generic proposal prose without referencing the donor's scoring rubric.",
+            comparisonStrong:
+              "Structuring proposal sections to mirror the exact statutory evaluation matrix point-for-point.",
             exerciseTitle: "Draft a Tender Section for a Water Grant",
             exerciseText:
               "Write the 'Environmental Compliance' section of a USAID water grant proposal strictly aligned with Section 12 of the Kenya Environmental Management and Coordination Act (EMCA).",
@@ -532,11 +574,13 @@ TASK: Draft Section 3.2 (Local Community Capacity Building) strictly optimized t
           id: "d2-m1-l3",
           slug: "1-3",
           title: "Non-hallucinated professional CVs and capability statements",
-          summary: "Tailoring professional profiles to job descriptions without fabricating achievements.",
+          summary:
+            "Tailoring professional profiles to job descriptions without fabricating achievements.",
           estimatedMinutes: 25,
           blocks: buildLessonBlocks({
             problemHeading: "The AI-Generated 'Fabricated Experience' Scandal",
-            scenarioTitle: "Workplace Scenario: The Invented Project Director Role",
+            scenarioTitle:
+              "Workplace Scenario: The Invented Project Director Role",
             scenarioText:
               "An engineer used an AI tool to 'tailor' their CV for a Chief Technical Officer position at a national energy authority. The AI added: 'Led national smart-grid rollout for Kenya Power saving KES 1.2 Billion.' During the background check, the hiring committee discovered the claim was completely fabricated by the model. The candidate was blacklisted from future public sector appointments.",
             conceptHeading: "The Strict Bounded CV Tailoring Framework",
@@ -554,8 +598,10 @@ STRICT CONSTRAINTS:
 2. Do NOT invent budget sizes, team counts, or project metrics not in the pack.
 3. Format bullets as: [Active Verb] + [Verified Task] + [Result Metric from Pack].
 4. If the candidate lacks a required skill from the JD, flag it as a "SKILL GAP" rather than inventing experience.`,
-            comparisonWeak: "Prompting: 'Make my CV look impressive for this CTO job' and letting the model hallucinate accomplishments.",
-            comparisonStrong: "Enforcing bounded context with negative constraints, action-result formatting, and explicit skill gap flagging.",
+            comparisonWeak:
+              "Prompting: 'Make my CV look impressive for this CTO job' and letting the model hallucinate accomplishments.",
+            comparisonStrong:
+              "Enforcing bounded context with negative constraints, action-result formatting, and explicit skill gap flagging.",
             exerciseTitle: "Reframe 3 Career Bullets with Verified Metrics",
             exerciseText:
               "Take three vague resume bullets (e.g. 'Helped with solar installations in Rift Valley') and reframe them into verified impact statements using the [Verb] + [Context] + [Metric] formula.",
@@ -583,11 +629,14 @@ STRICT CONSTRAINTS:
           id: "d2-m1-l4",
           slug: "1-4",
           title: "Fact-checking protocols for C-suite decision briefs",
-          summary: "Building claim-verification matrices before submitting executive deliverables.",
+          summary:
+            "Building claim-verification matrices before submitting executive deliverables.",
           estimatedMinutes: 25,
           blocks: buildLessonBlocks({
-            problemHeading: "Submitting Unchecked AI Claims to Company Executives",
-            scenarioTitle: "Workplace Scenario: The Phantom Legal Precedent in the Board Memo",
+            problemHeading:
+              "Submitting Unchecked AI Claims to Company Executives",
+            scenarioTitle:
+              "Workplace Scenario: The Phantom Legal Precedent in the Board Memo",
             scenarioText:
               "A legal researcher at a Nairobi corporate firm used an AI to summarize environmental land-use regulations. The AI cited 'Kenya High Court Case #142 of 2021: Wanjala vs County Government of Nakuru'. The partner quoted the case in a formal board presentation. When opposing counsel checked the judicial registry, the case did not exist—it was a hallucinated legal fiction. The firm faced severe judicial censure.",
             conceptHeading: "The Claim-Verification Matrix Protocol",
@@ -599,8 +648,10 @@ STRICT CONSTRAINTS:
 | 1 | "EPRA regulations mandate annual solar inverter audits." | Energy Act 2019, Sec. 144 | "Licensed contractors shall maintain annual inspection logs." | VERIFIED | Retained in memo |
 | 2 | "Nakuru County offers a 15% rebate on solar cold rooms." | Nakuru County Finance Act 2025 | No mention of solar rebates | FABRICATED | REMOVED from draft |
 | 3 | "Borehole permit fee is KES 50,000 for commercial users." | WRA Fee Schedule 2024, Item 4 | "Commercial groundwater extraction fee: KES 50,000" | VERIFIED | Retained in memo |`,
-            comparisonWeak: "Trusting AI citations blindly and presenting hallucinated case laws or metrics to executives.",
-            comparisonStrong: "Auditing every factual assertion in a claim-verification table with verbatim primary source citations.",
+            comparisonWeak:
+              "Trusting AI citations blindly and presenting hallucinated case laws or metrics to executives.",
+            comparisonStrong:
+              "Auditing every factual assertion in a claim-verification table with verbatim primary source citations.",
             exerciseTitle: "Execute a Claim Audit on an AI-Generated Memo",
             exerciseText:
               "Audit an AI-generated memo regarding water extraction licenses. Identify 2 verified claims and 1 fabricated claim using a provided source pack.",
@@ -655,22 +706,26 @@ export const courseD3: CanonicalCourse = {
     "Audit model-generated calculations and prevent spreadsheet hallucination errors.",
   ],
   prerequisites: "Basic spreadsheet familiarity (Excel or Google Sheets).",
-  targetAudience: "Accountants, administrative coordinators, financial analysts, and project managers.",
+  targetAudience:
+    "Accountants, administrative coordinators, financial analysts, and project managers.",
   modules: [
     {
       id: "d3-m1",
       title: "Data Hygiene & Financial Reconciliation",
-      description: "Automating data cleaning, spreadsheet logic, and payment reconciliation.",
+      description:
+        "Automating data cleaning, spreadsheet logic, and payment reconciliation.",
       lessons: [
         {
           id: "d3-m1-l1",
           slug: "1-1",
           title: "Cleaning messy Kenyan business CSVs and Excel ledgers",
-          summary: "Normalizing inconsistent phone numbers, mixed date formats, and currency strings.",
+          summary:
+            "Normalizing inconsistent phone numbers, mixed date formats, and currency strings.",
           estimatedMinutes: 25,
           blocks: buildLessonBlocks({
             problemHeading: "Messy Spreadsheet Exports That Break Analysis",
-            scenarioTitle: "Workplace Scenario: The Unusable 2,000-Row Customer Ledger",
+            scenarioTitle:
+              "Workplace Scenario: The Unusable 2,000-Row Customer Ledger",
             scenarioText:
               "An agri-cooperative exports member records from three field branches. The phone numbers are formatted inconsistently (`0712345678`, `254712...`, `+254 712...`, `0712-345-678`). Dates mix US and UK formats (`12/04/2026` vs `04/12/2026`), and currency fields contain text prefixes (`Ksh 4,500.00`, `KES 4500`). Running an Excel pivot table fails completely because numbers are stored as text strings.",
             conceptHeading: "Systematic Data Normalization Principles",
@@ -688,8 +743,10 @@ export const courseD3: CanonicalCourse = {
    Target: Numeric value ready for =SUM()
    Formula:
    ="=VALUE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(UPPER(B2),"KSH",""),"KES",""),",",""))"`,
-            comparisonWeak: "Manually editing thousands of spreadsheet cells or pasting data into unvetted online converters.",
-            comparisonStrong: "Generating standardized Excel cleaning formulas and verifying transformed columns with test checks.",
+            comparisonWeak:
+              "Manually editing thousands of spreadsheet cells or pasting data into unvetted online converters.",
+            comparisonStrong:
+              "Generating standardized Excel cleaning formulas and verifying transformed columns with test checks.",
             exerciseTitle: "Write a Data Normalization Prompt",
             exerciseText:
               "Write a prompt instructing an AI to generate a Python Pandas script that cleans a 5-column CSV export containing names, inconsistent counties, and mixed date formats.",
@@ -716,12 +773,15 @@ export const courseD3: CanonicalCourse = {
         {
           id: "d3-m1-l2",
           slug: "1-2",
-          title: "Formula formulation: XLOOKUP, nested conditions, and array logic",
-          summary: "Directing AI to author complex spreadsheet formulas with test verification.",
+          title:
+            "Formula formulation: XLOOKUP, nested conditions, and array logic",
+          summary:
+            "Directing AI to author complex spreadsheet formulas with test verification.",
           estimatedMinutes: 25,
           blocks: buildLessonBlocks({
             problemHeading: "Broken VLOOKUP Formulas and #N/A Errors",
-            scenarioTitle: "Workplace Scenario: The Tariff Calculation Nightmare",
+            scenarioTitle:
+              "Workplace Scenario: The Tariff Calculation Nightmare",
             scenarioText:
               "A water scheme coordinator needs to calculate borehole tariffs based on three conditions: Volume consumed (<10m3, 10-50m3, >50m3), User category (Commercial vs Domestic), and County subsidy. The coordinator spent 5 hours trying to write nested `IF` statements, ending up with `#VALUE!` errors across 800 member bills.",
             conceptHeading: "AI-Assisted Advanced Formula Formulation",
@@ -744,8 +804,10 @@ EXCEL FORMULA:
   C2="Domestic", IF(B2<=10, B2 * 45, (10 * 45) + ((B2 - 10) * 75)),
   TRUE, "INVALID_CATEGORY"
 )`,
-            comparisonWeak: "Writing convoluted 10-level nested IF statements manually and getting lost in parenthesis errors.",
-            comparisonStrong: "Specifying logic conditions to AI and generating modern `IFS()` or `XLOOKUP()` formulas with error fallbacks.",
+            comparisonWeak:
+              "Writing convoluted 10-level nested IF statements manually and getting lost in parenthesis errors.",
+            comparisonStrong:
+              "Specifying logic conditions to AI and generating modern `IFS()` or `XLOOKUP()` formulas with error fallbacks.",
             exerciseTitle: "Generate a Tiered Solar Lease Formula",
             exerciseText:
               "Prompt an AI to write an Excel formula for calculating monthly solar lease fees with 3 tiers based on kWh consumption, with a penalty fee for late payment.",
@@ -772,12 +834,16 @@ EXCEL FORMULA:
         {
           id: "d3-m1-l3",
           slug: "1-3",
-          title: "M-Pesa merchant reconciliation and duplicate payment detection",
-          summary: "Reconciling statement exports against internal invoices and detecting double transactions.",
+          title:
+            "M-Pesa merchant reconciliation and duplicate payment detection",
+          summary:
+            "Reconciling statement exports against internal invoices and detecting double transactions.",
           estimatedMinutes: 25,
           blocks: buildLessonBlocks({
-            problemHeading: "Manual Payment Matching and Undetected Double Payments",
-            scenarioTitle: "Workplace Scenario: Reconciling 1,500 M-Pesa Till Records",
+            problemHeading:
+              "Manual Payment Matching and Undetected Double Payments",
+            scenarioTitle:
+              "Workplace Scenario: Reconciling 1,500 M-Pesa Till Records",
             scenarioText:
               "At month-end, an administrative officer at an Eldoret agricultural supply store sits with two spreadsheets: 1,500 rows from the Safaricom M-Pesa Merchant Portal and 1,420 invoices from their internal billing system. Manually cross-checking receipts takes 3 full days. Inevitably, five duplicate customer payments go unnoticed, leading to customer disputes.",
             conceptHeading: "The 3-Way Reconciliation Framework",
@@ -793,8 +859,10 @@ EXCEL FORMULA:
     IF(XLOOKUP(A2, 'Invoices'!A:A, 'Invoices'!C:C) <> B2, "AMOUNT_MISMATCH", "MATCHED_OK")
   )
 )`,
-            comparisonWeak: "Manually highlighting spreadsheet rows in yellow to reconcile thousands of mobile payments.",
-            comparisonStrong: "Executing automated reconciliation formulas that bucket transactions into Clean, Duplicate, and Unclaimed.",
+            comparisonWeak:
+              "Manually highlighting spreadsheet rows in yellow to reconcile thousands of mobile payments.",
+            comparisonStrong:
+              "Executing automated reconciliation formulas that bucket transactions into Clean, Duplicate, and Unclaimed.",
             exerciseTitle: "Build a Reconciliation Exception Filter",
             exerciseText:
               "Write a prompt instructing an AI to create a Python reconciliation script that compares two CSV files and exports a `Discrepancies.xlsx` workbook.",
@@ -822,7 +890,8 @@ EXCEL FORMULA:
           id: "d3-m1-l4",
           slug: "1-4",
           title: "Verifying model-generated financial calculations",
-          summary: "Double-check protocols and formula audit trails to prevent spreadsheet hallucinations.",
+          summary:
+            "Double-check protocols and formula audit trails to prevent spreadsheet hallucinations.",
           estimatedMinutes: 25,
           blocks: buildLessonBlocks({
             problemHeading: "Trusting AI Summaries Without Formula Audits",
@@ -843,8 +912,10 @@ DESIRED OUTPUT FORMAT:
 | Item Description | Base Amount (KES) | VAT Formula (16%) | WHT Formula (5%) | Net Payable Formula |
 |---|---|---|---|---|
 | Solar Inverter Installation | 500,000 | =B2*0.16 | =B2*0.05 | =B2+C2-D2 |`,
-            comparisonWeak: "Pasting raw static numbers generated by an AI directly into corporate accounting vouchers.",
-            comparisonStrong: "Requiring AI to output dynamic spreadsheet formulas and verifying the mathematical calculations.",
+            comparisonWeak:
+              "Pasting raw static numbers generated by an AI directly into corporate accounting vouchers.",
+            comparisonStrong:
+              "Requiring AI to output dynamic spreadsheet formulas and verifying the mathematical calculations.",
             exerciseTitle: "Author a Formula Audit Prompt",
             exerciseText:
               "Write a prompt that generates an equipment depreciation schedule for solar assets over 5 years using the straight-line method with explicit formulas.",
@@ -899,22 +970,27 @@ export const courseD4: CanonicalCourse = {
     "Build decision-support copilots with mandatory human sign-off checkpoints.",
   ],
   prerequisites: "Research, Writing, and Document Workflows (Course D2).",
-  targetAudience: "Sales operations managers, customer support leads, business analysts, and executives.",
+  targetAudience:
+    "Sales operations managers, customer support leads, business analysts, and executives.",
   modules: [
     {
       id: "d4-m1",
       title: "Pipeline Triage & Executive Reporting",
-      description: "Managing leads, automating reporting, and supporting executive decisions.",
+      description:
+        "Managing leads, automating reporting, and supporting executive decisions.",
       lessons: [
         {
           id: "d4-m1-l1",
           slug: "1-1",
           title: "Multi-channel customer inquiry triage (WhatsApp, email, web)",
-          summary: "Unifying scattered customer messages into an organized operational triage pipeline.",
+          summary:
+            "Unifying scattered customer messages into an organized operational triage pipeline.",
           estimatedMinutes: 25,
           blocks: buildLessonBlocks({
-            problemHeading: "Customer Inquiries Disappearing Across Multiple Channels",
-            scenarioTitle: "Workplace Scenario: The Unanswered WhatsApp Quotation Request",
+            problemHeading:
+              "Customer Inquiries Disappearing Across Multiple Channels",
+            scenarioTitle:
+              "Workplace Scenario: The Unanswered WhatsApp Quotation Request",
             scenarioText:
               "A commercial solar firm receives inquiries through three channels: WhatsApp business chat, a website contact form, and an info@ email address. Three different staff members reply intermittently with no shared record. A commercial farmer in Bomet sent a WhatsApp message asking for an urgent pump quote; it sat unread for four days because the coordinator assumed someone else handled it. The deal was lost.",
             conceptHeading: "The Unified Customer Inquiry Triage Pipeline",
@@ -933,8 +1009,10 @@ export interface UnifiedCustomerInquiry {
   assignedEngineer: string;
   status: "NEW" | "CONTACTED" | "DISPATCHED" | "CLOSED";
 }`,
-            comparisonWeak: "Allowing customer inquiries to remain fragmented in separate WhatsApp chats and personal email inboxes.",
-            comparisonStrong: "Normalizing inquiries into a unified CRM pipeline with priority scoring and assigned technician dispatch.",
+            comparisonWeak:
+              "Allowing customer inquiries to remain fragmented in separate WhatsApp chats and personal email inboxes.",
+            comparisonStrong:
+              "Normalizing inquiries into a unified CRM pipeline with priority scoring and assigned technician dispatch.",
             exerciseTitle: "Design a Customer Triage Flow",
             exerciseText:
               "Design a multi-channel triage workflow for an agricultural equipment supplier, defining routing rules for emergency repairs vs standard pricing inquiries.",
@@ -962,11 +1040,14 @@ export interface UnifiedCustomerInquiry {
           id: "d4-m1-l2",
           slug: "1-2",
           title: "Sales lead qualification and scoring matrices",
-          summary: "Filtering high-intent buyers from casual inquiries using the BANT framework.",
+          summary:
+            "Filtering high-intent buyers from casual inquiries using the BANT framework.",
           estimatedMinutes: 25,
           blocks: buildLessonBlocks({
-            problemHeading: "Field Engineers Wasting Hours on Unqualified Leads",
-            scenarioTitle: "Workplace Scenario: The 4-Hour Drive for a Student Project",
+            problemHeading:
+              "Field Engineers Wasting Hours on Unqualified Leads",
+            scenarioTitle:
+              "Workplace Scenario: The 4-Hour Drive for a Student Project",
             scenarioText:
               "A senior field engineer at Apex Rift Engineering drove 4 hours to a remote farm in Narok for a scheduled solar site survey. Upon arrival, the 'client' revealed they were a high school student working on a biology project with zero budget. The company lost an entire day of technical labor and KES 8,000 in fuel because the inquiry was never qualified.",
             conceptHeading: "The BANT Lead Qualification Matrix",
@@ -987,8 +1068,10 @@ ACTION RULES:
 - Score >= 70: QUALIFIED -> Schedule Engineering Site Survey.
 - Score 40-69: NURTURE -> Send Brochure and Price Catalog via WhatsApp.
 - Score < 40: UNQUALIFIED -> Send Automated FAQ link.`,
-            comparisonWeak: "Treating every incoming message equally and sending expensive engineers to unvetted leads.",
-            comparisonStrong: "Scoring leads automatically with BANT criteria to prioritize high-value commercial buyers.",
+            comparisonWeak:
+              "Treating every incoming message equally and sending expensive engineers to unvetted leads.",
+            comparisonStrong:
+              "Scoring leads automatically with BANT criteria to prioritize high-value commercial buyers.",
             exerciseTitle: "Score 3 Customer Lead Transcripts",
             exerciseText:
               "Apply the BANT scoring rubric to three realistic customer profiles (A: Flower farm manager with KES 2M budget, B: Hobby gardener, C: School principal seeking solar pumping).",
@@ -1016,11 +1099,13 @@ ACTION RULES:
           id: "d4-m1-l3",
           slug: "1-3",
           title: "Automated executive weekly reporting dashboards",
-          summary: "Aggregating operational logs, ticket counts, and financial summaries into executive updates.",
+          summary:
+            "Aggregating operational logs, ticket counts, and financial summaries into executive updates.",
           estimatedMinutes: 25,
           blocks: buildLessonBlocks({
             problemHeading: "The Friday Afternoon 5-Hour Report Scramble",
-            scenarioTitle: "Workplace Scenario: Manually Copying Data from 6 Spreadsheets",
+            scenarioTitle:
+              "Workplace Scenario: Manually Copying Data from 6 Spreadsheets",
             scenarioText:
               "Every Friday afternoon, an operations coordinator spends 5 hours manually copying metrics from WhatsApp maintenance chats, Google Forms, billing exports, and technician timesheets into a Word document for the Managing Director. Because the coordinator is rushed, numbers frequently contradict the accounting ledger.",
             conceptHeading: "The Automated Executive Synthesis Pipeline",
@@ -1045,8 +1130,10 @@ ACTION RULES:
 ## 3. BOTTLENECK & EXCEPTION ALERTS
 - Inverter supply delay: 10kW Deye inverters held at Mombasa port (ETA: Tuesday).
 - Action required: MD approval for temporary backup supplier order.`,
-            comparisonWeak: "Spending 5 hours every Friday copying and pasting raw numbers manually into unstructured Word documents.",
-            comparisonStrong: "Automating data consolidation into structured weekly executive digests with trend analysis and exception alerts.",
+            comparisonWeak:
+              "Spending 5 hours every Friday copying and pasting raw numbers manually into unstructured Word documents.",
+            comparisonStrong:
+              "Automating data consolidation into structured weekly executive digests with trend analysis and exception alerts.",
             exerciseTitle: "Generate a Weekly Operations Report",
             exerciseText:
               "Using a provided fixture of 25 weekly support tickets and 10 sales leads, generate a concise 1-page Weekly Operations Digest.",
@@ -1074,11 +1161,14 @@ ACTION RULES:
           id: "d4-m1-l4",
           slug: "1-4",
           title: "Decision support copilots with strict human sign-off gates",
-          summary: "Building advisory assistants that synthesize recommendations while enforcing human authority.",
+          summary:
+            "Building advisory assistants that synthesize recommendations while enforcing human authority.",
           estimatedMinutes: 25,
           blocks: buildLessonBlocks({
-            problemHeading: "Confusing AI Recommendations with Final Executive Policy",
-            scenarioTitle: "Workplace Scenario: The Unapproved Agronomic Pesticide Advisory",
+            problemHeading:
+              "Confusing AI Recommendations with Final Executive Policy",
+            scenarioTitle:
+              "Workplace Scenario: The Unapproved Agronomic Pesticide Advisory",
             scenarioText:
               "An agricultural advisory copilot was deployed to help field officers recommend pest control solutions to potato farmers in Nyandarua. An unmonitored model recommended a chemical banned by the Kenya Pest Control Products Board (PCPB). A junior officer forwarded the advice to 200 farmers on WhatsApp. The cooperative was fined KES 500,000 and faced a farmer boycott.",
             conceptHeading: "The Decision-Support Copilot Architecture",
@@ -1102,8 +1192,10 @@ OUTPUT SCHEMA:
   "preHarvestIntervalDays": number,
   "humanReviewerStatus": "PENDING_APPROVAL"
 }`,
-            comparisonWeak: "Letting AI copilots dispatch advice directly to customers without professional verification.",
-            comparisonStrong: "Enforcing regulatory citation constraints and mandatory human expert sign-off gates.",
+            comparisonWeak:
+              "Letting AI copilots dispatch advice directly to customers without professional verification.",
+            comparisonStrong:
+              "Enforcing regulatory citation constraints and mandatory human expert sign-off gates.",
             exerciseTitle: "Design a Decision Copilot with Sign-Off Guardrails",
             exerciseText:
               "Author a system prompt for a Borehole Pump Replacement Copilot that recommends pump sizes based on depth and flow rate, requiring a licensed engineer's signature before work orders are issued.",

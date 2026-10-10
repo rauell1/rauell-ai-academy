@@ -68,67 +68,74 @@ function Assessment() {
       backLabel="Return to courses"
     >
       <section className="mx-auto max-w-3xl px-5 py-16">
-      <p className="eyebrow text-leaf">Secure assessment</p>
-      <h1 className="font-display mt-4 text-4xl font-bold">
-        Course assessment
-      </h1>
-      {error && (
-        <p role="alert" className="mt-5 rounded-xl bg-red-50 p-4 text-red-800">
-          {error}
-        </p>
-      )}
-      {result ? (
-        <div className="card mt-8 p-7" role="status">
-          <h2 className="font-display text-2xl font-bold">Attempt complete</h2>
-          <p className="mt-3">{result}</p>
-        </div>
-      ) : !attempt ? (
-        <button
-          onClick={start}
-          className="mt-8 rounded-full bg-ink px-6 py-3 text-sm font-bold text-white"
-        >
-          Start attempt
-        </button>
-      ) : (
-        <form onSubmit={submit} className="mt-8 space-y-6">
-          {attempt.questions.map((q, i) => (
-            <fieldset key={q.id} className="card p-6">
-              <legend className="font-display px-2 text-xl font-bold">
-                {i + 1}. {q.prompt}
-              </legend>
-              {q.type === "short_response" ? (
-                <textarea
-                  name={`${q.id}:text`}
-                  className="mt-4 w-full rounded-xl border p-3"
-                  required
-                />
-              ) : (
-                <div className="mt-4 space-y-2">
-                  {q.options.map((o) => (
-                    <label
-                      key={o.id}
-                      className="flex gap-3 rounded-xl border p-3 text-sm"
-                    >
-                      <input
-                        type={
-                          q.type === "multiple_response" ? "checkbox" : "radio"
-                        }
-                        name={q.id}
-                        value={o.id}
-                      />
-                      {o.label}
-                    </label>
-                  ))}
-                </div>
-              )}
-            </fieldset>
-          ))}
-          <button className="rounded-full bg-ink px-6 py-3 text-sm font-bold text-white">
-            Submit final answers
+        <p className="eyebrow text-leaf">Secure assessment</p>
+        <h1 className="font-display mt-4 text-4xl font-bold">
+          Course assessment
+        </h1>
+        {error && (
+          <p
+            role="alert"
+            className="mt-5 rounded-xl bg-red-50 p-4 text-red-800"
+          >
+            {error}
+          </p>
+        )}
+        {result ? (
+          <div className="card mt-8 p-7" role="status">
+            <h2 className="font-display text-2xl font-bold">
+              Attempt complete
+            </h2>
+            <p className="mt-3">{result}</p>
+          </div>
+        ) : !attempt ? (
+          <button
+            onClick={start}
+            className="mt-8 rounded-full bg-ink px-6 py-3 text-sm font-bold text-white"
+          >
+            Start attempt
           </button>
-        </form>
-      )}
-    </section>
+        ) : (
+          <form onSubmit={submit} className="mt-8 space-y-6">
+            {attempt.questions.map((q, i) => (
+              <fieldset key={q.id} className="card p-6">
+                <legend className="font-display px-2 text-xl font-bold">
+                  {i + 1}. {q.prompt}
+                </legend>
+                {q.type === "short_response" ? (
+                  <textarea
+                    name={`${q.id}:text`}
+                    className="mt-4 w-full rounded-xl border p-3"
+                    required
+                  />
+                ) : (
+                  <div className="mt-4 space-y-2">
+                    {q.options.map((o) => (
+                      <label
+                        key={o.id}
+                        className="flex gap-3 rounded-xl border p-3 text-sm"
+                      >
+                        <input
+                          type={
+                            q.type === "multiple_response"
+                              ? "checkbox"
+                              : "radio"
+                          }
+                          name={q.id}
+                          value={o.id}
+                        />
+                        {o.label}
+                      </label>
+                    ))}
+                  </div>
+                )}
+              </fieldset>
+            ))}
+            <button className="rounded-full bg-ink px-6 py-3 text-sm font-bold text-white">
+              Submit final answers
+            </button>
+          </form>
+        )}
+      </section>
     </RequireAuth>
   );
 }

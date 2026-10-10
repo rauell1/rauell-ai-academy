@@ -30,9 +30,12 @@ function AccessAdmin() {
     return (
       <section className="mx-auto max-w-2xl px-5 py-24 text-center">
         <p className="eyebrow text-red-600">Access Restricted</p>
-        <h1 className="font-display mt-3 text-3xl font-bold">Super Administrator Required</h1>
+        <h1 className="font-display mt-3 text-3xl font-bold">
+          Super Administrator Required
+        </h1>
         <p className="mt-4 text-sm leading-6 text-ink/70">
-          User access control and role governance can only be accessed by Super Administrators.
+          User access control and role governance can only be accessed by Super
+          Administrators.
         </p>
         <Link
           to="/account"

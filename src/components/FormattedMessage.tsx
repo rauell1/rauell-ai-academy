@@ -36,9 +36,7 @@ export function FormattedMessage({
                 className="my-1.5 list-disc pl-5 space-y-1 text-inherit"
               >
                 {block.items.map((item, itemIdx) => (
-                  <li key={itemIdx}>
-                    {renderInlineFormatting(item, isUser)}
-                  </li>
+                  <li key={itemIdx}>{renderInlineFormatting(item, isUser)}</li>
                 ))}
               </ul>
             );
@@ -49,9 +47,7 @@ export function FormattedMessage({
                 className="my-1.5 list-decimal pl-5 space-y-1 text-inherit"
               >
                 {block.items.map((item, itemIdx) => (
-                  <li key={itemIdx}>
-                    {renderInlineFormatting(item, isUser)}
-                  </li>
+                  <li key={itemIdx}>{renderInlineFormatting(item, isUser)}</li>
                 ))}
               </ol>
             );

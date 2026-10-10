@@ -72,7 +72,9 @@ function Account() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <p className="eyebrow text-leaf">Access & Security</p>
-            <h2 className="font-display mt-1 text-2xl font-bold">Role & Permissions</h2>
+            <h2 className="font-display mt-1 text-2xl font-bold">
+              Role & Permissions
+            </h2>
           </div>
           {rbac && (
             <div className="flex flex-wrap gap-2">
@@ -99,12 +101,15 @@ function Account() {
         </div>
 
         <p className="mt-3 text-sm text-ink/70">
-          Your role grants you verified permissions across Rauell AI Academy modules, practical labs, and governance systems.
+          Your role grants you verified permissions across Rauell AI Academy
+          modules, practical labs, and governance systems.
         </p>
 
         {rbac && rbac.permissions.length > 0 && (
           <div className="mt-6 border-t border-ink/10 pt-5">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-ink/40">Active Capabilities</h3>
+            <h3 className="text-xs font-bold uppercase tracking-wider text-ink/40">
+              Active Capabilities
+            </h3>
             <div className="mt-3 flex flex-wrap gap-2">
               {rbac.permissions.map((perm) => (
                 <span

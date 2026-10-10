@@ -156,7 +156,10 @@ export const canonicalPathways: CanonicalPathway[] = [
   },
   {
     slug: "ai-web-development",
-    aliases: ["ai-for-engineers", "ai-assisted-website-and-product-development"],
+    aliases: [
+      "ai-for-engineers",
+      "ai-assisted-website-and-product-development",
+    ],
     code: "PATHWAY C",
     title: "AI-Assisted Website and Product Development",
     description:
@@ -256,7 +259,8 @@ export const canonicalPathways: CanonicalPathway[] = [
       "reliable-ai-integration",
       "operating-and-evaluating-agents",
     ],
-    capstoneTitle: "Resilient Multi-Step Operations Agent with Safety Guardrails",
+    capstoneTitle:
+      "Resilient Multi-Step Operations Agent with Safety Guardrails",
     capstoneDescription:
       "Design, build, and stress-test an end-to-end automation workflow (e.g. M-Pesa B2C Payment Reconciliation & Customer Dispatch Engine). Must include webhook ingestion, idempotency deduplication, schema-validated tool execution, a human approval checkpoint for high-value anomalies, and comprehensive failure logging.",
     capstoneRubric: [
@@ -377,7 +381,11 @@ const A1_M1_L1_BLOCKS: Block[] = [
     title: "Deciding the Right Tool for the Job",
     plainText: null,
     config: {
-      headers: ["Workplace Task", "Best Tool", "Why This Tool? Avoids Disaster"],
+      headers: [
+        "Workplace Task",
+        "Best Tool",
+        "Why This Tool? Avoids Disaster",
+      ],
       rows: [
         [
           "Calculating M-Pesa monthly transaction totals & VAT",
@@ -407,7 +415,8 @@ const A1_M1_L1_BLOCKS: Block[] = [
   {
     id: "a1-1-1-10",
     type: "callout",
-    title: "Weak Approach (Treating AI as a Calculator or Source of Absolute Truth)",
+    title:
+      "Weak Approach (Treating AI as a Calculator or Source of Absolute Truth)",
     plainText:
       "Naive Prompt: 'Calculate our company's payroll tax from this raw list of salaries and tell me what the Kenya Revenue Authority law requires.'\nWhy it fails: The model may invent tax brackets from older years or make subtle math calculation errors that lead to financial penalties.",
     config: { variant: "danger" },
@@ -599,8 +608,6 @@ FORMAT:
   },
 ];
 
-
-
 // Helper to create canonical lesson blocks for other lessons
 function createStandardLessonBlocks(
   moduleTitle: string,
@@ -717,7 +724,11 @@ export const canonicalCourses: CanonicalCourse[] = [
     color: "bg-mint",
     icon: BrainCircuit,
     featured: true,
-    pathwaySlugs: ["ai-foundations", "business-operations", "ai-web-development"],
+    pathwaySlugs: [
+      "ai-foundations",
+      "business-operations",
+      "ai-web-development",
+    ],
     outcomes: [
       "Explain the fundamental difference between deterministic software and generative AI models.",
       "Understand context windows, tokens, temperature, and training boundaries.",
@@ -725,7 +736,8 @@ export const canonicalCourses: CanonicalCourse[] = [
       "Evaluate AI answers for unsupported claims and hallucinations.",
     ],
     prerequisites: "None. Open to all backgrounds.",
-    targetAudience: "Beginners, working professionals, business owners, and new builders.",
+    targetAudience:
+      "Beginners, working professionals, business owners, and new builders.",
     modules: [
       {
         id: "a1-m1",
@@ -736,7 +748,8 @@ export const canonicalCourses: CanonicalCourse[] = [
             id: "a1-m1-l1",
             slug: "1-1",
             title: "What AI is and is not",
-            summary: "Conventional software versus generative probability in plain English.",
+            summary:
+              "Conventional software versus generative probability in plain English.",
             estimatedMinutes: 20,
             blocks: A1_M1_L1_BLOCKS,
           },
@@ -744,7 +757,8 @@ export const canonicalCourses: CanonicalCourse[] = [
             id: "a1-m1-l2",
             slug: "1-2",
             title: "How generative AI works",
-            summary: "Prediction, language tokens, and why models can sound confident while wrong.",
+            summary:
+              "Prediction, language tokens, and why models can sound confident while wrong.",
             estimatedMinutes: 20,
             blocks: createStandardLessonBlocks(
               "Understanding AI",
@@ -769,7 +783,8 @@ export const canonicalCourses: CanonicalCourse[] = [
             id: "a1-m1-l3",
             slug: "1-3",
             title: "Models, context, and tokens",
-            summary: "Understanding the context window, token budgets, and memory limits.",
+            summary:
+              "Understanding the context window, token budgets, and memory limits.",
             estimatedMinutes: 25,
             blocks: createStandardLessonBlocks(
               "Understanding AI",
@@ -795,7 +810,8 @@ export const canonicalCourses: CanonicalCourse[] = [
       {
         id: "a1-m2",
         title: "Working with AI",
-        description: "Anatomy of high-leverage prompts and targeted improvement loops.",
+        description:
+          "Anatomy of high-leverage prompts and targeted improvement loops.",
         lessons: [
           {
             id: "a1-m2-l1",
@@ -809,7 +825,8 @@ export const canonicalCourses: CanonicalCourse[] = [
             id: "a1-m2-l2",
             slug: "2-2",
             title: "Context changes everything",
-            summary: "Providing reference data, company style guides, and clear boundaries.",
+            summary:
+              "Providing reference data, company style guides, and clear boundaries.",
             estimatedMinutes: 20,
             blocks: createStandardLessonBlocks(
               "Working with AI",
@@ -860,13 +877,15 @@ export const canonicalCourses: CanonicalCourse[] = [
       {
         id: "a1-m3",
         title: "Trust and Verification",
-        description: "Checking claims, primary sources, and private data protocols.",
+        description:
+          "Checking claims, primary sources, and private data protocols.",
         lessons: [
           {
             id: "a1-m3-l1",
             slug: "3-1",
             title: "Why AI makes things up",
-            summary: "Hallucinations, plausible fabrication, and boundary limits.",
+            summary:
+              "Hallucinations, plausible fabrication, and boundary limits.",
             estimatedMinutes: 20,
             blocks: createStandardLessonBlocks(
               "Trust and Verification",
@@ -891,7 +910,8 @@ export const canonicalCourses: CanonicalCourse[] = [
             id: "a1-m3-l2",
             slug: "3-2",
             title: "A practical verification checklist",
-            summary: "Claim-by-claim verification, primary sources, and audit tables.",
+            summary:
+              "Claim-by-claim verification, primary sources, and audit tables.",
             estimatedMinutes: 25,
             blocks: createStandardLessonBlocks(
               "Trust and Verification",
@@ -916,7 +936,8 @@ export const canonicalCourses: CanonicalCourse[] = [
             id: "a1-m3-l3",
             slug: "3-3",
             title: "Privacy and responsible use",
-            summary: "Protecting confidential company data, PII, and customer identity.",
+            summary:
+              "Protecting confidential company data, PII, and customer identity.",
             estimatedMinutes: 20,
             blocks: createStandardLessonBlocks(
               "Trust and Verification",
@@ -942,13 +963,15 @@ export const canonicalCourses: CanonicalCourse[] = [
       {
         id: "a1-m4",
         title: "Apply What You Know",
-        description: "Capstone preparation, case studies, and personal workflows.",
+        description:
+          "Capstone preparation, case studies, and personal workflows.",
         lessons: [
           {
             id: "a1-m4-l1",
             slug: "4-1",
             title: "Case study: a water project",
-            summary: "Analyzing a Naivasha borehole community water scheme briefing.",
+            summary:
+              "Analyzing a Naivasha borehole community water scheme briefing.",
             estimatedMinutes: 25,
             blocks: createStandardLessonBlocks(
               "Apply What You Know",
@@ -973,7 +996,8 @@ export const canonicalCourses: CanonicalCourse[] = [
             id: "a1-m4-l2",
             slug: "4-2",
             title: "Build your personal workflow",
-            summary: "Structuring your daily routine to leverage AI without losing control.",
+            summary:
+              "Structuring your daily routine to leverage AI without losing control.",
             estimatedMinutes: 20,
             blocks: createStandardLessonBlocks(
               "Apply What You Know",
@@ -998,7 +1022,8 @@ export const canonicalCourses: CanonicalCourse[] = [
             id: "a1-m4-l3",
             slug: "4-3",
             title: "Final knowledge check & capstone",
-            summary: "Synthesizing your workplace brief and submitting your portfolio.",
+            summary:
+              "Synthesizing your workplace brief and submitting your portfolio.",
             estimatedMinutes: 30,
             blocks: createStandardLessonBlocks(
               "Apply What You Know",
@@ -1027,7 +1052,10 @@ export const canonicalCourses: CanonicalCourse[] = [
   // A2 / B1
   {
     slug: "prompt-engineering-in-practice",
-    aliases: ["clear-instructions-and-useful-context", "task-design-and-context-preparation"],
+    aliases: [
+      "clear-instructions-and-useful-context",
+      "task-design-and-context-preparation",
+    ],
     code: "COURSE A2 / B1",
     title: "Clear Instructions and Useful Context",
     summary:
@@ -1049,8 +1077,10 @@ export const canonicalCourses: CanonicalCourse[] = [
       "Apply few-shot examples and counterexamples to enforce formatting.",
       "Design systematic evaluation rubrics for prompt quality.",
     ],
-    prerequisites: "Understanding and Using AI (Course A1) or everyday AI usage.",
-    targetAudience: "Business professionals, researchers, developers, and administrators.",
+    prerequisites:
+      "Understanding and Using AI (Course A1) or everyday AI usage.",
+    targetAudience:
+      "Business professionals, researchers, developers, and administrators.",
     modules: [
       {
         id: "pe-m1",
@@ -1094,7 +1124,8 @@ export const canonicalCourses: CanonicalCourse[] = [
             id: "pe-m1-l3",
             slug: "1-3",
             title: "Examples that teach",
-            summary: "Few-shot prompting with positive examples and counterexamples.",
+            summary:
+              "Few-shot prompting with positive examples and counterexamples.",
             estimatedMinutes: 25,
             blocks: createStandardLessonBlocks(
               "Prompt fundamentals",
@@ -1126,7 +1157,8 @@ export const canonicalCourses: CanonicalCourse[] = [
             id: "pe-m2-l1",
             slug: "2-1",
             title: "Build an evaluation rubric",
-            summary: "Scoring accuracy, completeness, format, and hallucination absence.",
+            summary:
+              "Scoring accuracy, completeness, format, and hallucination absence.",
             estimatedMinutes: 20,
             blocks: createStandardLessonBlocks(
               "Test and improve",
@@ -1176,7 +1208,8 @@ export const canonicalCourses: CanonicalCourse[] = [
             id: "pe-m2-l3",
             slug: "2-3",
             title: "Debug weak answers",
-            summary: "Diagnosing ambiguity, missing context, and conflicting constraints.",
+            summary:
+              "Diagnosing ambiguity, missing context, and conflicting constraints.",
             estimatedMinutes: 20,
             blocks: createStandardLessonBlocks(
               "Test and improve",
@@ -1202,7 +1235,8 @@ export const canonicalCourses: CanonicalCourse[] = [
       {
         id: "pe-m3",
         title: "Project",
-        description: "Designing, testing, and reflecting on a research assistant.",
+        description:
+          "Designing, testing, and reflecting on a research assistant.",
         lessons: [
           {
             id: "pe-m3-l1",
@@ -1233,7 +1267,8 @@ export const canonicalCourses: CanonicalCourse[] = [
             id: "pe-m3-l2",
             slug: "3-2",
             title: "Test your assistant",
-            summary: "Stress testing across normal, edge-case, and adversarial inputs.",
+            summary:
+              "Stress testing across normal, edge-case, and adversarial inputs.",
             estimatedMinutes: 25,
             blocks: createStandardLessonBlocks(
               "Project",
@@ -1258,7 +1293,8 @@ export const canonicalCourses: CanonicalCourse[] = [
             id: "pe-m3-l3",
             slug: "3-3",
             title: "Reflection and next steps",
-            summary: "Documenting prompt versions and planning your prompt portfolio.",
+            summary:
+              "Documenting prompt versions and planning your prompt portfolio.",
             estimatedMinutes: 20,
             blocks: createStandardLessonBlocks(
               "Project",
@@ -1301,7 +1337,11 @@ export const canonicalCourses: CanonicalCourse[] = [
     category: "Responsible AI",
     color: "bg-[#f4c6a6]",
     icon: ShieldCheck,
-    pathwaySlugs: ["ai-foundations", "business-operations", "prompt-engineering"],
+    pathwaySlugs: [
+      "ai-foundations",
+      "business-operations",
+      "prompt-engineering",
+    ],
     outcomes: [
       "Assess operational risk and harm before introducing AI into workflows.",
       "Execute structured claim-by-claim verification against legal and technical sources.",
@@ -1309,7 +1349,8 @@ export const canonicalCourses: CanonicalCourse[] = [
       "Draft a practical organizational AI Use Policy for your workplace.",
     ],
     prerequisites: "Understanding and Using AI (Course A1).",
-    targetAudience: "Team leads, compliance officers, managers, and professional practitioners.",
+    targetAudience:
+      "Team leads, compliance officers, managers, and professional practitioners.",
     modules: [
       {
         id: "resp-m1",
@@ -1320,7 +1361,8 @@ export const canonicalCourses: CanonicalCourse[] = [
             id: "resp-m1-l1",
             slug: "1-1",
             title: "Who can be harmed?",
-            summary: "Mapping stakeholders and identifying irreversible failure modes.",
+            summary:
+              "Mapping stakeholders and identifying irreversible failure modes.",
             estimatedMinutes: 20,
             blocks: createStandardLessonBlocks(
               "Risk and responsibility",
@@ -1345,7 +1387,8 @@ export const canonicalCourses: CanonicalCourse[] = [
             id: "resp-m1-l2",
             slug: "1-2",
             title: "Bias in data and outputs",
-            summary: "Understanding cultural, regional, and systemic biases in pre-trained models.",
+            summary:
+              "Understanding cultural, regional, and systemic biases in pre-trained models.",
             estimatedMinutes: 20,
             blocks: createStandardLessonBlocks(
               "Risk and responsibility",
@@ -1370,7 +1413,8 @@ export const canonicalCourses: CanonicalCourse[] = [
             id: "resp-m1-l3",
             slug: "1-3",
             title: "Consent and private data",
-            summary: "Kenya Data Protection Act 2019 compliance and consent protocols.",
+            summary:
+              "Kenya Data Protection Act 2019 compliance and consent protocols.",
             estimatedMinutes: 25,
             blocks: createStandardLessonBlocks(
               "Risk and responsibility",
@@ -1396,13 +1440,15 @@ export const canonicalCourses: CanonicalCourse[] = [
       {
         id: "resp-m2",
         title: "Verification",
-        description: "Primary sources, claim checking, and documenting confidence.",
+        description:
+          "Primary sources, claim checking, and documenting confidence.",
         lessons: [
           {
             id: "resp-m2-l1",
             slug: "2-1",
             title: "Source quality",
-            summary: "Evaluating primary versus secondary and synthetic sources.",
+            summary:
+              "Evaluating primary versus secondary and synthetic sources.",
             estimatedMinutes: 20,
             blocks: createStandardLessonBlocks(
               "Verification",
@@ -1484,7 +1530,8 @@ export const canonicalCourses: CanonicalCourse[] = [
             id: "resp-m3-l1",
             slug: "3-1",
             title: "Human review",
-            summary: "Designing meaningful human review checkpoints that prevent rubber-stamping.",
+            summary:
+              "Designing meaningful human review checkpoints that prevent rubber-stamping.",
             estimatedMinutes: 20,
             blocks: createStandardLessonBlocks(
               "Governance",
@@ -1509,7 +1556,8 @@ export const canonicalCourses: CanonicalCourse[] = [
             id: "resp-m3-l2",
             slug: "3-2",
             title: "Incident response",
-            summary: "What to do when an AI workflow produces a serious mistake.",
+            summary:
+              "What to do when an AI workflow produces a serious mistake.",
             estimatedMinutes: 20,
             blocks: createStandardLessonBlocks(
               "Governance",
@@ -1534,7 +1582,8 @@ export const canonicalCourses: CanonicalCourse[] = [
             id: "resp-m3-l3",
             slug: "3-3",
             title: "Create your AI use policy",
-            summary: "Drafting a clear, actionable workplace policy for your team.",
+            summary:
+              "Drafting a clear, actionable workplace policy for your team.",
             estimatedMinutes: 25,
             blocks: createStandardLessonBlocks(
               "Governance",
@@ -1559,7 +1608,8 @@ export const canonicalCourses: CanonicalCourse[] = [
             id: "resp-m3-l4",
             slug: "3-4",
             title: "Final assessment",
-            summary: "Comprehensive evaluation of responsible AI and verification mastery.",
+            summary:
+              "Comprehensive evaluation of responsible AI and verification mastery.",
             estimatedMinutes: 30,
             blocks: createStandardLessonBlocks(
               "Governance",
@@ -1594,14 +1644,11 @@ export const canonicalCourses: CanonicalCourse[] = [
   // PATHWAY D COURSES (D1 - D4): EXPANDED COMPREHENSIVE BUSINESS OPERATIONS CURRICULUM (16 LESSONS)
   ...pathwayDCourses,
 
-
   // PATHWAY E COURSES (E1 - E4): EXPANDED AUTOMATION AND RELIABLE AGENTS CURRICULUM (16 LESSONS)
   ...pathwayECourses,
 
-
   // PATHWAY F COURSES (F1 - F4): EXPANDED ENERGY, INFRASTRUCTURE AND AGRICULTURE CURRICULUM (16 LESSONS)
   ...pathwayFCourses,
-
 ];
 
 // ----------------------------------------------------------------------------
@@ -1623,7 +1670,11 @@ export function getCourseBySlug(slug: string): CanonicalCourse | undefined {
 export function getLessonBySlug(
   courseSlug: string,
   lessonSlug: string,
-): { lesson: CanonicalLesson; module: CanonicalModule; course: CanonicalCourse } | null {
+): {
+  lesson: CanonicalLesson;
+  module: CanonicalModule;
+  course: CanonicalCourse;
+} | null {
   const course = getCourseBySlug(courseSlug);
   if (!course) return null;
 

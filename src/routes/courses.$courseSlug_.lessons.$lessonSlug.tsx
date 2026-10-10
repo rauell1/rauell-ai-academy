@@ -334,7 +334,7 @@ function LessonContent() {
               <ArrowLeft className="h-4 w-4" />
               {course.title}
             </Link>
-            
+
             <div className="ml-auto flex items-center gap-3">
               <button
                 onClick={() => setFocusMode((m) => !m)}
@@ -398,14 +398,25 @@ function LessonContent() {
           {/* Main content */}
           <div className="min-w-0 flex-1">
             <article className="mx-auto max-w-2xl px-6 py-12 lg:px-10">
-              <nav aria-label="Breadcrumb" className="mb-6 flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-ink/50">
-                <Link to="/my-learning" className="hover:text-ink transition">My Learning</Link>
+              <nav
+                aria-label="Breadcrumb"
+                className="mb-6 flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-ink/50"
+              >
+                <Link to="/my-learning" className="hover:text-ink transition">
+                  My Learning
+                </Link>
                 <ChevronRight className="h-3 w-3" />
-                <Link to="/courses/$courseSlug" params={{ courseSlug }} className="hover:text-ink transition">{course.title}</Link>
+                <Link
+                  to="/courses/$courseSlug"
+                  params={{ courseSlug }}
+                  className="hover:text-ink transition"
+                >
+                  {course.title}
+                </Link>
                 <ChevronRight className="h-3 w-3" />
                 <span className="text-leaf">Module {mi}</span>
               </nav>
-              
+
               <h1 className="font-display mt-4 text-3xl font-bold text-ink md:text-4xl">
                 {lesson?.title ?? selected.title}
               </h1>

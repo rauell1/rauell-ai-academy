@@ -38,9 +38,7 @@ export class AuthorizationError extends Error {
   }
 }
 
-export async function getActiveSession(
-  headers: IncomingHttpHeaders | Headers,
-) {
+export async function getActiveSession(headers: IncomingHttpHeaders | Headers) {
   const session = await auth.api.getSession({
     headers: headers instanceof Headers ? headers : fromNodeHeaders(headers),
   });

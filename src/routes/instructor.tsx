@@ -31,9 +31,12 @@ function Instructor() {
     return (
       <section className="mx-auto max-w-2xl px-5 py-24 text-center">
         <p className="eyebrow text-red-600">Access Restricted</p>
-        <h1 className="font-display mt-3 text-3xl font-bold">Instructor Access Required</h1>
+        <h1 className="font-display mt-3 text-3xl font-bold">
+          Instructor Access Required
+        </h1>
         <p className="mt-4 text-sm leading-6 text-ink/70">
-          The Instructor Workspace is reserved for certified evaluators and mentors to review student submissions.
+          The Instructor Workspace is reserved for certified evaluators and
+          mentors to review student submissions.
         </p>
         <Link
           to="/my-learning"

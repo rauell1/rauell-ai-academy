@@ -36,15 +36,13 @@ async function bootstrap() {
     await tx
       .insert(userRoles)
       .values({ userId: user.id, roleId: role.id, assignedBy: user.id });
-    await tx
-      .insert(auditLogs)
-      .values({
-        actorId: user.id,
-        action: "role.super_administrator_bootstrapped",
-        targetType: "user",
-        targetId: user.id,
-        metadata: { oneTimeBootstrap: true },
-      });
+    await tx.insert(auditLogs).values({
+      actorId: user.id,
+      action: "role.super_administrator_bootstrapped",
+      targetType: "user",
+      targetId: user.id,
+      metadata: { oneTimeBootstrap: true },
+    });
   });
   console.info(
     "Initial super administrator assigned. Remove bootstrap environment variables now.",

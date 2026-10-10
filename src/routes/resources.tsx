@@ -44,33 +44,33 @@ const RESOURCES_DATA: ResourceItem[] = [
         items: [
           "Every factual statement is backed by a verifiable primary source (legislation, official data, sensor logs).",
           "All citations, author names, and publication dates exist and have been cross-checked.",
-          "Quotes are verbatim, and interpretations are clearly separated from direct facts."
-        ]
+          "Quotes are verbatim, and interpretations are clearly separated from direct facts.",
+        ],
       },
       {
         heading: "2. Logic, Quantities & Mathematics",
         items: [
           "Units of measurement are consistent throughout calculations (e.g. kW vs kWh, hectares vs acres).",
           "Intermediate steps have been checked independently with standard formulas.",
-          "Unknown or unmeasured parameters are explicitly labelled as missing, not guessed."
-        ]
+          "Unknown or unmeasured parameters are explicitly labelled as missing, not guessed.",
+        ],
       },
       {
         heading: "3. Privacy & Compliance Safeguards",
         items: [
           "No personally identifiable information (PII) or customer confidential data is exposed.",
           "Complies with Kenya Data Protection Act 2019 principles (purpose limitation & consent).",
-          "Appropriate human escalation points are documented before automated actions execute."
-        ]
+          "Appropriate human escalation points are documented before automated actions execute.",
+        ],
       },
       {
         heading: "4. Professional Sign-off",
         items: [
           "Reviewed by a qualified engineer, agronomist, or business lead.",
-          "Verification log record created with reviewer name, date, and version hash."
-        ]
-      }
-    ]
+          "Verification log record created with reviewer name, date, and version hash.",
+        ],
+      },
+    ],
   },
   {
     icon: BookMarked,
@@ -82,31 +82,31 @@ const RESOURCES_DATA: ResourceItem[] = [
         heading: "Section A: Role & Objective",
         items: [
           "Role: Exact professional persona (e.g. Senior Agronomist / Solar SCADA Analyst).",
-          "Primary Goal: Single, unambiguous outcome to be accomplished."
-        ]
+          "Primary Goal: Single, unambiguous outcome to be accomplished.",
+        ],
       },
       {
         heading: "Section B: Context & Reference Data",
         items: [
           "Relevant background documents, tables, or raw logs provided as clean context.",
-          "Explicitly state what context is missing to prevent hallucinated assumptions."
-        ]
+          "Explicitly state what context is missing to prevent hallucinated assumptions.",
+        ],
       },
       {
         heading: "Section C: Constraints & Rules",
         items: [
           "Length limit, audience technical depth, and tone.",
-          "Forbidden actions (e.g. 'Do not certify safety-critical calculations')."
-        ]
+          "Forbidden actions (e.g. 'Do not certify safety-critical calculations').",
+        ],
       },
       {
         heading: "Section D: Output Schema & Few-Shot Examples",
         items: [
           "Explicit formatting template (Markdown table, JSON schema, bullet points).",
-          "At least one golden input/output example demonstrating edge-case handling."
-        ]
-      }
-    ]
+          "At least one golden input/output example demonstrating edge-case handling.",
+        ],
+      },
+    ],
   },
   {
     icon: FileCheck2,
@@ -118,30 +118,32 @@ const RESOURCES_DATA: ResourceItem[] = [
         heading: "Part 1: Problem Definition & Beneficiaries",
         items: [
           "Who is the primary user and what real-world friction does this tool remove?",
-          "How will success and accuracy be objectively measured?"
-        ]
+          "How will success and accuracy be objectively measured?",
+        ],
       },
       {
         heading: "Part 2: Risk Classification & Guardrails",
         items: [
           "Assessed risk category under NIST AI RMF (Low / Medium / High / Safety-Critical).",
-          "Circuit breakers: automated fail-safes and recursion limits."
-        ]
+          "Circuit breakers: automated fail-safes and recursion limits.",
+        ],
       },
       {
         heading: "Part 3: Verification & Escalation Protocol",
         items: [
           "Specific criteria that trigger mandatory human intervention.",
-          "Auditing schedule and model drift monitoring plan."
-        ]
-      }
-    ]
-  }
+          "Auditing schedule and model drift monitoring plan.",
+        ],
+      },
+    ],
+  },
 ];
 
 function Resources() {
   const [activeItem, setActiveItem] = useState<ResourceItem | null>(null);
-  const [activeCaseStudy, setActiveCaseStudy] = useState<CaseStudyItem | null>(null);
+  const [activeCaseStudy, setActiveCaseStudy] = useState<CaseStudyItem | null>(
+    null,
+  );
   const [isStreaming, setIsStreaming] = useState(false);
   const [streamedTelemetry, setStreamedTelemetry] = useState<any>(null);
   const [copied, setCopied] = useState(false);
@@ -198,9 +200,13 @@ function Resources() {
   }, [isStreaming, activeCaseStudy]);
 
   function copyAll(item: ResourceItem) {
-    const text = `# ${item.title}\n\n${item.copy}\n\n` +
+    const text =
+      `# ${item.title}\n\n${item.copy}\n\n` +
       item.sections
-        .map((s) => `## ${s.heading}\n` + s.items.map((i) => `- [ ] ${i}`).join("\n"))
+        .map(
+          (s) =>
+            `## ${s.heading}\n` + s.items.map((i) => `- [ ] ${i}`).join("\n"),
+        )
         .join("\n\n");
     navigator.clipboard.writeText(text);
     setCopied(true);
@@ -227,13 +233,16 @@ function Resources() {
           <div>
             <div className="flex items-center gap-2">
               <Radio className="h-4 w-4 animate-pulse text-leaf" />
-              <span className="eyebrow text-leaf">Living Case Studies (AI-OS ↔ Academy Pipeline)</span>
+              <span className="eyebrow text-leaf">
+                Living Case Studies (AI-OS ↔ Academy Pipeline)
+              </span>
             </div>
             <h2 className="font-display mt-1 text-2xl font-bold text-ink">
               Real Incident Telemetry & Post-Mortems
             </h2>
             <p className="mt-1 text-sm text-ink/65 max-w-2xl">
-              Sanitized operational incidents exported directly from Rauell AI-OS production subsystems in Kenya.
+              Sanitized operational incidents exported directly from Rauell
+              AI-OS production subsystems in Kenya.
             </p>
           </div>
           <span className="rounded-full bg-leaf/10 border border-leaf/30 px-3.5 py-1 text-xs font-bold text-leaf">
@@ -255,7 +264,9 @@ function Resources() {
                       <SectorIcon className="h-3.5 w-3.5 text-leaf" />
                       {cs.sector.split("&")[0].trim()}
                     </span>
-                    <span className="text-xs text-ink/40 font-mono">v{cs.version}</span>
+                    <span className="text-xs text-ink/40 font-mono">
+                      v{cs.version}
+                    </span>
                   </div>
 
                   <h3 className="font-display mt-3 text-lg font-bold text-ink leading-snug">
@@ -299,7 +310,9 @@ function Resources() {
               </div>
               <div className="flex-1">
                 <span className="eyebrow text-leaf">{item.category}</span>
-                <h2 className="font-display mt-2 text-xl font-bold">{item.title}</h2>
+                <h2 className="font-display mt-2 text-xl font-bold">
+                  {item.title}
+                </h2>
                 <p className="mt-1 text-sm text-ink/60">{item.copy}</p>
               </div>
               <button
@@ -330,7 +343,8 @@ function Resources() {
                   {activeCaseStudy.title}
                 </h2>
                 <p className="mt-1 text-xs text-ink/55">
-                  Location: {activeCaseStudy.location} | Synced: {new Date(activeCaseStudy.lastSyncedAt).toLocaleDateString()}
+                  Location: {activeCaseStudy.location} | Synced:{" "}
+                  {new Date(activeCaseStudy.lastSyncedAt).toLocaleDateString()}
                 </p>
               </div>
               <button
@@ -414,12 +428,17 @@ function Resources() {
                   Evaluation Rubric Criteria:
                 </h4>
                 <ul className="mt-2 space-y-2">
-                  {activeCaseStudy.educationalApplication.evaluationRubric.map((r, idx) => (
-                    <li key={idx} className="flex items-start gap-2 text-xs text-ink/80">
-                      <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-leaf mt-0.5" />
-                      <span>{r}</span>
-                    </li>
-                  ))}
+                  {activeCaseStudy.educationalApplication.evaluationRubric.map(
+                    (r, idx) => (
+                      <li
+                        key={idx}
+                        className="flex items-start gap-2 text-xs text-ink/80"
+                      >
+                        <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-leaf mt-0.5" />
+                        <span>{r}</span>
+                      </li>
+                    ),
+                  )}
                 </ul>
               </div>
             </div>
@@ -447,7 +466,9 @@ function Resources() {
             <div className="flex items-start justify-between gap-4 border-b border-ink/10 pb-5">
               <div>
                 <span className="eyebrow text-leaf">{activeItem.category}</span>
-                <h2 className="font-display mt-1 text-3xl font-bold">{activeItem.title}</h2>
+                <h2 className="font-display mt-1 text-3xl font-bold">
+                  {activeItem.title}
+                </h2>
                 <p className="mt-1 text-sm text-ink/60">{activeItem.copy}</p>
               </div>
               <button
@@ -461,11 +482,19 @@ function Resources() {
 
             <div className="mt-6 space-y-6">
               {activeItem.sections.map((section) => (
-                <div key={section.heading} className="rounded-2xl bg-white p-5 shadow-sm border border-ink/5">
-                  <h3 className="font-display text-base font-bold text-ink mb-3">{section.heading}</h3>
+                <div
+                  key={section.heading}
+                  className="rounded-2xl bg-white p-5 shadow-sm border border-ink/5"
+                >
+                  <h3 className="font-display text-base font-bold text-ink mb-3">
+                    {section.heading}
+                  </h3>
                   <div className="space-y-2.5">
                     {section.items.map((it) => (
-                      <div key={it} className="flex items-start gap-3 text-xs leading-5 text-ink/80">
+                      <div
+                        key={it}
+                        className="flex items-start gap-3 text-xs leading-5 text-ink/80"
+                      >
                         <CheckCircle2 className="h-4 w-4 shrink-0 text-leaf mt-0.5" />
                         <span>{it}</span>
                       </div>

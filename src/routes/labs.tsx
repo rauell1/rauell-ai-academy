@@ -42,7 +42,8 @@ const LAB_SANDBOXES: Record<string, SandboxConfig> = {
   "Prompt comparison playground": {
     subtitle: "Compare Vague vs. Structured Prompts in Real Time",
     badge: "[Interactive Demonstration]",
-    objective: "Observe how constraints, context, and schema turn ambiguous drafts into reliable outputs.",
+    objective:
+      "Observe how constraints, context, and schema turn ambiguous drafts into reliable outputs.",
     instructions: [
       "Review Prompt A (unstructured brief) versus Prompt B (structured 6-part brief).",
       "Edit either prompt or click 'Run & Evaluate' to observe how constraints enforce factual fidelity.",
@@ -50,7 +51,8 @@ const LAB_SANDBOXES: Record<string, SandboxConfig> = {
     ],
     inputLabelA: "Prompt A (Naive / Unstructured):",
     inputLabelB: "Prompt B (6-Part Structured Architecture):",
-    initialInputA: "Summarise the solar power plant performance report for last month and tell me if everything is fine.",
+    initialInputA:
+      "Summarise the solar power plant performance report for last month and tell me if everything is fine.",
     initialInputB: `ROLE: Senior Solar Operations Analyst
 CONTEXT: Attached inverter logs for Nakuru Solar PV (50kWp capacity, July 2026).
 TASK: Generate a 3-part operational brief.
@@ -58,7 +60,8 @@ CONSTRAINTS: 1. State Performance Ratio (PR). 2. List inverters with string degr
 FORMAT: Markdown table with Status, Metric, and Recommended Action.`,
     outputLabelA: "Generated Output A (Vague & General):",
     outputLabelB: "Generated Output B (Grounded & Actionable):",
-    simulatedOutputA: "The solar plant had a good month with high generation. Inverters worked generally well with minor fluctuations during rainy periods. Overall system health looks normal and no immediate alarms were reported.",
+    simulatedOutputA:
+      "The solar plant had a good month with high generation. Inverters worked generally well with minor fluctuations during rainy periods. Overall system health looks normal and no immediate alarms were reported.",
     simulatedOutputB: `### Nakuru Solar PV — July 2026 Operational Brief
 
 | System Component | Metric / Value | Operational Status | Recommended Action |
@@ -76,7 +79,8 @@ FORMAT: Markdown table with Status, Metric, and Recommended Action.`,
   "Claim verification workbench": {
     subtitle: "Investigate and Audit AI-Generated Statements",
     badge: "[Interactive Demonstration]",
-    objective: "Isolate factual claims into an audit table and verify them against statutory primary sources.",
+    objective:
+      "Isolate factual claims into an audit table and verify them against statutory primary sources.",
     instructions: [
       "Inspect the AI-generated summary of Kenyan water permits under the Water Act 2016.",
       "Edit the claims in the input box to test how the verification engine isolates claims.",
@@ -100,7 +104,8 @@ FORMAT: Markdown table with Status, Metric, and Recommended Action.`,
   "Company profile to website brief": {
     subtitle: "Turn Unstructured Client Interviews into Web Specifications",
     badge: "[Interactive Demonstration]",
-    objective: "Extract verified business requirements, user journeys, and component architecture from a raw company profile.",
+    objective:
+      "Extract verified business requirements, user journeys, and component architecture from a raw company profile.",
     instructions: [
       "Review the raw company profile transcript for Apex Rift Engineering Ltd (Nakuru).",
       "Edit or replace details (e.g., change services, locations, or founders) to test dynamic extraction.",
@@ -128,7 +133,8 @@ FORMAT: Markdown table with Status, Metric, and Recommended Action.`,
   "Website acceptance test runner": {
     subtitle: "Run Automated Quality Checks on Web Deliverables",
     badge: "[Interactive Demonstration]",
-    objective: "Execute automated verification tests against client web deliverables before delivery.",
+    objective:
+      "Execute automated verification tests against client web deliverables before delivery.",
     instructions: [
       "Inspect the automated test suite configuration below.",
       "Add, remove, or modify test cases in the code editor.",
@@ -161,7 +167,8 @@ Time:        1.24s`,
   "Form validation and error state debugger": {
     subtitle: "Debug Client & Server Schema Validation",
     badge: "[Manual Experiment]",
-    objective: "Inspect and test Zod validation schemas for phone sanitization (+254) and email verification.",
+    objective:
+      "Inspect and test Zod validation schemas for phone sanitization (+254) and email verification.",
     instructions: [
       "Examine the quotation payload below.",
       "Try fixing the phone number (e.g., change to +254712345678) or email to test validation passing.",
@@ -201,7 +208,8 @@ Content-Type: application/json
   "Automation failure recovery drill": {
     subtitle: "Simulate Webhook Timeouts & Idempotency",
     badge: "[Manual Experiment]",
-    objective: "Test webhook duplicate deduplication and automated exponential backoff recovery.",
+    objective:
+      "Test webhook duplicate deduplication and automated exponential backoff recovery.",
     instructions: [
       "Review the simulated M-Pesa webhook payload with TransID RJH891KL23.",
       "Click 'Run & Evaluate' once to process the initial payment event.",
@@ -235,7 +243,8 @@ Content-Type: application/json
   "Synthetic solar data and anomaly analysis": {
     subtitle: "Analyze Inverter Telemetry & Generate Work Order",
     badge: "[Interactive Demonstration]",
-    objective: "Detect PV string degradation from sensor telemetry and generate a safety-first LOTO work order.",
+    objective:
+      "Detect PV string degradation from sensor telemetry and generate a safety-first LOTO work order.",
     instructions: [
       "Review the hourly telemetry log from the Nakuru 50kWp PV array.",
       "Edit the current (Idc_A) or voltage values on any inverter/string row.",
@@ -284,22 +293,31 @@ function evaluateLabContent(
       const hasRoleA = /role:|act as/i.test(inputA);
       const hasConstraintsA = /constraint|do not|must not/i.test(inputA);
       const hasFormatA = /format:|table|json|markdown/i.test(inputA);
-      const scoreA = (hasRoleA ? 25 : 5) + (hasConstraintsA ? 35 : 10) + (hasFormatA ? 40 : 15);
+      const scoreA =
+        (hasRoleA ? 25 : 5) +
+        (hasConstraintsA ? 35 : 10) +
+        (hasFormatA ? 40 : 15);
 
       // Analyze inputB
       const hasRoleB = /role:|act as/i.test(inputB);
       const hasConstraintsB = /constraint|do not|must not|limit/i.test(inputB);
       const hasFormatB = /format:|table|json|markdown/i.test(inputB);
       const hasPr = /pr|performance ratio|inverter/i.test(inputB);
-      const scoreB = (hasRoleB ? 25 : 10) + (hasConstraintsB ? 30 : 10) + (hasFormatB ? 25 : 10) + (hasPr ? 20 : 5);
+      const scoreB =
+        (hasRoleB ? 25 : 10) +
+        (hasConstraintsB ? 30 : 10) +
+        (hasFormatB ? 25 : 10) +
+        (hasPr ? 20 : 5);
 
-      const dynOutputA = scoreA < 50
-        ? `[Prompt Evaluation Score: ${scoreA}/100 — Vague Specification]\n\n"The plant performed relatively well during the past month. Output was satisfactory though minor fluctuations were noted during afternoon hours. Overall operations appear within normal general parameters."`
-        : `[Prompt Evaluation Score: ${scoreA}/100 — Partially Structured]\n\nGenerated Summary based on your input: Summary produced addressing key requirements, but missing strict output formatting boundaries.`;
+      const dynOutputA =
+        scoreA < 50
+          ? `[Prompt Evaluation Score: ${scoreA}/100 — Vague Specification]\n\n"The plant performed relatively well during the past month. Output was satisfactory though minor fluctuations were noted during afternoon hours. Overall operations appear within normal general parameters."`
+          : `[Prompt Evaluation Score: ${scoreA}/100 — Partially Structured]\n\nGenerated Summary based on your input: Summary produced addressing key requirements, but missing strict output formatting boundaries.`;
 
-      const dynOutputB = scoreB >= 70
-        ? `[Prompt Evaluation Score: ${scoreB}/100 — Production-Grade Specification]\n\n### Operational Brief: Solar Mini-Grid Performance\n\n| Component / Metric | Measured Value | Threshold Status | Recommended Technician Action |\n| :--- | :--- | :--- | :--- |\n| **Performance Ratio (PR)** | 78.4% | Normal (Target >= 75%) | Standard weekly cleaning cycle |\n| **String Degradation** | Current drop -28% | Anomaly Detected | Inspect PV string for dust / partial shading |\n| **Inverter Uptime** | 99.2% | Optimal | No immediate action required |`
-        : `[Prompt Evaluation Score: ${scoreB}/100 — Needs More Constraints]\n\nDetected items: Role: ${hasRoleB ? 'Yes' : 'Missing'}, Constraints: ${hasConstraintsB ? 'Yes' : 'Missing'}, Format: ${hasFormatB ? 'Yes' : 'Missing'}.\nAdd explicit boundaries to reach production quality.`;
+      const dynOutputB =
+        scoreB >= 70
+          ? `[Prompt Evaluation Score: ${scoreB}/100 — Production-Grade Specification]\n\n### Operational Brief: Solar Mini-Grid Performance\n\n| Component / Metric | Measured Value | Threshold Status | Recommended Technician Action |\n| :--- | :--- | :--- | :--- |\n| **Performance Ratio (PR)** | 78.4% | Normal (Target >= 75%) | Standard weekly cleaning cycle |\n| **String Degradation** | Current drop -28% | Anomaly Detected | Inspect PV string for dust / partial shading |\n| **Inverter Uptime** | 99.2% | Optimal | No immediate action required |`
+          : `[Prompt Evaluation Score: ${scoreB}/100 — Needs More Constraints]\n\nDetected items: Role: ${hasRoleB ? "Yes" : "Missing"}, Constraints: ${hasConstraintsB ? "Yes" : "Missing"}, Format: ${hasFormatB ? "Yes" : "Missing"}.\nAdd explicit boundaries to reach production quality.`;
 
       return { outputA: dynOutputA, outputB: dynOutputB };
     }
@@ -315,39 +333,58 @@ function evaluateLabContent(
       const rows: string[] = [];
 
       if (mentions2020) {
-        rows.push('| "Water Act 2020" | Kenya Gazette | ❌ FABRICATED | The actual statute is the **Water Act 2016**. |');
+        rows.push(
+          '| "Water Act 2020" | Kenya Gazette | ❌ FABRICATED | The actual statute is the **Water Act 2016**. |',
+        );
       } else if (mentions2016) {
-        rows.push('| "Water Act 2016" | Kenya Gazette | ✓ VERIFIED | Statutory citation year is correct. |');
+        rows.push(
+          '| "Water Act 2016" | Kenya Gazette | ✓ VERIFIED | Statutory citation year is correct. |',
+        );
       }
 
       if (mentionsClause14) {
-        rows.push('| "Clause 14 permit fee" | Water Act 2016 | ❌ FABRICATED | Permits are governed by Sections 36–40; fees are published in WRA gazettes. |');
+        rows.push(
+          '| "Clause 14 permit fee" | Water Act 2016 | ❌ FABRICATED | Permits are governed by Sections 36–40; fees are published in WRA gazettes. |',
+        );
       } else if (mentionsSection36) {
-        rows.push('| "Section 36-40" | Water Act 2016 | ✓ VERIFIED | Correct statutory section for abstraction permits. |');
+        rows.push(
+          '| "Section 36-40" | Water Act 2016 | ✓ VERIFIED | Correct statutory section for abstraction permits. |',
+        );
       }
 
       if (mentions50k) {
-        rows.push('| "50,000 KES fee" | WRA Tariff Gazette | ⚠️ UNVERIFIED CLAIM | Standard domestic fee varies by borehole depth and casing diameter. |');
+        rows.push(
+          '| "50,000 KES fee" | WRA Tariff Gazette | ⚠️ UNVERIFIED CLAIM | Standard domestic fee varies by borehole depth and casing diameter. |',
+        );
       }
 
       if (mentionsLivestock) {
-        rows.push('| "Livestock exemption" | Section 37 | ⚠️ PARTIALLY ACCURATE | Only domestic household livestock within small volume limits is exempt. |');
+        rows.push(
+          '| "Livestock exemption" | Section 37 | ⚠️ PARTIALLY ACCURATE | Only domestic household livestock within small volume limits is exempt. |',
+        );
       }
 
       if (rows.length === 0) {
-        rows.push(`| "${inputA.substring(0, 30)}..." | General Gazette | ℹ️ AUDITED | No recognized statutory keywords found. Ensure statute year and section numbers are specified. |`);
+        rows.push(
+          `| "${inputA.substring(0, 30)}..." | General Gazette | ℹ️ AUDITED | No recognized statutory keywords found. Ensure statute year and section numbers are specified. |`,
+        );
       }
 
-      const table = `| Factual Claim Extracted from Your Input | Statutory Authority | Verification Status | Verdict & Findings |\n| :--- | :--- | :--- | :--- |\n${rows.join('\n')}`;
+      const table = `| Factual Claim Extracted from Your Input | Statutory Authority | Verification Status | Verdict & Findings |\n| :--- | :--- | :--- | :--- |\n${rows.join("\n")}`;
 
       return { outputA: table };
     }
 
     case "Company profile to website brief": {
       // Extract organization name
-      const nameMatch = inputA.match(/(?:company|firm|we are|name is)\s+([A-Z][\w\s&]+(?:Ltd|Limited|Engineering|Solutions)?)/i) ||
+      const nameMatch =
+        inputA.match(
+          /(?:company|firm|we are|name is)\s+([A-Z][\w\s&]+(?:Ltd|Limited|Engineering|Solutions)?)/i,
+        ) ||
         inputA.match(/^([A-Z][\w\s&]+(?:Ltd|Limited|Engineering|Solutions)?)/);
-      const orgName = nameMatch ? nameMatch[1].trim() : "Apex Rift Engineering Ltd";
+      const orgName = nameMatch
+        ? nameMatch[1].trim()
+        : "Apex Rift Engineering Ltd";
 
       // Detect locations
       const locs: string[] = [];
@@ -360,22 +397,26 @@ function evaluateLabContent(
 
       // Detect services
       const services: string[] = [];
-      if (/solar|mini-grid|pv/i.test(inputA)) services.push("Solar mini-grids (10kW–150kW)");
-      if (/cold storage|cold room|cooling/i.test(inputA)) services.push("Solar horticultural cold storage");
-      if (/borehole|pumping|water/i.test(inputA)) services.push("Solar water pumping & borehole maintenance");
-      if (services.length === 0) services.push("Renewable energy & cold storage systems");
+      if (/solar|mini-grid|pv/i.test(inputA))
+        services.push("Solar mini-grids (10kW–150kW)");
+      if (/cold storage|cold room|cooling/i.test(inputA))
+        services.push("Solar horticultural cold storage");
+      if (/borehole|pumping|water/i.test(inputA))
+        services.push("Solar water pumping & borehole maintenance");
+      if (services.length === 0)
+        services.push("Renewable energy & cold storage systems");
 
       const brief = `### ${orgName} — Dynamic Technical Web Specification
 
 **1. Verified Core Offerings (Extracted from Input):**
-${services.map(s => `- ${s}`).join('\n')}
+${services.map((s) => `- ${s}`).join("\n")}
 
 **2. Operating Service Locations:**
 - ${locStr}
 
 **3. Generated Sitemap & Component Hierarchy:**
 - **/** (Homepage): Hero with value proposition, verified metrics in ${locStr}, client testimonials.
-- **/services**: Detailed breakdown of ${services.join(', ')}.
+- **/services**: Detailed breakdown of ${services.join(", ")}.
 - **/projects**: Verified case studies in ${locStr}.
 - **/contact**: Lead capture enquiry form with server-side Zod validation.
 
@@ -388,21 +429,22 @@ ${services.map(s => `- ${s}`).join('\n')}
 
     case "Website acceptance test runner": {
       const testMatches = Array.from(inputA.matchAll(/test\("([^"]+)"/g));
-      const testNames = testMatches.length > 0
-        ? testMatches.map(m => m[1])
-        : [
-            "responsive on 360px mobile viewport without horizontal overflow",
-            "enquiry form rejects empty email and phone < 10 digits",
-            "all service links navigate to valid routes with HTTP 200",
-            "contrast ratio meets WCAG AA standards (>= 4.5:1)",
-          ];
+      const testNames =
+        testMatches.length > 0
+          ? testMatches.map((m) => m[1])
+          : [
+              "responsive on 360px mobile viewport without horizontal overflow",
+              "enquiry form rejects empty email and phone < 10 digits",
+              "all service links navigate to valid routes with HTTP 200",
+              "contrast ratio meets WCAG AA standards (>= 4.5:1)",
+            ];
 
       const results = testNames.map((name, i) => {
-        const ms = (18 + (i * 12)).toFixed(0);
-        return `✓ test/acceptance/${name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.spec.ts — PASS (${ms}ms)`;
+        const ms = (18 + i * 12).toFixed(0);
+        return `✓ test/acceptance/${name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}.spec.ts — PASS (${ms}ms)`;
       });
 
-      const out = `${results.join('\n')}
+      const out = `${results.join("\n")}
 
 Test Suites: 1 passed, 1 total
 Tests:       ${testNames.length} passed, ${testNames.length} total
@@ -418,25 +460,39 @@ Status:      ALL USER JOURNEY ACCEPTANCE TESTS PASSED`;
         const parsed = JSON.parse(inputA);
         const errors: { field: string; message: string }[] = [];
 
-        if (!parsed.fullName || typeof parsed.fullName !== "string" || parsed.fullName.trim().length < 2) {
-          errors.push({ field: "fullName", message: "Full name must be at least 2 characters" });
+        if (
+          !parsed.fullName ||
+          typeof parsed.fullName !== "string" ||
+          parsed.fullName.trim().length < 2
+        ) {
+          errors.push({
+            field: "fullName",
+            message: "Full name must be at least 2 characters",
+          });
         }
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!parsed.email || !emailRegex.test(parsed.email)) {
-          errors.push({ field: "email", message: "Invalid email address format (e.g. name@domain.com)" });
+          errors.push({
+            field: "email",
+            message: "Invalid email address format (e.g. name@domain.com)",
+          });
         }
 
         const phoneRegex = /^(?:\+254|0)[17]\d{8}$/;
         if (!parsed.phone || !phoneRegex.test(parsed.phone)) {
           errors.push({
             field: "phone",
-            message: "Phone number must be valid Kenyan mobile format (+2547XXXXXXXX or 07XXXXXXXX)",
+            message:
+              "Phone number must be valid Kenyan mobile format (+2547XXXXXXXX or 07XXXXXXXX)",
           });
         }
 
         if (!parsed.serviceType) {
-          errors.push({ field: "serviceType", message: "Service type is required" });
+          errors.push({
+            field: "serviceType",
+            message: "Service type is required",
+          });
         }
 
         if (errors.length > 0) {
@@ -453,7 +509,8 @@ Status:      ALL USER JOURNEY ACCEPTANCE TESTS PASSED`;
               {
                 success: true,
                 enquiryId: `ENQ-2026-${Math.floor(1000 + Math.random() * 9000)}`,
-                message: "Enquiry validated and recorded successfully into persistent PostgreSQL database.",
+                message:
+                  "Enquiry validated and recorded successfully into persistent PostgreSQL database.",
                 recordedData: parsed,
                 validatedAt: new Date().toISOString(),
               },
@@ -466,7 +523,11 @@ Status:      ALL USER JOURNEY ACCEPTANCE TESTS PASSED`;
         const msg = err instanceof Error ? err.message : String(err);
         return {
           outputA: `HTTP/1.1 400 Bad Request\nContent-Type: application/json\n\n${JSON.stringify(
-            { success: false, error: "SyntaxError: Malformed JSON payload", details: msg },
+            {
+              success: false,
+              error: "SyntaxError: Malformed JSON payload",
+              details: msg,
+            },
             null,
             2,
           )}`,
@@ -475,7 +536,9 @@ Status:      ALL USER JOURNEY ACCEPTANCE TESTS PASSED`;
     }
 
     case "Automation failure recovery drill": {
-      const transIdMatch = inputA.match(/"TransID":\s*"([^"]+)"/i) || inputA.match(/TransID[:=]\s*(\w+)/i);
+      const transIdMatch =
+        inputA.match(/"TransID":\s*"([^"]+)"/i) ||
+        inputA.match(/TransID[:=]\s*(\w+)/i);
       const transId = transIdMatch ? transIdMatch[1] : "RJH891KL23";
 
       const isDuplicate = processedIds.has(transId);
@@ -493,14 +556,14 @@ Status:      ALL USER JOURNEY ACCEPTANCE TESTS PASSED`;
     }
 
     case "Synthetic solar data and anomaly analysis": {
-      const lines = inputA.split('\n').filter(l => l.trim().length > 0);
+      const lines = inputA.split("\n").filter((l) => l.trim().length > 0);
       let lowestString = "STR-03";
       let lowestInverter = "INV-02";
       let lowestCurrent = 999;
       let calculatedPower = 0;
 
       for (const line of lines) {
-        const parts = line.split(',');
+        const parts = line.split(",");
         if (parts.length >= 5) {
           const inv = parts[1]?.trim();
           const str = parts[2]?.trim();
@@ -553,7 +616,9 @@ function Labs() {
     latencyMs?: number;
     isFallback?: boolean;
   } | null>(null);
-  const [checkedCriteria, setCheckedCriteria] = useState<Set<number>>(new Set());
+  const [checkedCriteria, setCheckedCriteria] = useState<Set<number>>(
+    new Set(),
+  );
 
   // Reactive inputs and outputs
   const [inputA, setInputA] = useState("");
@@ -648,12 +713,20 @@ function Labs() {
         setIsEvaluating(false);
         return;
       } catch (err) {
-        console.warn("Live AI evaluation request failed, falling back to local heuristic:", err);
+        console.warn(
+          "Live AI evaluation request failed, falling back to local heuristic:",
+          err,
+        );
       }
     }
 
     // Local heuristic execution
-    const res = evaluateLabContent(activeLab.title, inputA, inputB, processedIds);
+    const res = evaluateLabContent(
+      activeLab.title,
+      inputA,
+      inputB,
+      processedIds,
+    );
     setOutputA(res.outputA);
     if (res.outputB !== undefined) {
       setOutputB(res.outputB);
@@ -702,7 +775,8 @@ function Labs() {
                   Learner Account Required for Interactive Sandboxes
                 </h3>
                 <p className="text-xs text-ink/75">
-                  Sign in or create an account to launch live prompt playgrounds, audit statutory claims, and test AI evaluators.
+                  Sign in or create an account to launch live prompt
+                  playgrounds, audit statutory claims, and test AI evaluators.
                 </p>
               </div>
             </div>
@@ -730,8 +804,13 @@ function Labs() {
         {labs.map((l) => {
           const I = l.icon;
           return (
-            <article key={l.title} className="card card-lift flex flex-col overflow-hidden">
-              <div className={`${l.color} flex h-40 items-center justify-center`}>
+            <article
+              key={l.title}
+              className="card card-lift flex flex-col overflow-hidden"
+            >
+              <div
+                className={`${l.color} flex h-40 items-center justify-center`}
+              >
                 <div className="grid h-20 w-20 place-items-center rounded-2xl bg-ink text-white shadow-lg">
                   <I className="h-10 w-10" />
                 </div>
@@ -749,8 +828,12 @@ function Labs() {
                     {l.badge}
                   </span>
                 </div>
-                <h2 className="font-display mt-3 text-xl font-bold">{l.title}</h2>
-                <p className="mt-2 flex-1 text-sm leading-6 text-ink/62">{l.copy}</p>
+                <h2 className="font-display mt-3 text-xl font-bold">
+                  {l.title}
+                </h2>
+                <p className="mt-2 flex-1 text-sm leading-6 text-ink/62">
+                  {l.copy}
+                </p>
                 <div className="mt-6 border-t border-ink/10 pt-4">
                   {session ? (
                     <button
@@ -785,238 +868,256 @@ function Labs() {
           backLabel="Close"
         >
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 sm:p-6 overflow-y-auto">
-          <div className="relative my-8 flex max-h-[90vh] w-full max-w-5xl flex-col rounded-3xl bg-white shadow-2xl overflow-hidden">
-            {/* Header */}
-            <div className="flex items-center justify-between border-b border-ink/10 bg-ink px-6 py-4 text-white">
-              <div className="flex items-center gap-3">
-                <span className="rounded-full bg-leaf px-3 py-1 text-xs font-bold uppercase tracking-wider text-white">
-                  {sandbox.badge}
-                </span>
-                <div>
-                  <h3 className="font-display text-lg font-bold">{activeLab.title}</h3>
-                  <p className="text-xs text-white/60">{sandbox.subtitle}</p>
-                </div>
-              </div>
-              <button
-                onClick={() => setActiveLab(null)}
-                className="rounded-full p-2 text-white/60 hover:bg-white/10 hover:text-white"
-                aria-label="Close lab modal"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-
-            {/* Body */}
-            <div className="flex-1 overflow-y-auto p-6 sm:p-8 space-y-6">
-              {/* Honest Notice Banner */}
-              <div className="flex items-start gap-3 rounded-2xl border border-sky-200 bg-sky-50 p-4 text-xs leading-5 text-sky-900">
-                <Info className="h-5 w-5 shrink-0 text-sky-500" />
-                <p>
-                  <strong>Honest Execution Disclosure:</strong> This lab executes client-side dynamic evaluation on your edited inputs using verified local test runners, Zod schemas, and data parsers without requiring external paid API keys.
-                </p>
-              </div>
-
-              {/* Objective & Instructions */}
-              <div className="rounded-2xl border border-ink/10 bg-paper p-5">
-                <h4 className="font-display text-sm font-bold uppercase tracking-wider text-leaf">
-                  Learning Objective
-                </h4>
-                <p className="mt-1 text-sm font-medium text-ink/80">{sandbox.objective}</p>
-                <h4 className="font-display mt-4 text-xs font-bold uppercase tracking-wider text-ink/50">
-                  Instructions
-                </h4>
-                <ol className="mt-2 list-decimal space-y-1.5 pl-5 text-sm text-ink/70">
-                  {sandbox.instructions.map((step, idx) => (
-                    <li key={idx}>{step}</li>
-                  ))}
-                </ol>
-              </div>
-
-              {/* Execution Engine Selector */}
-              <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-ink/10 bg-white p-3.5 shadow-xs">
-                <div className="flex items-center gap-2.5">
-                  <span className="text-xs font-bold text-ink/70">Engine:</span>
-                  <div className="inline-flex rounded-full bg-ink/5 p-1 border border-ink/10">
-                    <button
-                      onClick={() => setEvalMode("ai")}
-                      className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold transition ${
-                        evalMode === "ai"
-                          ? "bg-leaf text-white shadow-xs"
-                          : "text-ink/60 hover:text-ink"
-                      }`}
-                    >
-                      <Sparkles className="h-3 w-3" />
-                      Live NVIDIA AI (Llama 3.2 90B Free Endpoint)
-                    </button>
-                    <button
-                      onClick={() => setEvalMode("heuristic")}
-                      className={`rounded-full px-3 py-1 text-xs font-bold transition ${
-                        evalMode === "heuristic"
-                          ? "bg-ink text-white shadow-xs"
-                          : "text-ink/60 hover:text-ink"
-                      }`}
-                    >
-                      Fast Local Heuristic
-                    </button>
-                  </div>
-                </div>
-
-                {evalMeta && (
-                  <div className="inline-flex items-center gap-2 rounded-full bg-paper px-3 py-1 text-[11px] font-medium text-ink/80 border border-ink/10">
-                    <span className="flex h-2 w-2 rounded-full bg-leaf"></span>
-                    <span>
-                      {evalMeta.model?.includes("90b")
-                        ? "Llama 3.2 (90B Free Endpoint)"
-                        : evalMeta.model?.includes("11b")
-                        ? "Llama 3.2 (11B Free Endpoint)"
-                        : evalMeta.model?.includes("llama")
-                        ? "Llama 3.2"
-                        : evalMeta.model}
-                    </span>
-                    {evalMeta.latencyMs && <span>• {(evalMeta.latencyMs / 1000).toFixed(2)}s</span>}
-                    {evalMeta.isFallback && <span className="text-amber-700 font-semibold">• Offline Mode</span>}
-                  </div>
-                )}
-              </div>
-
-              {/* Sandboxed Inputs and Outputs */}
-              <div className="grid gap-6 lg:grid-cols-2">
-                {/* Inputs Column */}
-                <div className="space-y-4">
-                  <div>
-                    <label className="text-xs font-bold uppercase tracking-wider text-ink/60">
-                      {sandbox.inputLabelA}
-                    </label>
-                    <textarea
-                      value={inputA}
-                      onChange={(e) => setInputA(e.target.value)}
-                      rows={6}
-                      className="mt-1.5 w-full rounded-2xl border border-ink/15 bg-white p-3 font-mono text-xs leading-5 text-ink shadow-sm focus:border-leaf focus:ring-1 focus:ring-leaf"
-                    />
-                  </div>
-
-                  {sandbox.inputLabelB && (
-                    <div>
-                      <label className="text-xs font-bold uppercase tracking-wider text-leaf">
-                        {sandbox.inputLabelB}
-                      </label>
-                      <textarea
-                        value={inputB}
-                        onChange={(e) => setInputB(e.target.value)}
-                        rows={6}
-                        className="mt-1.5 w-full rounded-2xl border border-leaf/30 bg-mint/10 p-3 font-mono text-xs leading-5 text-ink shadow-sm focus:border-leaf focus:ring-1 focus:ring-leaf"
-                      />
-                    </div>
-                  )}
-
-                  <div className="flex flex-wrap items-center gap-3">
-                    <button
-                      onClick={handleRunEvaluation}
-                      disabled={isEvaluating}
-                      className="inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2.5 text-sm font-bold text-white transition hover:bg-leaf disabled:opacity-50"
-                    >
-                      {isEvaluating ? (
-                        <>
-                          <RefreshCw className="h-4 w-4 animate-spin text-mint" />
-                          Evaluating with Llama 3.2 90B...
-                        </>
-                      ) : (
-                        <>
-                          <Play className="h-4 w-4" /> Run & Evaluate
-                        </>
-                      )}
-                    </button>
-                    {ranEvaluation && (
-                      <span className="text-xs font-bold text-leaf">
-                        ✓ Output updated from input
-                      </span>
-                    )}
-                    <button
-                      onClick={copyCurrentInputs}
-                      className="inline-flex items-center gap-2 rounded-full border border-ink/20 px-4 py-2 text-xs font-bold text-ink hover:bg-ink/5"
-                    >
-                      <Copy className="h-3.5 w-3.5" />
-                      {copied ? "Copied!" : "Copy Inputs"}
-                    </button>
-                    <button
-                      onClick={handleResetInputs}
-                      className="inline-flex items-center gap-1.5 text-xs text-ink/50 hover:text-ink"
-                    >
-                      <RotateCcw className="h-3 w-3" /> Reset Defaults
-                    </button>
-                  </div>
-                </div>
-
-                {/* Outputs Column */}
-                <div className="space-y-4">
-                  <div>
-                    <label className="text-xs font-bold uppercase tracking-wider text-ink/60">
-                      {sandbox.outputLabelA}
-                    </label>
-                    <div className="mt-1.5 overflow-x-auto rounded-2xl border border-ink/15 bg-ink p-4 font-mono text-xs leading-5 text-white/90">
-                      <pre className="whitespace-pre-wrap">{outputA}</pre>
-                    </div>
-                  </div>
-
-                  {sandbox.outputLabelB && (
-                    <div>
-                      <label className="text-xs font-bold uppercase tracking-wider text-leaf">
-                        {sandbox.outputLabelB}
-                      </label>
-                      <div className="mt-1.5 overflow-x-auto rounded-2xl border border-leaf/40 bg-ink p-4 font-mono text-xs leading-5 text-mint">
-                        <pre className="whitespace-pre-wrap">{outputB}</pre>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Self-Check Rubric & Criteria */}
-              <div className="rounded-2xl border border-ink/15 bg-paper p-5">
-                <div className="flex items-center justify-between">
-                  <h4 className="font-display text-sm font-bold uppercase tracking-wider text-ink">
-                    Self-Verification Criteria & Quality Checklist
-                  </h4>
-                  <span className="text-xs font-bold text-leaf">
-                    {checkedCriteria.size} of {sandbox.criteria.length} Verified
+            <div className="relative my-8 flex max-h-[90vh] w-full max-w-5xl flex-col rounded-3xl bg-white shadow-2xl overflow-hidden">
+              {/* Header */}
+              <div className="flex items-center justify-between border-b border-ink/10 bg-ink px-6 py-4 text-white">
+                <div className="flex items-center gap-3">
+                  <span className="rounded-full bg-leaf px-3 py-1 text-xs font-bold uppercase tracking-wider text-white">
+                    {sandbox.badge}
                   </span>
+                  <div>
+                    <h3 className="font-display text-lg font-bold">
+                      {activeLab.title}
+                    </h3>
+                    <p className="text-xs text-white/60">{sandbox.subtitle}</p>
+                  </div>
                 </div>
-                <div className="mt-4 space-y-2.5">
-                  {sandbox.criteria.map((crit, idx) => (
-                    <label
-                      key={idx}
-                      className="flex cursor-pointer items-start gap-3 rounded-xl border border-ink/10 bg-white p-3 transition hover:border-leaf/40"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={checkedCriteria.has(idx)}
-                        onChange={() => toggleCriteria(idx)}
-                        className="mt-0.5 h-4 w-4 rounded border-ink/30 text-leaf focus:ring-leaf"
-                      />
-                      <span
-                        className={`text-xs leading-5 ${
-                          checkedCriteria.has(idx) ? "font-bold text-ink" : "text-ink/75"
+                <button
+                  onClick={() => setActiveLab(null)}
+                  className="rounded-full p-2 text-white/60 hover:bg-white/10 hover:text-white"
+                  aria-label="Close lab modal"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+
+              {/* Body */}
+              <div className="flex-1 overflow-y-auto p-6 sm:p-8 space-y-6">
+                {/* Honest Notice Banner */}
+                <div className="flex items-start gap-3 rounded-2xl border border-sky-200 bg-sky-50 p-4 text-xs leading-5 text-sky-900">
+                  <Info className="h-5 w-5 shrink-0 text-sky-500" />
+                  <p>
+                    <strong>Honest Execution Disclosure:</strong> This lab
+                    executes client-side dynamic evaluation on your edited
+                    inputs using verified local test runners, Zod schemas, and
+                    data parsers without requiring external paid API keys.
+                  </p>
+                </div>
+
+                {/* Objective & Instructions */}
+                <div className="rounded-2xl border border-ink/10 bg-paper p-5">
+                  <h4 className="font-display text-sm font-bold uppercase tracking-wider text-leaf">
+                    Learning Objective
+                  </h4>
+                  <p className="mt-1 text-sm font-medium text-ink/80">
+                    {sandbox.objective}
+                  </p>
+                  <h4 className="font-display mt-4 text-xs font-bold uppercase tracking-wider text-ink/50">
+                    Instructions
+                  </h4>
+                  <ol className="mt-2 list-decimal space-y-1.5 pl-5 text-sm text-ink/70">
+                    {sandbox.instructions.map((step, idx) => (
+                      <li key={idx}>{step}</li>
+                    ))}
+                  </ol>
+                </div>
+
+                {/* Execution Engine Selector */}
+                <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-ink/10 bg-white p-3.5 shadow-xs">
+                  <div className="flex items-center gap-2.5">
+                    <span className="text-xs font-bold text-ink/70">
+                      Engine:
+                    </span>
+                    <div className="inline-flex rounded-full bg-ink/5 p-1 border border-ink/10">
+                      <button
+                        onClick={() => setEvalMode("ai")}
+                        className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold transition ${
+                          evalMode === "ai"
+                            ? "bg-leaf text-white shadow-xs"
+                            : "text-ink/60 hover:text-ink"
                         }`}
                       >
-                        {crit}
+                        <Sparkles className="h-3 w-3" />
+                        Live NVIDIA AI (Llama 3.2 90B Free Endpoint)
+                      </button>
+                      <button
+                        onClick={() => setEvalMode("heuristic")}
+                        className={`rounded-full px-3 py-1 text-xs font-bold transition ${
+                          evalMode === "heuristic"
+                            ? "bg-ink text-white shadow-xs"
+                            : "text-ink/60 hover:text-ink"
+                        }`}
+                      >
+                        Fast Local Heuristic
+                      </button>
+                    </div>
+                  </div>
+
+                  {evalMeta && (
+                    <div className="inline-flex items-center gap-2 rounded-full bg-paper px-3 py-1 text-[11px] font-medium text-ink/80 border border-ink/10">
+                      <span className="flex h-2 w-2 rounded-full bg-leaf"></span>
+                      <span>
+                        {evalMeta.model?.includes("90b")
+                          ? "Llama 3.2 (90B Free Endpoint)"
+                          : evalMeta.model?.includes("11b")
+                            ? "Llama 3.2 (11B Free Endpoint)"
+                            : evalMeta.model?.includes("llama")
+                              ? "Llama 3.2"
+                              : evalMeta.model}
                       </span>
-                    </label>
-                  ))}
+                      {evalMeta.latencyMs && (
+                        <span>• {(evalMeta.latencyMs / 1000).toFixed(2)}s</span>
+                      )}
+                      {evalMeta.isFallback && (
+                        <span className="text-amber-700 font-semibold">
+                          • Offline Mode
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* Sandboxed Inputs and Outputs */}
+                <div className="grid gap-6 lg:grid-cols-2">
+                  {/* Inputs Column */}
+                  <div className="space-y-4">
+                    <div>
+                      <label className="text-xs font-bold uppercase tracking-wider text-ink/60">
+                        {sandbox.inputLabelA}
+                      </label>
+                      <textarea
+                        value={inputA}
+                        onChange={(e) => setInputA(e.target.value)}
+                        rows={6}
+                        className="mt-1.5 w-full rounded-2xl border border-ink/15 bg-white p-3 font-mono text-xs leading-5 text-ink shadow-sm focus:border-leaf focus:ring-1 focus:ring-leaf"
+                      />
+                    </div>
+
+                    {sandbox.inputLabelB && (
+                      <div>
+                        <label className="text-xs font-bold uppercase tracking-wider text-leaf">
+                          {sandbox.inputLabelB}
+                        </label>
+                        <textarea
+                          value={inputB}
+                          onChange={(e) => setInputB(e.target.value)}
+                          rows={6}
+                          className="mt-1.5 w-full rounded-2xl border border-leaf/30 bg-mint/10 p-3 font-mono text-xs leading-5 text-ink shadow-sm focus:border-leaf focus:ring-1 focus:ring-leaf"
+                        />
+                      </div>
+                    )}
+
+                    <div className="flex flex-wrap items-center gap-3">
+                      <button
+                        onClick={handleRunEvaluation}
+                        disabled={isEvaluating}
+                        className="inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2.5 text-sm font-bold text-white transition hover:bg-leaf disabled:opacity-50"
+                      >
+                        {isEvaluating ? (
+                          <>
+                            <RefreshCw className="h-4 w-4 animate-spin text-mint" />
+                            Evaluating with Llama 3.2 90B...
+                          </>
+                        ) : (
+                          <>
+                            <Play className="h-4 w-4" /> Run & Evaluate
+                          </>
+                        )}
+                      </button>
+                      {ranEvaluation && (
+                        <span className="text-xs font-bold text-leaf">
+                          ✓ Output updated from input
+                        </span>
+                      )}
+                      <button
+                        onClick={copyCurrentInputs}
+                        className="inline-flex items-center gap-2 rounded-full border border-ink/20 px-4 py-2 text-xs font-bold text-ink hover:bg-ink/5"
+                      >
+                        <Copy className="h-3.5 w-3.5" />
+                        {copied ? "Copied!" : "Copy Inputs"}
+                      </button>
+                      <button
+                        onClick={handleResetInputs}
+                        className="inline-flex items-center gap-1.5 text-xs text-ink/50 hover:text-ink"
+                      >
+                        <RotateCcw className="h-3 w-3" /> Reset Defaults
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Outputs Column */}
+                  <div className="space-y-4">
+                    <div>
+                      <label className="text-xs font-bold uppercase tracking-wider text-ink/60">
+                        {sandbox.outputLabelA}
+                      </label>
+                      <div className="mt-1.5 overflow-x-auto rounded-2xl border border-ink/15 bg-ink p-4 font-mono text-xs leading-5 text-white/90">
+                        <pre className="whitespace-pre-wrap">{outputA}</pre>
+                      </div>
+                    </div>
+
+                    {sandbox.outputLabelB && (
+                      <div>
+                        <label className="text-xs font-bold uppercase tracking-wider text-leaf">
+                          {sandbox.outputLabelB}
+                        </label>
+                        <div className="mt-1.5 overflow-x-auto rounded-2xl border border-leaf/40 bg-ink p-4 font-mono text-xs leading-5 text-mint">
+                          <pre className="whitespace-pre-wrap">{outputB}</pre>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Self-Check Rubric & Criteria */}
+                <div className="rounded-2xl border border-ink/15 bg-paper p-5">
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-display text-sm font-bold uppercase tracking-wider text-ink">
+                      Self-Verification Criteria & Quality Checklist
+                    </h4>
+                    <span className="text-xs font-bold text-leaf">
+                      {checkedCriteria.size} of {sandbox.criteria.length}{" "}
+                      Verified
+                    </span>
+                  </div>
+                  <div className="mt-4 space-y-2.5">
+                    {sandbox.criteria.map((crit, idx) => (
+                      <label
+                        key={idx}
+                        className="flex cursor-pointer items-start gap-3 rounded-xl border border-ink/10 bg-white p-3 transition hover:border-leaf/40"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={checkedCriteria.has(idx)}
+                          onChange={() => toggleCriteria(idx)}
+                          className="mt-0.5 h-4 w-4 rounded border-ink/30 text-leaf focus:ring-leaf"
+                        />
+                        <span
+                          className={`text-xs leading-5 ${
+                            checkedCriteria.has(idx)
+                              ? "font-bold text-ink"
+                              : "text-ink/75"
+                          }`}
+                        >
+                          {crit}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* Footer */}
-            <div className="flex items-center justify-end border-t border-ink/10 bg-paper px-6 py-4">
-              <button
-                onClick={() => setActiveLab(null)}
-                className="rounded-full bg-ink px-6 py-2.5 text-sm font-bold text-white transition hover:bg-leaf"
-              >
-                Done with Lab
-              </button>
+              {/* Footer */}
+              <div className="flex items-center justify-end border-t border-ink/10 bg-paper px-6 py-4">
+                <button
+                  onClick={() => setActiveLab(null)}
+                  className="rounded-full bg-ink px-6 py-2.5 text-sm font-bold text-white transition hover:bg-leaf"
+                >
+                  Done with Lab
+                </button>
+              </div>
             </div>
           </div>
-        </div>
         </RequireAuth>
       )}
     </>

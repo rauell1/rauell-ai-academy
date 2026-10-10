@@ -27,7 +27,8 @@ function Register() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  const target = redirect && redirect.startsWith("/") ? redirect : "/my-learning";
+  const target =
+    redirect && redirect.startsWith("/") ? redirect : "/my-learning";
 
   async function submit(e: SubmitEvent) {
     e.preventDefault();
@@ -56,10 +57,13 @@ function Register() {
       setError(
         isDuplicate
           ? "An account with this email address already exists. Please sign in below."
-          : msg || "We could not create the account. Please check your details and try again.",
+          : msg ||
+              "We could not create the account. Please check your details and try again.",
       );
     } else {
-      setSuccess("Account created successfully! Redirecting to your learning...");
+      setSuccess(
+        "Account created successfully! Redirecting to your learning...",
+      );
       setTimeout(() => {
         nav({ to: target as any });
       }, 650);

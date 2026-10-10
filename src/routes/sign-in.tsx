@@ -26,7 +26,8 @@ function SignIn() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
-  const target = redirect && redirect.startsWith("/") ? redirect : "/my-learning";
+  const target =
+    redirect && redirect.startsWith("/") ? redirect : "/my-learning";
 
   async function submit(e: SubmitEvent) {
     e.preventDefault();

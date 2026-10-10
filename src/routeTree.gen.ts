@@ -8,471 +8,471 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as AccountRouteImport } from './routes/account'
-import { Route as ExploreRouteImport } from './routes/explore'
-import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
-import { Route as InstructorRouteImport } from './routes/instructor'
-import { Route as LabsRouteImport } from './routes/labs'
-import { Route as MyLearningRouteImport } from './routes/my-learning'
-import { Route as RegisterRouteImport } from './routes/register'
-import { Route as ResetPasswordRouteImport } from './routes/reset-password'
-import { Route as ResourcesRouteImport } from './routes/resources'
-import { Route as SignInRouteImport } from './routes/sign-in'
-import { Route as AdminIndexRouteImport } from './routes/admin.index'
-import { Route as AdminAccessRouteImport } from './routes/admin.access'
-import { Route as AssessmentsAssessmentIdRouteImport } from './routes/assessments.$assessmentId'
-import { Route as CoursesIndexRouteImport } from './routes/courses.index'
-import { Route as CoursesCourseSlugRouteImport } from './routes/courses.$courseSlug'
-import { Route as PathwaysIndexRouteImport } from './routes/pathways.index'
-import { Route as PathwaysPathwaySlugRouteImport } from './routes/pathways.$pathwaySlug'
-import { Route as ProjectsProjectIdRouteImport } from './routes/projects.$projectId'
-import { Route as VerifyCertificateNumberRouteImport } from './routes/verify.$certificateNumber'
-import { Route as AdminCoursesCourseIdRouteImport } from './routes/admin.courses.$courseId'
-import { Route as CoursesCourseSlugLessonsLessonSlugRouteImport } from './routes/courses.$courseSlug_.lessons.$lessonSlug'
+import { Route as rootRouteImport } from "./routes/__root";
+import { Route as IndexRouteImport } from "./routes/index";
+import { Route as AccountRouteImport } from "./routes/account";
+import { Route as ExploreRouteImport } from "./routes/explore";
+import { Route as ForgotPasswordRouteImport } from "./routes/forgot-password";
+import { Route as InstructorRouteImport } from "./routes/instructor";
+import { Route as LabsRouteImport } from "./routes/labs";
+import { Route as MyLearningRouteImport } from "./routes/my-learning";
+import { Route as RegisterRouteImport } from "./routes/register";
+import { Route as ResetPasswordRouteImport } from "./routes/reset-password";
+import { Route as ResourcesRouteImport } from "./routes/resources";
+import { Route as SignInRouteImport } from "./routes/sign-in";
+import { Route as AdminIndexRouteImport } from "./routes/admin.index";
+import { Route as AdminAccessRouteImport } from "./routes/admin.access";
+import { Route as AssessmentsAssessmentIdRouteImport } from "./routes/assessments.$assessmentId";
+import { Route as CoursesIndexRouteImport } from "./routes/courses.index";
+import { Route as CoursesCourseSlugRouteImport } from "./routes/courses.$courseSlug";
+import { Route as PathwaysIndexRouteImport } from "./routes/pathways.index";
+import { Route as PathwaysPathwaySlugRouteImport } from "./routes/pathways.$pathwaySlug";
+import { Route as ProjectsProjectIdRouteImport } from "./routes/projects.$projectId";
+import { Route as VerifyCertificateNumberRouteImport } from "./routes/verify.$certificateNumber";
+import { Route as AdminCoursesCourseIdRouteImport } from "./routes/admin.courses.$courseId";
+import { Route as CoursesCourseSlugLessonsLessonSlugRouteImport } from "./routes/courses.$courseSlug_.lessons.$lessonSlug";
 
 const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+  id: "/",
+  path: "/",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const AccountRoute = AccountRouteImport.update({
-  id: '/account',
-  path: '/account',
+  id: "/account",
+  path: "/account",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const ExploreRoute = ExploreRouteImport.update({
-  id: '/explore',
-  path: '/explore',
+  id: "/explore",
+  path: "/explore",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
-  id: '/forgot-password',
-  path: '/forgot-password',
+  id: "/forgot-password",
+  path: "/forgot-password",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const InstructorRoute = InstructorRouteImport.update({
-  id: '/instructor',
-  path: '/instructor',
+  id: "/instructor",
+  path: "/instructor",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const LabsRoute = LabsRouteImport.update({
-  id: '/labs',
-  path: '/labs',
+  id: "/labs",
+  path: "/labs",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const MyLearningRoute = MyLearningRouteImport.update({
-  id: '/my-learning',
-  path: '/my-learning',
+  id: "/my-learning",
+  path: "/my-learning",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const RegisterRoute = RegisterRouteImport.update({
-  id: '/register',
-  path: '/register',
+  id: "/register",
+  path: "/register",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
-  id: '/reset-password',
-  path: '/reset-password',
+  id: "/reset-password",
+  path: "/reset-password",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const ResourcesRoute = ResourcesRouteImport.update({
-  id: '/resources',
-  path: '/resources',
+  id: "/resources",
+  path: "/resources",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const SignInRoute = SignInRouteImport.update({
-  id: '/sign-in',
-  path: '/sign-in',
+  id: "/sign-in",
+  path: "/sign-in",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const AdminIndexRoute = AdminIndexRouteImport.update({
-  id: '/admin/',
-  path: '/admin/',
+  id: "/admin/",
+  path: "/admin/",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const AdminAccessRoute = AdminAccessRouteImport.update({
-  id: '/admin/access',
-  path: '/admin/access',
+  id: "/admin/access",
+  path: "/admin/access",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const AssessmentsAssessmentIdRoute = AssessmentsAssessmentIdRouteImport.update({
-  id: '/assessments/$assessmentId',
-  path: '/assessments/$assessmentId',
+  id: "/assessments/$assessmentId",
+  path: "/assessments/$assessmentId",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const CoursesIndexRoute = CoursesIndexRouteImport.update({
-  id: '/courses/',
-  path: '/courses/',
+  id: "/courses/",
+  path: "/courses/",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const CoursesCourseSlugRoute = CoursesCourseSlugRouteImport.update({
-  id: '/courses/$courseSlug',
-  path: '/courses/$courseSlug',
+  id: "/courses/$courseSlug",
+  path: "/courses/$courseSlug",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const PathwaysIndexRoute = PathwaysIndexRouteImport.update({
-  id: '/pathways/',
-  path: '/pathways/',
+  id: "/pathways/",
+  path: "/pathways/",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const PathwaysPathwaySlugRoute = PathwaysPathwaySlugRouteImport.update({
-  id: '/pathways/$pathwaySlug',
-  path: '/pathways/$pathwaySlug',
+  id: "/pathways/$pathwaySlug",
+  path: "/pathways/$pathwaySlug",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const ProjectsProjectIdRoute = ProjectsProjectIdRouteImport.update({
-  id: '/projects/$projectId',
-  path: '/projects/$projectId',
+  id: "/projects/$projectId",
+  path: "/projects/$projectId",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const VerifyCertificateNumberRoute = VerifyCertificateNumberRouteImport.update({
-  id: '/verify/$certificateNumber',
-  path: '/verify/$certificateNumber',
+  id: "/verify/$certificateNumber",
+  path: "/verify/$certificateNumber",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const AdminCoursesCourseIdRoute = AdminCoursesCourseIdRouteImport.update({
-  id: '/admin/courses/$courseId',
-  path: '/admin/courses/$courseId',
+  id: "/admin/courses/$courseId",
+  path: "/admin/courses/$courseId",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const CoursesCourseSlugLessonsLessonSlugRoute =
   CoursesCourseSlugLessonsLessonSlugRouteImport.update({
-    id: '/courses/$courseSlug_/lessons/$lessonSlug',
-    path: '/courses/$courseSlug/lessons/$lessonSlug',
+    id: "/courses/$courseSlug_/lessons/$lessonSlug",
+    path: "/courses/$courseSlug/lessons/$lessonSlug",
     getParentRoute: () => rootRouteImport,
-  } as any)
+  } as any);
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/account': typeof AccountRoute
-  '/explore': typeof ExploreRoute
-  '/forgot-password': typeof ForgotPasswordRoute
-  '/instructor': typeof InstructorRoute
-  '/labs': typeof LabsRoute
-  '/my-learning': typeof MyLearningRoute
-  '/register': typeof RegisterRoute
-  '/reset-password': typeof ResetPasswordRoute
-  '/resources': typeof ResourcesRoute
-  '/sign-in': typeof SignInRoute
-  '/admin/access': typeof AdminAccessRoute
-  '/assessments/$assessmentId': typeof AssessmentsAssessmentIdRoute
-  '/courses/$courseSlug': typeof CoursesCourseSlugRoute
-  '/pathways/$pathwaySlug': typeof PathwaysPathwaySlugRoute
-  '/projects/$projectId': typeof ProjectsProjectIdRoute
-  '/verify/$certificateNumber': typeof VerifyCertificateNumberRoute
-  '/admin/': typeof AdminIndexRoute
-  '/courses/': typeof CoursesIndexRoute
-  '/pathways/': typeof PathwaysIndexRoute
-  '/admin/courses/$courseId': typeof AdminCoursesCourseIdRoute
-  '/courses/$courseSlug/lessons/$lessonSlug': typeof CoursesCourseSlugLessonsLessonSlugRoute
+  "/": typeof IndexRoute;
+  "/account": typeof AccountRoute;
+  "/explore": typeof ExploreRoute;
+  "/forgot-password": typeof ForgotPasswordRoute;
+  "/instructor": typeof InstructorRoute;
+  "/labs": typeof LabsRoute;
+  "/my-learning": typeof MyLearningRoute;
+  "/register": typeof RegisterRoute;
+  "/reset-password": typeof ResetPasswordRoute;
+  "/resources": typeof ResourcesRoute;
+  "/sign-in": typeof SignInRoute;
+  "/admin/access": typeof AdminAccessRoute;
+  "/assessments/$assessmentId": typeof AssessmentsAssessmentIdRoute;
+  "/courses/$courseSlug": typeof CoursesCourseSlugRoute;
+  "/pathways/$pathwaySlug": typeof PathwaysPathwaySlugRoute;
+  "/projects/$projectId": typeof ProjectsProjectIdRoute;
+  "/verify/$certificateNumber": typeof VerifyCertificateNumberRoute;
+  "/admin/": typeof AdminIndexRoute;
+  "/courses/": typeof CoursesIndexRoute;
+  "/pathways/": typeof PathwaysIndexRoute;
+  "/admin/courses/$courseId": typeof AdminCoursesCourseIdRoute;
+  "/courses/$courseSlug/lessons/$lessonSlug": typeof CoursesCourseSlugLessonsLessonSlugRoute;
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/account': typeof AccountRoute
-  '/explore': typeof ExploreRoute
-  '/forgot-password': typeof ForgotPasswordRoute
-  '/instructor': typeof InstructorRoute
-  '/labs': typeof LabsRoute
-  '/my-learning': typeof MyLearningRoute
-  '/register': typeof RegisterRoute
-  '/reset-password': typeof ResetPasswordRoute
-  '/resources': typeof ResourcesRoute
-  '/sign-in': typeof SignInRoute
-  '/admin/access': typeof AdminAccessRoute
-  '/assessments/$assessmentId': typeof AssessmentsAssessmentIdRoute
-  '/courses/$courseSlug': typeof CoursesCourseSlugRoute
-  '/pathways/$pathwaySlug': typeof PathwaysPathwaySlugRoute
-  '/projects/$projectId': typeof ProjectsProjectIdRoute
-  '/verify/$certificateNumber': typeof VerifyCertificateNumberRoute
-  '/admin': typeof AdminIndexRoute
-  '/courses': typeof CoursesIndexRoute
-  '/pathways': typeof PathwaysIndexRoute
-  '/admin/courses/$courseId': typeof AdminCoursesCourseIdRoute
-  '/courses/$courseSlug/lessons/$lessonSlug': typeof CoursesCourseSlugLessonsLessonSlugRoute
+  "/": typeof IndexRoute;
+  "/account": typeof AccountRoute;
+  "/explore": typeof ExploreRoute;
+  "/forgot-password": typeof ForgotPasswordRoute;
+  "/instructor": typeof InstructorRoute;
+  "/labs": typeof LabsRoute;
+  "/my-learning": typeof MyLearningRoute;
+  "/register": typeof RegisterRoute;
+  "/reset-password": typeof ResetPasswordRoute;
+  "/resources": typeof ResourcesRoute;
+  "/sign-in": typeof SignInRoute;
+  "/admin/access": typeof AdminAccessRoute;
+  "/assessments/$assessmentId": typeof AssessmentsAssessmentIdRoute;
+  "/courses/$courseSlug": typeof CoursesCourseSlugRoute;
+  "/pathways/$pathwaySlug": typeof PathwaysPathwaySlugRoute;
+  "/projects/$projectId": typeof ProjectsProjectIdRoute;
+  "/verify/$certificateNumber": typeof VerifyCertificateNumberRoute;
+  "/admin": typeof AdminIndexRoute;
+  "/courses": typeof CoursesIndexRoute;
+  "/pathways": typeof PathwaysIndexRoute;
+  "/admin/courses/$courseId": typeof AdminCoursesCourseIdRoute;
+  "/courses/$courseSlug/lessons/$lessonSlug": typeof CoursesCourseSlugLessonsLessonSlugRoute;
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/account': typeof AccountRoute
-  '/explore': typeof ExploreRoute
-  '/forgot-password': typeof ForgotPasswordRoute
-  '/instructor': typeof InstructorRoute
-  '/labs': typeof LabsRoute
-  '/my-learning': typeof MyLearningRoute
-  '/register': typeof RegisterRoute
-  '/reset-password': typeof ResetPasswordRoute
-  '/resources': typeof ResourcesRoute
-  '/sign-in': typeof SignInRoute
-  '/admin/access': typeof AdminAccessRoute
-  '/assessments/$assessmentId': typeof AssessmentsAssessmentIdRoute
-  '/courses/$courseSlug': typeof CoursesCourseSlugRoute
-  '/pathways/$pathwaySlug': typeof PathwaysPathwaySlugRoute
-  '/projects/$projectId': typeof ProjectsProjectIdRoute
-  '/verify/$certificateNumber': typeof VerifyCertificateNumberRoute
-  '/admin/': typeof AdminIndexRoute
-  '/courses/': typeof CoursesIndexRoute
-  '/pathways/': typeof PathwaysIndexRoute
-  '/admin/courses/$courseId': typeof AdminCoursesCourseIdRoute
-  '/courses/$courseSlug_/lessons/$lessonSlug': typeof CoursesCourseSlugLessonsLessonSlugRoute
+  __root__: typeof rootRouteImport;
+  "/": typeof IndexRoute;
+  "/account": typeof AccountRoute;
+  "/explore": typeof ExploreRoute;
+  "/forgot-password": typeof ForgotPasswordRoute;
+  "/instructor": typeof InstructorRoute;
+  "/labs": typeof LabsRoute;
+  "/my-learning": typeof MyLearningRoute;
+  "/register": typeof RegisterRoute;
+  "/reset-password": typeof ResetPasswordRoute;
+  "/resources": typeof ResourcesRoute;
+  "/sign-in": typeof SignInRoute;
+  "/admin/access": typeof AdminAccessRoute;
+  "/assessments/$assessmentId": typeof AssessmentsAssessmentIdRoute;
+  "/courses/$courseSlug": typeof CoursesCourseSlugRoute;
+  "/pathways/$pathwaySlug": typeof PathwaysPathwaySlugRoute;
+  "/projects/$projectId": typeof ProjectsProjectIdRoute;
+  "/verify/$certificateNumber": typeof VerifyCertificateNumberRoute;
+  "/admin/": typeof AdminIndexRoute;
+  "/courses/": typeof CoursesIndexRoute;
+  "/pathways/": typeof PathwaysIndexRoute;
+  "/admin/courses/$courseId": typeof AdminCoursesCourseIdRoute;
+  "/courses/$courseSlug_/lessons/$lessonSlug": typeof CoursesCourseSlugLessonsLessonSlugRoute;
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
+  fileRoutesByFullPath: FileRoutesByFullPath;
   fullPaths:
-    | '/'
-    | '/account'
-    | '/explore'
-    | '/forgot-password'
-    | '/instructor'
-    | '/labs'
-    | '/my-learning'
-    | '/register'
-    | '/reset-password'
-    | '/resources'
-    | '/sign-in'
-    | '/admin/access'
-    | '/assessments/$assessmentId'
-    | '/courses/$courseSlug'
-    | '/pathways/$pathwaySlug'
-    | '/projects/$projectId'
-    | '/verify/$certificateNumber'
-    | '/admin/'
-    | '/courses/'
-    | '/pathways/'
-    | '/admin/courses/$courseId'
-    | '/courses/$courseSlug/lessons/$lessonSlug'
-  fileRoutesByTo: FileRoutesByTo
+    | "/"
+    | "/account"
+    | "/explore"
+    | "/forgot-password"
+    | "/instructor"
+    | "/labs"
+    | "/my-learning"
+    | "/register"
+    | "/reset-password"
+    | "/resources"
+    | "/sign-in"
+    | "/admin/access"
+    | "/assessments/$assessmentId"
+    | "/courses/$courseSlug"
+    | "/pathways/$pathwaySlug"
+    | "/projects/$projectId"
+    | "/verify/$certificateNumber"
+    | "/admin/"
+    | "/courses/"
+    | "/pathways/"
+    | "/admin/courses/$courseId"
+    | "/courses/$courseSlug/lessons/$lessonSlug";
+  fileRoutesByTo: FileRoutesByTo;
   to:
-    | '/'
-    | '/account'
-    | '/explore'
-    | '/forgot-password'
-    | '/instructor'
-    | '/labs'
-    | '/my-learning'
-    | '/register'
-    | '/reset-password'
-    | '/resources'
-    | '/sign-in'
-    | '/admin/access'
-    | '/assessments/$assessmentId'
-    | '/courses/$courseSlug'
-    | '/pathways/$pathwaySlug'
-    | '/projects/$projectId'
-    | '/verify/$certificateNumber'
-    | '/admin'
-    | '/courses'
-    | '/pathways'
-    | '/admin/courses/$courseId'
-    | '/courses/$courseSlug/lessons/$lessonSlug'
+    | "/"
+    | "/account"
+    | "/explore"
+    | "/forgot-password"
+    | "/instructor"
+    | "/labs"
+    | "/my-learning"
+    | "/register"
+    | "/reset-password"
+    | "/resources"
+    | "/sign-in"
+    | "/admin/access"
+    | "/assessments/$assessmentId"
+    | "/courses/$courseSlug"
+    | "/pathways/$pathwaySlug"
+    | "/projects/$projectId"
+    | "/verify/$certificateNumber"
+    | "/admin"
+    | "/courses"
+    | "/pathways"
+    | "/admin/courses/$courseId"
+    | "/courses/$courseSlug/lessons/$lessonSlug";
   id:
-    | '__root__'
-    | '/'
-    | '/account'
-    | '/explore'
-    | '/forgot-password'
-    | '/instructor'
-    | '/labs'
-    | '/my-learning'
-    | '/register'
-    | '/reset-password'
-    | '/resources'
-    | '/sign-in'
-    | '/admin/access'
-    | '/assessments/$assessmentId'
-    | '/courses/$courseSlug'
-    | '/pathways/$pathwaySlug'
-    | '/projects/$projectId'
-    | '/verify/$certificateNumber'
-    | '/admin/'
-    | '/courses/'
-    | '/pathways/'
-    | '/admin/courses/$courseId'
-    | '/courses/$courseSlug_/lessons/$lessonSlug'
-  fileRoutesById: FileRoutesById
+    | "__root__"
+    | "/"
+    | "/account"
+    | "/explore"
+    | "/forgot-password"
+    | "/instructor"
+    | "/labs"
+    | "/my-learning"
+    | "/register"
+    | "/reset-password"
+    | "/resources"
+    | "/sign-in"
+    | "/admin/access"
+    | "/assessments/$assessmentId"
+    | "/courses/$courseSlug"
+    | "/pathways/$pathwaySlug"
+    | "/projects/$projectId"
+    | "/verify/$certificateNumber"
+    | "/admin/"
+    | "/courses/"
+    | "/pathways/"
+    | "/admin/courses/$courseId"
+    | "/courses/$courseSlug_/lessons/$lessonSlug";
+  fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  AccountRoute: typeof AccountRoute
-  ExploreRoute: typeof ExploreRoute
-  ForgotPasswordRoute: typeof ForgotPasswordRoute
-  InstructorRoute: typeof InstructorRoute
-  LabsRoute: typeof LabsRoute
-  MyLearningRoute: typeof MyLearningRoute
-  RegisterRoute: typeof RegisterRoute
-  ResetPasswordRoute: typeof ResetPasswordRoute
-  ResourcesRoute: typeof ResourcesRoute
-  SignInRoute: typeof SignInRoute
-  AdminAccessRoute: typeof AdminAccessRoute
-  AssessmentsAssessmentIdRoute: typeof AssessmentsAssessmentIdRoute
-  CoursesCourseSlugRoute: typeof CoursesCourseSlugRoute
-  PathwaysPathwaySlugRoute: typeof PathwaysPathwaySlugRoute
-  ProjectsProjectIdRoute: typeof ProjectsProjectIdRoute
-  VerifyCertificateNumberRoute: typeof VerifyCertificateNumberRoute
-  AdminIndexRoute: typeof AdminIndexRoute
-  CoursesIndexRoute: typeof CoursesIndexRoute
-  PathwaysIndexRoute: typeof PathwaysIndexRoute
-  AdminCoursesCourseIdRoute: typeof AdminCoursesCourseIdRoute
-  CoursesCourseSlugLessonsLessonSlugRoute: typeof CoursesCourseSlugLessonsLessonSlugRoute
+  IndexRoute: typeof IndexRoute;
+  AccountRoute: typeof AccountRoute;
+  ExploreRoute: typeof ExploreRoute;
+  ForgotPasswordRoute: typeof ForgotPasswordRoute;
+  InstructorRoute: typeof InstructorRoute;
+  LabsRoute: typeof LabsRoute;
+  MyLearningRoute: typeof MyLearningRoute;
+  RegisterRoute: typeof RegisterRoute;
+  ResetPasswordRoute: typeof ResetPasswordRoute;
+  ResourcesRoute: typeof ResourcesRoute;
+  SignInRoute: typeof SignInRoute;
+  AdminAccessRoute: typeof AdminAccessRoute;
+  AssessmentsAssessmentIdRoute: typeof AssessmentsAssessmentIdRoute;
+  CoursesCourseSlugRoute: typeof CoursesCourseSlugRoute;
+  PathwaysPathwaySlugRoute: typeof PathwaysPathwaySlugRoute;
+  ProjectsProjectIdRoute: typeof ProjectsProjectIdRoute;
+  VerifyCertificateNumberRoute: typeof VerifyCertificateNumberRoute;
+  AdminIndexRoute: typeof AdminIndexRoute;
+  CoursesIndexRoute: typeof CoursesIndexRoute;
+  PathwaysIndexRoute: typeof PathwaysIndexRoute;
+  AdminCoursesCourseIdRoute: typeof AdminCoursesCourseIdRoute;
+  CoursesCourseSlugLessonsLessonSlugRoute: typeof CoursesCourseSlugLessonsLessonSlugRoute;
 }
 
-declare module '@tanstack/react-router' {
+declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/account': {
-      id: '/account'
-      path: '/account'
-      fullPath: '/account'
-      preLoaderRoute: typeof AccountRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/explore': {
-      id: '/explore'
-      path: '/explore'
-      fullPath: '/explore'
-      preLoaderRoute: typeof ExploreRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/forgot-password': {
-      id: '/forgot-password'
-      path: '/forgot-password'
-      fullPath: '/forgot-password'
-      preLoaderRoute: typeof ForgotPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/instructor': {
-      id: '/instructor'
-      path: '/instructor'
-      fullPath: '/instructor'
-      preLoaderRoute: typeof InstructorRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/labs': {
-      id: '/labs'
-      path: '/labs'
-      fullPath: '/labs'
-      preLoaderRoute: typeof LabsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/my-learning': {
-      id: '/my-learning'
-      path: '/my-learning'
-      fullPath: '/my-learning'
-      preLoaderRoute: typeof MyLearningRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/register': {
-      id: '/register'
-      path: '/register'
-      fullPath: '/register'
-      preLoaderRoute: typeof RegisterRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/reset-password': {
-      id: '/reset-password'
-      path: '/reset-password'
-      fullPath: '/reset-password'
-      preLoaderRoute: typeof ResetPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/resources': {
-      id: '/resources'
-      path: '/resources'
-      fullPath: '/resources'
-      preLoaderRoute: typeof ResourcesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sign-in': {
-      id: '/sign-in'
-      path: '/sign-in'
-      fullPath: '/sign-in'
-      preLoaderRoute: typeof SignInRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin/': {
-      id: '/admin/'
-      path: '/admin'
-      fullPath: '/admin/'
-      preLoaderRoute: typeof AdminIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin/access': {
-      id: '/admin/access'
-      path: '/admin/access'
-      fullPath: '/admin/access'
-      preLoaderRoute: typeof AdminAccessRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/assessments/$assessmentId': {
-      id: '/assessments/$assessmentId'
-      path: '/assessments/$assessmentId'
-      fullPath: '/assessments/$assessmentId'
-      preLoaderRoute: typeof AssessmentsAssessmentIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/courses/': {
-      id: '/courses/'
-      path: '/courses'
-      fullPath: '/courses/'
-      preLoaderRoute: typeof CoursesIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/courses/$courseSlug': {
-      id: '/courses/$courseSlug'
-      path: '/courses/$courseSlug'
-      fullPath: '/courses/$courseSlug'
-      preLoaderRoute: typeof CoursesCourseSlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pathways/': {
-      id: '/pathways/'
-      path: '/pathways'
-      fullPath: '/pathways/'
-      preLoaderRoute: typeof PathwaysIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pathways/$pathwaySlug': {
-      id: '/pathways/$pathwaySlug'
-      path: '/pathways/$pathwaySlug'
-      fullPath: '/pathways/$pathwaySlug'
-      preLoaderRoute: typeof PathwaysPathwaySlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/projects/$projectId': {
-      id: '/projects/$projectId'
-      path: '/projects/$projectId'
-      fullPath: '/projects/$projectId'
-      preLoaderRoute: typeof ProjectsProjectIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/verify/$certificateNumber': {
-      id: '/verify/$certificateNumber'
-      path: '/verify/$certificateNumber'
-      fullPath: '/verify/$certificateNumber'
-      preLoaderRoute: typeof VerifyCertificateNumberRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin/courses/$courseId': {
-      id: '/admin/courses/$courseId'
-      path: '/admin/courses/$courseId'
-      fullPath: '/admin/courses/$courseId'
-      preLoaderRoute: typeof AdminCoursesCourseIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/courses/$courseSlug_/lessons/$lessonSlug': {
-      id: '/courses/$courseSlug_/lessons/$lessonSlug'
-      path: '/courses/$courseSlug/lessons/$lessonSlug'
-      fullPath: '/courses/$courseSlug/lessons/$lessonSlug'
-      preLoaderRoute: typeof CoursesCourseSlugLessonsLessonSlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+    "/": {
+      id: "/";
+      path: "/";
+      fullPath: "/";
+      preLoaderRoute: typeof IndexRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/account": {
+      id: "/account";
+      path: "/account";
+      fullPath: "/account";
+      preLoaderRoute: typeof AccountRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/explore": {
+      id: "/explore";
+      path: "/explore";
+      fullPath: "/explore";
+      preLoaderRoute: typeof ExploreRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/forgot-password": {
+      id: "/forgot-password";
+      path: "/forgot-password";
+      fullPath: "/forgot-password";
+      preLoaderRoute: typeof ForgotPasswordRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/instructor": {
+      id: "/instructor";
+      path: "/instructor";
+      fullPath: "/instructor";
+      preLoaderRoute: typeof InstructorRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/labs": {
+      id: "/labs";
+      path: "/labs";
+      fullPath: "/labs";
+      preLoaderRoute: typeof LabsRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/my-learning": {
+      id: "/my-learning";
+      path: "/my-learning";
+      fullPath: "/my-learning";
+      preLoaderRoute: typeof MyLearningRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/register": {
+      id: "/register";
+      path: "/register";
+      fullPath: "/register";
+      preLoaderRoute: typeof RegisterRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/reset-password": {
+      id: "/reset-password";
+      path: "/reset-password";
+      fullPath: "/reset-password";
+      preLoaderRoute: typeof ResetPasswordRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/resources": {
+      id: "/resources";
+      path: "/resources";
+      fullPath: "/resources";
+      preLoaderRoute: typeof ResourcesRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/sign-in": {
+      id: "/sign-in";
+      path: "/sign-in";
+      fullPath: "/sign-in";
+      preLoaderRoute: typeof SignInRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/admin/": {
+      id: "/admin/";
+      path: "/admin";
+      fullPath: "/admin/";
+      preLoaderRoute: typeof AdminIndexRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/admin/access": {
+      id: "/admin/access";
+      path: "/admin/access";
+      fullPath: "/admin/access";
+      preLoaderRoute: typeof AdminAccessRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/assessments/$assessmentId": {
+      id: "/assessments/$assessmentId";
+      path: "/assessments/$assessmentId";
+      fullPath: "/assessments/$assessmentId";
+      preLoaderRoute: typeof AssessmentsAssessmentIdRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/courses/": {
+      id: "/courses/";
+      path: "/courses";
+      fullPath: "/courses/";
+      preLoaderRoute: typeof CoursesIndexRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/courses/$courseSlug": {
+      id: "/courses/$courseSlug";
+      path: "/courses/$courseSlug";
+      fullPath: "/courses/$courseSlug";
+      preLoaderRoute: typeof CoursesCourseSlugRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/pathways/": {
+      id: "/pathways/";
+      path: "/pathways";
+      fullPath: "/pathways/";
+      preLoaderRoute: typeof PathwaysIndexRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/pathways/$pathwaySlug": {
+      id: "/pathways/$pathwaySlug";
+      path: "/pathways/$pathwaySlug";
+      fullPath: "/pathways/$pathwaySlug";
+      preLoaderRoute: typeof PathwaysPathwaySlugRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/projects/$projectId": {
+      id: "/projects/$projectId";
+      path: "/projects/$projectId";
+      fullPath: "/projects/$projectId";
+      preLoaderRoute: typeof ProjectsProjectIdRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/verify/$certificateNumber": {
+      id: "/verify/$certificateNumber";
+      path: "/verify/$certificateNumber";
+      fullPath: "/verify/$certificateNumber";
+      preLoaderRoute: typeof VerifyCertificateNumberRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/admin/courses/$courseId": {
+      id: "/admin/courses/$courseId";
+      path: "/admin/courses/$courseId";
+      fullPath: "/admin/courses/$courseId";
+      preLoaderRoute: typeof AdminCoursesCourseIdRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/courses/$courseSlug_/lessons/$lessonSlug": {
+      id: "/courses/$courseSlug_/lessons/$lessonSlug";
+      path: "/courses/$courseSlug/lessons/$lessonSlug";
+      fullPath: "/courses/$courseSlug/lessons/$lessonSlug";
+      preLoaderRoute: typeof CoursesCourseSlugLessonsLessonSlugRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
   }
 }
 
@@ -500,7 +500,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminCoursesCourseIdRoute: AdminCoursesCourseIdRoute,
   CoursesCourseSlugLessonsLessonSlugRoute:
     CoursesCourseSlugLessonsLessonSlugRoute,
-}
+};
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+  ._addFileTypes<FileRouteTypes>();

@@ -25,7 +25,9 @@ const DRY = args.includes("--dry-run");
 
 async function run() {
   if (!FROM || !TO) {
-    console.error("Usage: migrate-video-urls.ts --from <old-url> --to <new-url> [--dry-run]");
+    console.error(
+      "Usage: migrate-video-urls.ts --from <old-url> --to <new-url> [--dry-run]",
+    );
     process.exitCode = 1;
     return;
   }

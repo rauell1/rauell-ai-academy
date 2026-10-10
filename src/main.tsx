@@ -5,4 +5,9 @@ import { Analytics } from "@vercel/analytics/react";
 import { router } from "./router";
 import "./styles.css";
 
-ReactDOM.createRoot(document.getElementById("root")!).render(<React.StrictMode><RouterProvider router={router}/><Analytics /></React.StrictMode>);
+ReactDOM.createRoot(document.getElementById("root")!).render(
+  <React.StrictMode>
+    <RouterProvider router={router} />
+    <Analytics />
+  </React.StrictMode>,
+);

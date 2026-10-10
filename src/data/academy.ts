@@ -150,4 +150,9 @@ export const labs = [
   },
 ];
 
-export { canonicalCourses, canonicalPathways, type CanonicalCourse, type CanonicalPathway };
+export {
+  canonicalCourses,
+  canonicalPathways,
+  type CanonicalCourse,
+  type CanonicalPathway,
+};

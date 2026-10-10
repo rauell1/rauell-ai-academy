@@ -80,7 +80,11 @@ function buildLessonBlocks(opts: {
       title: "Comparison: Naive Approach vs Production-Grade Approach",
       plainText: null,
       config: {
-        headers: ["Naive / Fragile Pattern", "Disciplined Production Standard", "Why It Matters"],
+        headers: [
+          "Naive / Fragile Pattern",
+          "Disciplined Production Standard",
+          "Why It Matters",
+        ],
         rows: [
           [
             opts.comparisonWeak,
@@ -183,10 +187,12 @@ export const courseC1: CanonicalCourse = {
           estimatedMinutes: 25,
           blocks: buildLessonBlocks({
             problemHeading: "Discovery Call to Web Specification",
-            scenarioTitle: "Workplace Scenario: Building the Apex Rift Engineering Website",
+            scenarioTitle:
+              "Workplace Scenario: Building the Apex Rift Engineering Website",
             scenarioText:
               "Eng. David Kipkorir, founder of Apex Rift Engineering in Nakuru, sits down with your web agency. Over tea, David describes solar mini-grids, cold rooms for fresh cabbages in Njoro, inverter repairs, and his team. He hands you an old Word profile and a flash drive with photos. Beginners immediately ask AI to 'Build a modern solar website.' The result is generic stock photos, broken forms, and missing client requirements. In this lesson, you will learn how to turn raw client discovery into a technical project brief.",
-            conceptHeading: "The 4 Essential Deliverables of a Web Project Brief",
+            conceptHeading:
+              "The 4 Essential Deliverables of a Web Project Brief",
             conceptText:
               "Before writing any code or prompting an AI assistant, an engineer produces four clear artifacts:\n\n1. Content Inventory & Provenance: Exactly what text, case studies, and photos exist, and whether their claims are verified.\n2. User Personas & Primary Journeys: Who visits the site and what specific task they must complete (e.g. Commercial farmer seeking a cold-room quote).\n3. Sitemap & Page Component Hierarchy: The page structure, routes, and reusable section blocks.\n4. Acceptance Criteria & Architecture Decision: Choosing between a high-performance static site, a headless CMS, or a full database application.",
             exampleTitle: "AI Specification Extraction Prompt",
@@ -201,8 +207,10 @@ TASK: Generate a production Web Specification Document with:
 6. Acceptance Criteria in Given-When-Then format for the enquiry submission flow.
 CONSTRAINTS:
 - Use only facts from the supplied profile. Do not invent office branches or accreditations not mentioned.`,
-            comparisonWeak: "Asking AI: 'Build a full website for a Kenyan solar company with modern UI.'",
-            comparisonStrong: "Structuring a formal brief with user journeys, verified assets, and Given-When-Then criteria.",
+            comparisonWeak:
+              "Asking AI: 'Build a full website for a Kenyan solar company with modern UI.'",
+            comparisonStrong:
+              "Structuring a formal brief with user journeys, verified assets, and Given-When-Then criteria.",
             exerciseTitle: "Drafting the Project Brief for Apex Rift",
             exerciseText:
               "Review the Apex Rift profile. Write the primary user journey for a commercial dairy farmer in Eldoret seeking a solar water-pumping quotation.",
@@ -230,11 +238,13 @@ CONSTRAINTS:
           id: "c1-m1-l2",
           slug: "1-2",
           title: "Content inventory and source provenance",
-          summary: "Cataloging client assets, verifying claims, and eliminating marketing fluff.",
+          summary:
+            "Cataloging client assets, verifying claims, and eliminating marketing fluff.",
           estimatedMinutes: 25,
           blocks: buildLessonBlocks({
             problemHeading: "Unverified Client Claims and Missing Assets",
-            scenarioTitle: "Workplace Scenario: Auditing the Kilimo Bora Agri-Cooperative Assets",
+            scenarioTitle:
+              "Workplace Scenario: Auditing the Kilimo Bora Agri-Cooperative Assets",
             scenarioText:
               "Kilimo Bora Agri-Cooperative in Eldoret provides an 8-page brochure claiming 'Over 10,000 farmers served with 99.9% yield increase across East Africa.' When asked for evidence, the manager admits that only 420 farmers in Uasin Gishu have been registered, and the yield data came from an unverified social media post. Publishing false claims on the new website risks statutory penalties from the Competition Authority of Kenya (CAK) and destroys credibility.",
             conceptHeading: "Content Inventory & Provenance Tracking",
@@ -246,8 +256,10 @@ CONSTRAINTS:
 | Hero | "East Africa's premier solar pumping firm" | Unverified / Slogan | None | "Solar water pumping systems engineered for Rift Valley farms" |
 | Proof Metric | "Over 10,000 farmers served" | Corrected | Cooperative Ledger 2024 | "Over 420 registered farmers across Uasin Gishu County" |
 | Accreditations | "EPRA Class V1 Solar PV Licensed Contractor" | Verified | EPRA License #SPV-2023-884 | "Licensed by the Energy and Petroleum Regulatory Authority (EPRA)" |`,
-            comparisonWeak: "Copying raw client brochures directly into website copy without verification.",
-            comparisonStrong: "Cataloging all claims in a provenance matrix and citing verified primary evidence.",
+            comparisonWeak:
+              "Copying raw client brochures directly into website copy without verification.",
+            comparisonStrong:
+              "Cataloging all claims in a provenance matrix and citing verified primary evidence.",
             exerciseTitle: "Execute a Content Audit Matrix",
             exerciseText:
               "Take 3 claims from a fictional agricultural machinery distributor and classify them as Verified, Aspirational, or Unverified. Write revised copy for any unverified claim.",
@@ -275,14 +287,17 @@ CONSTRAINTS:
           id: "c1-m1-l3",
           slug: "1-3",
           title: "Sitemaps, user journeys, and acceptance criteria",
-          summary: "Designing conversion funnels, WhatsApp dispatch triggers, and Gherkin criteria.",
+          summary:
+            "Designing conversion funnels, WhatsApp dispatch triggers, and Gherkin criteria.",
           estimatedMinutes: 25,
           blocks: buildLessonBlocks({
             problemHeading: "Scope Creep and Vague Feature Requests",
-            scenarioTitle: "Workplace Scenario: The Expanding Solar Quote Portal",
+            scenarioTitle:
+              "Workplace Scenario: The Expanding Solar Quote Portal",
             scenarioText:
               "Apex Rift Engineering initially asked for a simple 4-page website. Two weeks into the build, the client asks: 'Can customers also apply for SACCO solar financing, upload land title deeds, and track live inverter telemetry?' Without an agreed sitemap and strict acceptance criteria, projects balloon into unpaid, unfinished disasters.",
-            conceptHeading: "User Journeys and Given-When-Then Acceptance Criteria",
+            conceptHeading:
+              "User Journeys and Given-When-Then Acceptance Criteria",
             conceptText:
               "A successful web build bounds scope by establishing:\n1. Visual Sitemap: The exact tree of routes (Home, Services, Case Studies, Contact).\n2. Critical User Journey: The step-by-step path a visitor follows to achieve a goal.\n3. Acceptance Criteria: Unambiguous binary checks written in Gherkin (Given-When-Then) format so AI coding tools know exactly what to build and how to test it.",
             exampleTitle: "Gherkin Acceptance Criteria for Enquiry Submission",
@@ -304,9 +319,12 @@ CONSTRAINTS:
     When they click "Request Engineering Assessment"
     Then form submission should be prevented
     And an inline error message must state "Enter a valid 10-digit Kenyan phone number (e.g. 0712 345 678)"`,
-            comparisonWeak: "Writing vague tickets like 'Add a quote form that works nicely'.",
-            comparisonStrong: "Writing Given-When-Then acceptance criteria with exact edge cases and validation rules.",
-            exerciseTitle: "Author Acceptance Criteria for a WhatsApp Dispatch Trigger",
+            comparisonWeak:
+              "Writing vague tickets like 'Add a quote form that works nicely'.",
+            comparisonStrong:
+              "Writing Given-When-Then acceptance criteria with exact edge cases and validation rules.",
+            exerciseTitle:
+              "Author Acceptance Criteria for a WhatsApp Dispatch Trigger",
             exerciseText:
               "Write two Gherkin scenarios for a mobile 'Quick WhatsApp Dispatch' floating button on an emergency borehole repair website.",
             checklistItems: [
@@ -333,11 +351,13 @@ CONSTRAINTS:
           id: "c1-m1-l4",
           slug: "1-4",
           title: "Architecture decision: static site, CMS, or web application?",
-          summary: "Technical decision matrix: CDN static hosting vs Headless CMS vs full-stack Hono/Postgres.",
+          summary:
+            "Technical decision matrix: CDN static hosting vs Headless CMS vs full-stack Hono/Postgres.",
           estimatedMinutes: 25,
           blocks: buildLessonBlocks({
             problemHeading: "Over-Engineering Simple Business Sites",
-            scenarioTitle: "Workplace Scenario: The KES 15,000/Month Server Bill for a Bakery",
+            scenarioTitle:
+              "Workplace Scenario: The KES 15,000/Month Server Bill for a Bakery",
             scenarioText:
               "A junior developer built a 5-page website for a bakery in Thika using a full-stack containerized cluster with Redis, PostgreSQL, and Elasticsearch. Six months later, the server crashed due to unpatched memory leaks, and the owner was hit with unexpected cloud bills for an informational site that gets 30 visits a day. The agency lost the client.",
             conceptHeading: "The Architecture Decision Matrix",
@@ -360,8 +380,10 @@ CONSEQUENCES:
 (+) Sub-1.5s load times on 3G connections in Nakuru and Bomet.
 (+) Zero database maintenance required for static pages.
 (-) Editorial updates to case studies require a git commit or automated headless CMS hook.`,
-            comparisonWeak: "Defaulting to heavy full-stack frameworks and persistent databases for every project.",
-            comparisonStrong: "Authoring an Architecture Decision Record (ADR) justifying technology based on client operational constraints.",
+            comparisonWeak:
+              "Defaulting to heavy full-stack frameworks and persistent databases for every project.",
+            comparisonStrong:
+              "Authoring an Architecture Decision Record (ADR) justifying technology based on client operational constraints.",
             exerciseTitle: "Draft an Architecture Decision for a Water Utility",
             exerciseText:
               "Review three project profiles (A: Law firm profile, B: Tea cooperative blog, C: Prepaid borehole meter recharge portal). Assign each to Static, CMS, or Full App with written justification.",
@@ -416,7 +438,8 @@ export const courseC2: CanonicalCourse = {
     "Craft complete state designs: empty, loading, error, and success states.",
   ],
   prerequisites: "From Client Conversation to Project Brief (Course C1).",
-  targetAudience: "Web designers, frontend developers, and digital agency practitioners.",
+  targetAudience:
+    "Web designers, frontend developers, and digital agency practitioners.",
   modules: [
     {
       id: "c2-m1",
@@ -431,7 +454,8 @@ export const courseC2: CanonicalCourse = {
           estimatedMinutes: 25,
           blocks: buildLessonBlocks({
             problemHeading: "Generic AI Marketing Fluff",
-            scenarioTitle: "Workplace Scenario: The Cloned Solar Marketing Copy",
+            scenarioTitle:
+              "Workplace Scenario: The Cloned Solar Marketing Copy",
             scenarioText:
               "An agency builds a website for Apex Rift Engineering. The AI generates hero text: 'Welcome to Apex Rift, where synergy meets cutting-edge innovation in renewable power solutions.' The founder rejects it immediately: 'This sounds like an American textbook. We install solar cold rooms for cabbage farmers in Njoro who lose 40% of their harvest to spoilage. Talk to them!'",
             conceptHeading: "The 'Proof Over Hype' Copywriting Formula",
@@ -463,8 +487,10 @@ export function HeroSection() {
     </section>
   );
 }`,
-            comparisonWeak: "Using generic slogans: 'We are the leading provider of world-class energy solutions.'",
-            comparisonStrong: "Using grounded operational copy: 'EPRA-certified solar systems cutting diesel pumping costs in Nakuru.'",
+            comparisonWeak:
+              "Using generic slogans: 'We are the leading provider of world-class energy solutions.'",
+            comparisonStrong:
+              "Using grounded operational copy: 'EPRA-certified solar systems cutting diesel pumping costs in Nakuru.'",
             exerciseTitle: "Draft High-Converting Service Copy",
             exerciseText:
               "Write a 120-word service section for a solar borehole pumping installation company targeting dairy farmers in Nandi County.",
@@ -492,10 +518,12 @@ export function HeroSection() {
           id: "c2-m1-l2",
           slug: "1-2",
           title: "Case studies, proof metrics, and client testimonials",
-          summary: "Structuring evidence-backed case studies, proof points, and quotes.",
+          summary:
+            "Structuring evidence-backed case studies, proof points, and quotes.",
           estimatedMinutes: 25,
           blocks: buildLessonBlocks({
-            problemHeading: "Fake-Looking Testimonials That Destroy Credibility",
+            problemHeading:
+              "Fake-Looking Testimonials That Destroy Credibility",
             scenarioTitle: "Workplace Scenario: 'John D. says Great Service!'",
             scenarioText:
               "A client website displays a testimonial block: 'Great company, 5 stars!' attributed to 'John D., Businessman'. A prospective commercial client looking to spend KES 3,500,000 on a solar installation assumes the testimonial is fabricated and leaves the website.",
@@ -526,8 +554,10 @@ export function HeroSection() {
     </article>
   );
 }`,
-            comparisonWeak: "Anonymous reviews with generic praise and zero technical details.",
-            comparisonStrong: "Attributed case studies with verified locations, equipment specs, and measured financial metrics.",
+            comparisonWeak:
+              "Anonymous reviews with generic praise and zero technical details.",
+            comparisonStrong:
+              "Attributed case studies with verified locations, equipment specs, and measured financial metrics.",
             exerciseTitle: "Structure a Solar Case Study",
             exerciseText:
               "From a technician field note describing a 15kWp installation at Baraka Tea Estate in Kericho, construct a structured case study object matching the 4-part framework.",
@@ -556,13 +586,15 @@ export function HeroSection() {
     {
       id: "c2-m2",
       title: "Visual Hierarchy, Mobile Layouts, and UI States",
-      description: "Polishing typography, responsive layouts, and robust state machines.",
+      description:
+        "Polishing typography, responsive layouts, and robust state machines.",
       lessons: [
         {
           id: "c2-m2-l1",
           slug: "2-1",
           title: "Typography, spacing, visual hierarchy, and UI components",
-          summary: "8pt grid system, readable type scales, contrast ratios, and card components.",
+          summary:
+            "8pt grid system, readable type scales, contrast ratios, and card components.",
           estimatedMinutes: 25,
           blocks: buildLessonBlocks({
             problemHeading: "Chaotic Wireframes and Inconsistent Spacing",
@@ -589,8 +621,10 @@ export function ServiceCard({ title, desc, icon }: ServiceProps) {
     </div>
   );
 }`,
-            comparisonWeak: "Arbitrary CSS margin and padding values like `margin: 13px; font-size: 17.5px;`.",
-            comparisonStrong: "Systematic 8pt spatial grid with tokenized Tailwind scales and WCAG AA contrast.",
+            comparisonWeak:
+              "Arbitrary CSS margin and padding values like `margin: 13px; font-size: 17.5px;`.",
+            comparisonStrong:
+              "Systematic 8pt spatial grid with tokenized Tailwind scales and WCAG AA contrast.",
             exerciseTitle: "Refactor a Cramped Pricing Card",
             exerciseText:
               "Take a legacy CSS snippet with chaotic spacing and rewrite it in Tailwind CSS adhering strictly to the 8pt grid and WCAG AA contrast.",
@@ -618,11 +652,13 @@ export function ServiceCard({ title, desc, icon }: ServiceProps) {
           id: "c2-m2-l2",
           slug: "2-2",
           title: "Mobile layouts (360px) and accessible navigation",
-          summary: "Optimizing for common Android devices in Kenya, touch targets >= 44px, drawer navigation.",
+          summary:
+            "Optimizing for common Android devices in Kenya, touch targets >= 44px, drawer navigation.",
           estimatedMinutes: 25,
           blocks: buildLessonBlocks({
             problemHeading: "Horizontal Overflow and Unclickable Mobile Menus",
-            scenarioTitle: "Workplace Scenario: Testing on a 360px Tecno Device",
+            scenarioTitle:
+              "Workplace Scenario: Testing on a 360px Tecno Device",
             scenarioText:
               "A developer builds a website on a 27-inch 4K monitor. Everything looks spacious. But when a field technician in Nakuru opens the site on a Tecno Spark with a 360px viewport, navigation links run off the screen, horizontal scrollbars appear, and buttons are so small that clicking 'Call' accidentally triggers 'Services'.",
             conceptHeading: "Mobile-First Architecture for African Viewports",
@@ -666,8 +702,10 @@ export function ServiceCard({ title, desc, icon }: ServiceProps) {
     </header>
   );
 }`,
-            comparisonWeak: "Desktop-only layout with fixed `width: 1200px` causing horizontal scroll and tiny unclickable links on mobile.",
-            comparisonStrong: "Fluid mobile-first flexbox layout with touch targets >= 44px tested down to 360px viewport.",
+            comparisonWeak:
+              "Desktop-only layout with fixed `width: 1200px` causing horizontal scroll and tiny unclickable links on mobile.",
+            comparisonStrong:
+              "Fluid mobile-first flexbox layout with touch targets >= 44px tested down to 360px viewport.",
             exerciseTitle: "Audit and Fix 360px Viewport Overflow",
             exerciseText:
               "Inspect a responsive header component in Chrome DevTools emulating a 360px Moto G Power. Fix any horizontal layout overflow and ensure all button touch targets exceed 44px.",
@@ -695,11 +733,13 @@ export function ServiceCard({ title, desc, icon }: ServiceProps) {
           id: "c2-m2-l3",
           slug: "2-3",
           title: "Complete UI states: empty, loading, error, and success",
-          summary: "Designing for intermittent 3G/4G connectivity, skeleton loaders, friendly error fallbacks.",
+          summary:
+            "Designing for intermittent 3G/4G connectivity, skeleton loaders, friendly error fallbacks.",
           estimatedMinutes: 25,
           blocks: buildLessonBlocks({
             problemHeading: "Blank White Screens and Frozen UIs",
-            scenarioTitle: "Workplace Scenario: The Unresponsive Nakuru Enquiry Form",
+            scenarioTitle:
+              "Workplace Scenario: The Unresponsive Nakuru Enquiry Form",
             scenarioText:
               "A customer in Subukia submits an enquiry form on an intermittent 3G connection. The button does not change text, no spinner appears, and the screen freezes. The user clicks 'Submit' six times, generating six duplicate leads, before giving up and assuming the website is broken.",
             conceptHeading: "The 4 Essential UI States",
@@ -752,8 +792,10 @@ export function ServiceCard({ title, desc, icon }: ServiceProps) {
     </form>
   );
 }`,
-            comparisonWeak: "Forms that freeze with no visual feedback when clicked, triggering duplicate submissions on slow 3G.",
-            comparisonStrong: "State-machine forms with explicit loading spinners, friendly error retries, and confirmed success states.",
+            comparisonWeak:
+              "Forms that freeze with no visual feedback when clicked, triggering duplicate submissions on slow 3G.",
+            comparisonStrong:
+              "State-machine forms with explicit loading spinners, friendly error retries, and confirmed success states.",
             exerciseTitle: "Build an Empty State Component",
             exerciseText:
               "Build a reusable Empty State component for a solar project filter gallery when no projects match the selected county.",
@@ -781,7 +823,8 @@ export function ServiceCard({ title, desc, icon }: ServiceProps) {
           id: "c2-m2-l4",
           slug: "2-4",
           title: "Search engine visibility, Open Graph, and page metadata",
-          summary: "Meta tags, Open Graph preview cards for WhatsApp sharing, structured schema.org markup.",
+          summary:
+            "Meta tags, Open Graph preview cards for WhatsApp sharing, structured schema.org markup.",
           estimatedMinutes: 25,
           blocks: buildLessonBlocks({
             problemHeading: "Broken WhatsApp Link Previews",
@@ -823,8 +866,10 @@ export function HeadMetadata() {
     </>
   );
 }`,
-            comparisonWeak: "Leaving default Vite page titles ('Vite + React') and zero Open Graph tags.",
-            comparisonStrong: "Authoring targeted Open Graph preview cards and Schema.org LocalBusiness structured data.",
+            comparisonWeak:
+              "Leaving default Vite page titles ('Vite + React') and zero Open Graph tags.",
+            comparisonStrong:
+              "Authoring targeted Open Graph preview cards and Schema.org LocalBusiness structured data.",
             exerciseTitle: "Author Open Graph Tags for a Service Page",
             exerciseText:
               "Write the complete meta tag block for an emergency borehole repair service in Naivasha optimized for WhatsApp sharing.",
@@ -879,7 +924,8 @@ export const courseC3: CanonicalCourse = {
     "Execute git hygiene: clean atomic commits, branch workflows, and PR diff reviews.",
   ],
   prerequisites: "Content and Interface Design (Course C2).",
-  targetAudience: "Aspiring developers, technical product managers, and builders.",
+  targetAudience:
+    "Aspiring developers, technical product managers, and builders.",
   modules: [
     {
       id: "c3-m1",
@@ -890,7 +936,8 @@ export const courseC3: CanonicalCourse = {
           id: "c3-m1-l1",
           slug: "1-1",
           title: "HTML, CSS, and TypeScript essentials for prompting",
-          summary: "Semantic HTML5, CSS layout models, TypeScript type annotations, telling AI what to modify.",
+          summary:
+            "Semantic HTML5, CSS layout models, TypeScript type annotations, telling AI what to modify.",
           estimatedMinutes: 25,
           blocks: buildLessonBlocks({
             problemHeading: "Prompting AI Without Technical Terminology",
@@ -927,9 +974,12 @@ export function ProjectCard({ project }: { project: SolarProject }) {
     </article>
   );
 }`,
-            comparisonWeak: "Vague instructions: 'Fix the card so it has info about solar.'",
-            comparisonStrong: "Precise instructions: 'Implement a semantic `<article>` component typed with `SolarProject` interface.'",
-            exerciseTitle: "Define a TypeScript Interface for an Equipment Form",
+            comparisonWeak:
+              "Vague instructions: 'Fix the card so it has info about solar.'",
+            comparisonStrong:
+              "Precise instructions: 'Implement a semantic `<article>` component typed with `SolarProject` interface.'",
+            exerciseTitle:
+              "Define a TypeScript Interface for an Equipment Form",
             exerciseText:
               "Write a TypeScript interface for a Borehole Pump Quotation request (name, county, depthMeters, flowRateM3h, powerSource: 'solar' | 'grid' | 'hybrid').",
             checklistItems: [
@@ -956,11 +1006,13 @@ export function ProjectCard({ project }: { project: SolarProject }) {
           id: "c3-m1-l2",
           slug: "1-2",
           title: "React component hierarchies, props, and state",
-          summary: "Component tree mental models, unidirectional data flow, useState vs props.",
+          summary:
+            "Component tree mental models, unidirectional data flow, useState vs props.",
           estimatedMinutes: 25,
           blocks: buildLessonBlocks({
             problemHeading: "Infinite Re-Renders and Mutated State",
-            scenarioTitle: "Workplace Scenario: The Frozen Solar Capacity Calculator",
+            scenarioTitle:
+              "Workplace Scenario: The Frozen Solar Capacity Calculator",
             scenarioText:
               "An AI generates a Solar Sizing Calculator component. When the user changes the number of solar panels from 4 to 8, the page freezes and Chrome displays an 'Out of Memory' crash. The AI generated code that mutated state directly (`panels = 8`) inside the component render function, triggering an infinite re-render loop.",
             conceptHeading: "React Component Hierarchy and State Flow",
@@ -1003,8 +1055,10 @@ export function ProjectCard({ project }: { project: SolarProject }) {
     </div>
   );
 }`,
-            comparisonWeak: "Mutating variables directly (`totalKw = panels * 450`) outside React state setters.",
-            comparisonStrong: "Using immutable `useState` hooks and derived calculations during render.",
+            comparisonWeak:
+              "Mutating variables directly (`totalKw = panels * 450`) outside React state setters.",
+            comparisonStrong:
+              "Using immutable `useState` hooks and derived calculations during render.",
             exerciseTitle: "Build a Controlled Solar Battery Sizer",
             exerciseText:
               "Write a React component that takes battery capacity in kWh via an input slider and calculates autonomy hours based on a fixed 1.5kW load.",
@@ -1032,7 +1086,8 @@ export function ProjectCard({ project }: { project: SolarProject }) {
           id: "c3-m1-l3",
           slug: "1-3",
           title: "Client-side vs server-side architecture",
-          summary: "Browser runtime vs Node/Hono server runtime, why sensitive API keys cannot live in frontend code.",
+          summary:
+            "Browser runtime vs Node/Hono server runtime, why sensitive API keys cannot live in frontend code.",
           estimatedMinutes: 25,
           blocks: buildLessonBlocks({
             problemHeading: "Leaking Database Credentials in the Browser",
@@ -1062,8 +1117,10 @@ enquiryApi.post('/enquiry', async (c) => {
   await sendInternalNotificationEmail(data);
   return c.json({ success: true });
 });`,
-            comparisonWeak: "Placing database connections or secret API tokens inside frontend React components.",
-            comparisonStrong: "Calling protected server API endpoints that encapsulate secrets and validate data.",
+            comparisonWeak:
+              "Placing database connections or secret API tokens inside frontend React components.",
+            comparisonStrong:
+              "Calling protected server API endpoints that encapsulate secrets and validate data.",
             exerciseTitle: "Identify 3 Security Boundary Violations",
             exerciseText:
               "Inspect a mock React component and flag three security violations where server secrets or private queries were incorrectly placed in client code.",
@@ -1092,13 +1149,15 @@ enquiryApi.post('/enquiry', async (c) => {
     {
       id: "c3-m2",
       title: "APIs, Repositories, and Git",
-      description: "HTTP protocols, project structures, and collaborative version control.",
+      description:
+        "HTTP protocols, project structures, and collaborative version control.",
       lessons: [
         {
           id: "c3-m2-l1",
           slug: "2-1",
           title: "HTTP, JSON payloads, REST APIs, and validation",
-          summary: "GET/POST/PATCH/DELETE, status codes 200/400/401/404/500, parsing JSON safely.",
+          summary:
+            "GET/POST/PATCH/DELETE, status codes 200/400/401/404/500, parsing JSON safely.",
           estimatedMinutes: 25,
           blocks: buildLessonBlocks({
             problemHeading: "Unhandled HTTP Failures and Silent Crashes",
@@ -1126,8 +1185,10 @@ enquiryApi.post('/enquiry', async (c) => {
 
   return data as T;
 }`,
-            comparisonWeak: "Assuming every `fetch` succeeds and ignoring HTTP response status codes.",
-            comparisonStrong: "Checking `response.ok`, extracting structured error payloads, and presenting user-friendly messages.",
+            comparisonWeak:
+              "Assuming every `fetch` succeeds and ignoring HTTP response status codes.",
+            comparisonStrong:
+              "Checking `response.ok`, extracting structured error payloads, and presenting user-friendly messages.",
             exerciseTitle: "Write an API Client with Status Handling",
             exerciseText:
               "Write a TypeScript function that dispatches a PATCH request to `/api/progress` and handles 401 (redirect to login) and 400 (display validation error).",
@@ -1154,8 +1215,10 @@ enquiryApi.post('/enquiry', async (c) => {
         {
           id: "c3-m2-l2",
           slug: "2-2",
-          title: "Reading repositories, file structures, and package dependencies",
-          summary: "package.json, src structure, imports, understanding what an AI generated.",
+          title:
+            "Reading repositories, file structures, and package dependencies",
+          summary:
+            "package.json, src structure, imports, understanding what an AI generated.",
           estimatedMinutes: 25,
           blocks: buildLessonBlocks({
             problemHeading: "Drowning in Code and Hallucinated Packages",
@@ -1182,8 +1245,10 @@ enquiryApi.post('/enquiry', async (c) => {
     "zod": "^3.24.2"
   }
 }`,
-            comparisonWeak: "Blindly running `npm install` for every package an AI suggests without auditing its legitimacy.",
-            comparisonStrong: "Auditing `package.json` and leveraging built-in standard libraries before adding new dependencies.",
+            comparisonWeak:
+              "Blindly running `npm install` for every package an AI suggests without auditing its legitimacy.",
+            comparisonStrong:
+              "Auditing `package.json` and leveraging built-in standard libraries before adding new dependencies.",
             exerciseTitle: "Audit a package.json for Redundancies",
             exerciseText:
               "Inspect a mock `package.json` with 4 heavy packages (e.g. moment.js, lodash, request, axios) and recommend native modern JavaScript replacements.",
@@ -1210,8 +1275,10 @@ enquiryApi.post('/enquiry', async (c) => {
         {
           id: "c3-m2-l3",
           slug: "2-3",
-          title: "Git hygiene: commits, branches, diffs, and pull request reviews",
-          summary: "Atomic commits, branch workflows, inspecting git diff before approving AI suggestions.",
+          title:
+            "Git hygiene: commits, branches, diffs, and pull request reviews",
+          summary:
+            "Atomic commits, branch workflows, inspecting git diff before approving AI suggestions.",
           estimatedMinutes: 25,
           blocks: buildLessonBlocks({
             problemHeading: "Overwriting Production Code with Blind Commits",
@@ -1239,8 +1306,10 @@ git commit -m "feat(quote): validate kenyan phone numbers with safaricom/airtel 
 
 # 6. Push to remote and open a Pull Request
 git push -u origin feat/solar-quote-validation`,
-            comparisonWeak: "Running `git add . && git commit -m 'fixed stuff'` without reading the diff.",
-            comparisonStrong: "Creating feature branches, reading `git diff --staged` line-by-line, and writing atomic conventional commits.",
+            comparisonWeak:
+              "Running `git add . && git commit -m 'fixed stuff'` without reading the diff.",
+            comparisonStrong:
+              "Creating feature branches, reading `git diff --staged` line-by-line, and writing atomic conventional commits.",
             exerciseTitle: "Review an AI-Generated Git Diff",
             exerciseText:
               "Inspect a provided git diff where an AI generated a contact form update. Identify two subtle bugs (a removed null check and a hardcoded URL).",
@@ -1305,12 +1374,15 @@ export const courseC4: CanonicalCourse = {
         {
           id: "c4-m1-l1",
           slug: "1-1",
-          title: "Supplying precise file context and constraints to AI coding assistants",
-          summary: "Why dumping 50 files fails, selecting minimal relevant context, setting architecture rules.",
+          title:
+            "Supplying precise file context and constraints to AI coding assistants",
+          summary:
+            "Why dumping 50 files fails, selecting minimal relevant context, setting architecture rules.",
           estimatedMinutes: 25,
           blocks: buildLessonBlocks({
             problemHeading: "Context Window Saturation and Hallucinations",
-            scenarioTitle: "Workplace Scenario: The 50-File Dump That Broke the Build",
+            scenarioTitle:
+              "Workplace Scenario: The 50-File Dump That Broke the Build",
             scenarioText:
               "A developer uses an AI coding assistant and selects 'Include entire workspace'. The prompt contains 50 files, 15,000 lines of code, and unrelated database migrations. The AI gets confused by obsolete functions, hallucinates deprecated imports, and produces a broken 500-line diff that fails to compile.",
             conceptHeading: "The Minimum Viable Context Rule",
@@ -1328,8 +1400,10 @@ CONSTRAINTS:
 3. If valid, show a subtle green checkmark badge next to the input.
 4. Update the existing Zod schema in validation.ts without breaking existing tests.
 5. Provide the exact diff for EnquiryForm.tsx only.`,
-            comparisonWeak: "Dumping the entire repository into the prompt and asking: 'Add M-Pesa to the app.'",
-            comparisonStrong: "Targeting the exact 2 relevant files, specifying regex constraints, and setting negative rules.",
+            comparisonWeak:
+              "Dumping the entire repository into the prompt and asking: 'Add M-Pesa to the app.'",
+            comparisonStrong:
+              "Targeting the exact 2 relevant files, specifying regex constraints, and setting negative rules.",
             exerciseTitle: "Craft a Minimal Context Prompt",
             exerciseText:
               "Write a targeted prompt instructing an AI assistant to add a County filter dropdown to a Solar Project Gallery component.",
@@ -1357,11 +1431,13 @@ CONSTRAINTS:
           id: "c4-m1-l2",
           slug: "1-2",
           title: "Building one complete user journey at a time",
-          summary: "Vertical slice development: routing -> component -> form -> API -> feedback.",
+          summary:
+            "Vertical slice development: routing -> component -> form -> API -> feedback.",
           estimatedMinutes: 25,
           blocks: buildLessonBlocks({
             problemHeading: "Monolithic Prompts That Generate Half-Baked Code",
-            scenarioTitle: "Workplace Scenario: 'Build My Entire Solar Platform'",
+            scenarioTitle:
+              "Workplace Scenario: 'Build My Entire Solar Platform'",
             scenarioText:
               "A builder prompts an AI: 'Build a full solar web application with user authentication, quotation engine, M-Pesa payments, borehole monitoring, and PDF export.' The AI spits out 2,500 lines of skeleton code with `// TODO: Implement this later` in every critical function. Nothing works, and the builder cannot debug where to begin.",
             conceptHeading: "Vertical Slicing in AI Pair Programming",
@@ -1376,8 +1452,10 @@ CONSTRAINTS:
 [x] Step 5: Verify in browser with test phone number (+254712345678).
 [x] Step 6: Verify record in Neon PostgreSQL.
 [x] Step 7: Git commit: feat(leads): complete commercial solar quote journey`,
-            comparisonWeak: "Attempting to build 10 features at once in a single massive AI session.",
-            comparisonStrong: "Building one thin vertical slice end-to-end, testing in browser, and committing atomically.",
+            comparisonWeak:
+              "Attempting to build 10 features at once in a single massive AI session.",
+            comparisonStrong:
+              "Building one thin vertical slice end-to-end, testing in browser, and committing atomically.",
             exerciseTitle: "Deconstruct a Feature into 3 Vertical Slices",
             exerciseText:
               "Take a 'Borehole Maintenance Booking System' and divide it into 3 sequential, independently testable user journeys.",
@@ -1405,7 +1483,8 @@ CONSTRAINTS:
           id: "c4-m1-l3",
           slug: "1-3",
           title: "Line-by-line code diff inspection before accepting",
-          summary: "How to spot hallucinations, deleted edge cases, and regression bugs in AI-generated diffs.",
+          summary:
+            "How to spot hallucinations, deleted edge cases, and regression bugs in AI-generated diffs.",
           estimatedMinutes: 25,
           blocks: buildLessonBlocks({
             problemHeading: "The 'Accept All' Trap and Silent Regressions",
@@ -1432,8 +1511,10 @@ CONSTRAINTS:
     await apiPost('/leads', { name, phone });
   }
 >>>>>>> REJECT PROPOSAL`,
-            comparisonWeak: "Clicking 'Accept All' without reading the green and red diff lines.",
-            comparisonStrong: "Executing a 3-pass review: verifying scope, inspecting deleted lines, and auditing imports.",
+            comparisonWeak:
+              "Clicking 'Accept All' without reading the green and red diff lines.",
+            comparisonStrong:
+              "Executing a 3-pass review: verifying scope, inspecting deleted lines, and auditing imports.",
             exerciseTitle: "Audit an AI Diff for Hidden Bugs",
             exerciseText:
               "Review a proposed diff for an API client function and flag where the AI silently removed a timeout abort controller.",
@@ -1462,17 +1543,21 @@ CONSTRAINTS:
     {
       id: "c4-m2",
       title: "Diagnostics & Root Cause Debugging",
-      description: "Reading stack traces, isolating errors, and eliminating technical debt.",
+      description:
+        "Reading stack traces, isolating errors, and eliminating technical debt.",
       lessons: [
         {
           id: "c4-m2-l1",
           slug: "2-1",
-          title: "Terminal error diagnostics and reproducible reproduction steps",
-          summary: "Interpreting stack traces, Vite build errors, TypeScript compile failures.",
+          title:
+            "Terminal error diagnostics and reproducible reproduction steps",
+          summary:
+            "Interpreting stack traces, Vite build errors, TypeScript compile failures.",
           estimatedMinutes: 25,
           blocks: buildLessonBlocks({
             problemHeading: "Pasting 200-Line Terminal Dumps with 'Fix This'",
-            scenarioTitle: "Workplace Scenario: The Confusing TypeScript Error Dump",
+            scenarioTitle:
+              "Workplace Scenario: The Confusing TypeScript Error Dump",
             scenarioText:
               "A builder encounters a build failure, copies 150 lines of terminal output including npm warnings and memory stats, and asks AI: 'Fix this error'. The AI gets confused by the noise and suggests rewriting five working files. Had the builder isolated the single error line (`Type 'string' is not assignable to type 'number' at SolarCard.tsx:24`), the fix would have taken 10 seconds.",
             conceptHeading: "Reading Stack Traces from Top to Bottom",
@@ -1492,8 +1577,10 @@ CONSTRAINTS:
 // Vite reports: Failed to resolve import "@/components/Button" from "src/routes/index.tsx:3:22".
 // The file is located at "@/components/ui/button.tsx".
 // Update the import path in src/routes/index.tsx.`,
-            comparisonWeak: "Copying 200 lines of terminal clutter into an AI chat with no context.",
-            comparisonStrong: "Isolating the root cause line, file anchor, and providing a 2-line targeted prompt.",
+            comparisonWeak:
+              "Copying 200 lines of terminal clutter into an AI chat with no context.",
+            comparisonStrong:
+              "Isolating the root cause line, file anchor, and providing a 2-line targeted prompt.",
             exerciseTitle: "Extract Root Cause from a Build Trace",
             exerciseText:
               "Given a 50-line Vite TypeScript compile error, identify the failing file, line number, and exact type mismatch.",
@@ -1521,7 +1608,8 @@ CONSTRAINTS:
           id: "c4-m2-l2",
           slug: "2-2",
           title: "Fixing root causes rather than patching symptoms",
-          summary: "Why adding 'any' or '// @ts-ignore' causes technical debt, tracing errors to source.",
+          summary:
+            "Why adding 'any' or '// @ts-ignore' causes technical debt, tracing errors to source.",
           estimatedMinutes: 25,
           blocks: buildLessonBlocks({
             problemHeading: "The Temptation of '// @ts-ignore' and 'any'",
@@ -1553,8 +1641,10 @@ function processPayment(raw: unknown) {
   const payment = MpesaPaymentSchema.parse(raw); // Throws clear error if malformed!
   return payment.transId.toUpperCase(); // Guaranteed type-safe!
 }`,
-            comparisonWeak: "Adding `// @ts-ignore` and `any` to silence compiler errors.",
-            comparisonStrong: "Validating incoming data with Zod schemas and updating TypeScript interfaces to match reality.",
+            comparisonWeak:
+              "Adding `// @ts-ignore` and `any` to silence compiler errors.",
+            comparisonStrong:
+              "Validating incoming data with Zod schemas and updating TypeScript interfaces to match reality.",
             exerciseTitle: "Refactor 2 Symptom Patches into Root Fixes",
             exerciseText:
               "Inspect a component using `any` and an empty `catch {}` block. Refactor both into strict TypeScript types with proper user-facing error reporting.",
@@ -1582,11 +1672,13 @@ function processPayment(raw: unknown) {
           id: "c4-m2-l3",
           slug: "2-3",
           title: "Preventing dependency bloat and hallucinated libraries",
-          summary: "Auditing npm packages, resisting unnecessary dependencies, keeping bundle size lean.",
+          summary:
+            "Auditing npm packages, resisting unnecessary dependencies, keeping bundle size lean.",
           estimatedMinutes: 25,
           blocks: buildLessonBlocks({
             problemHeading: "The 8MB Bundle and Slow 3G Load Times",
-            scenarioTitle: "Workplace Scenario: The Solar Website That Took 14 Seconds to Load",
+            scenarioTitle:
+              "Workplace Scenario: The Solar Website That Took 14 Seconds to Load",
             scenarioText:
               "An agency deployed a 4-page solar website. The developer let an AI assistant install 28 npm packages: three different icon libraries, moment.js, lodash, heavy animation frameworks, and chart engines. On office WiFi, it loaded in 1.2 seconds. On a mobile 3G connection in Bomet, the initial JavaScript bundle weighed 4.2 MB and took 14 seconds to load. 73% of mobile visitors bounced before the page rendered.",
             conceptHeading: "The Dependency Evaluation Rubric",
@@ -1604,8 +1696,10 @@ const formatted = new Intl.DateTimeFormat("en-KE", {
   year: "numeric",
 }).format(new Date(date));
 // Output: "14 Oct 2026" — fast, native, zero dependencies!`,
-            comparisonWeak: "Installing heavy npm libraries for trivial tasks like date formatting or class merging.",
-            comparisonStrong: "Leveraging standard web APIs and lightweight utilities to keep bundle sizes under 150 KB.",
+            comparisonWeak:
+              "Installing heavy npm libraries for trivial tasks like date formatting or class merging.",
+            comparisonStrong:
+              "Leveraging standard web APIs and lightweight utilities to keep bundle sizes under 150 KB.",
             exerciseTitle: "Replace an External Library with Native Code",
             exerciseText:
               "Replace an external modal animation library in a React component with native Tailwind transitions and the HTML `<dialog>` element.",
@@ -1660,7 +1754,8 @@ export const courseC5: CanonicalCourse = {
     "Build staff enquiry management portals with role-based access control.",
   ],
   prerequisites: "Building and Iterating with AI (Course C4).",
-  targetAudience: "Full-stack developers, backend engineers, and technical builders.",
+  targetAudience:
+    "Full-stack developers, backend engineers, and technical builders.",
   modules: [
     {
       id: "c5-m1",
@@ -1671,13 +1766,14 @@ export const courseC5: CanonicalCourse = {
           id: "c5-m1-l1",
           slug: "1-1",
           title: "Client and server form validation with Zod",
-          summary: "Dual-layer validation, Kenyan phone regex `+254...`, sanitizing text inputs.",
+          summary:
+            "Dual-layer validation, Kenyan phone regex `+254...`, sanitizing text inputs.",
           estimatedMinutes: 25,
           blocks: buildLessonBlocks({
             problemHeading: "Bypassing Client Validation and SQL Injection",
             scenarioTitle: "Workplace Scenario: The Bypassed HTML Form Check",
             scenarioText:
-              "A developer puts `required` and `type='email'` on an HTML form. They think the system is secure. A malicious user opens a terminal and runs `curl -X POST https://site.co.ke/api/lead -d '{\"email\": \"<script>alert(1)</script>\", \"phone\": \"\"}'`. Because the backend had zero validation, the script was saved directly to the database and executed inside the admin dashboard.",
+              'A developer puts `required` and `type=\'email\'` on an HTML form. They think the system is secure. A malicious user opens a terminal and runs `curl -X POST https://site.co.ke/api/lead -d \'{"email": "<script>alert(1)</script>", "phone": ""}\'`. Because the backend had zero validation, the script was saved directly to the database and executed inside the admin dashboard.',
             conceptHeading: "The Dual-Layer Validation Principle with Zod",
             conceptText:
               "Never trust data from the browser. Client validation is for user convenience; server validation is for security:\n\n1. Single Source of Truth: Define your schema once using Zod.\n2. Client Feedback: Use the Zod schema on the frontend to display immediate inline error messages as the user types.\n3. Server Enforcement: On the backend API, validate the request body with `zValidator` or `schema.parse()`. If validation fails, reject with 400 Bad Request before touching the database.\n4. Kenyan Format Standards: Enforce valid Kenyan phone numbers using regex: `/^(\\+254|0)[17]\\d{8}$/`.",
@@ -1709,9 +1805,12 @@ leadApi.post("/", async (c) => {
   const lead = await db.insert(leads).values(result.data).returning();
   return c.json({ success: true, lead: lead[0] }, 201);
 });`,
-            comparisonWeak: "Relying solely on HTML5 `required` attributes and skipping server-side validation.",
-            comparisonStrong: "Enforcing dual-layer validation with a single shared Zod schema and strict phone regex.",
-            exerciseTitle: "Author a Zod Schema for Borehole Drilling Inquiries",
+            comparisonWeak:
+              "Relying solely on HTML5 `required` attributes and skipping server-side validation.",
+            comparisonStrong:
+              "Enforcing dual-layer validation with a single shared Zod schema and strict phone regex.",
+            exerciseTitle:
+              "Author a Zod Schema for Borehole Drilling Inquiries",
             exerciseText:
               "Write a Zod schema validating a borehole drilling inquiry with parcelNumber, county, estimatedDepthMeters (must be between 20 and 400), and phone number.",
             checklistItems: [
@@ -1738,11 +1837,13 @@ leadApi.post("/", async (c) => {
           id: "c5-m1-l2",
           slug: "1-2",
           title: "Relational data modeling with Drizzle ORM and Neon Postgres",
-          summary: "Tables, foreign keys, enums, modeling customer leads and service catalogs.",
+          summary:
+            "Tables, foreign keys, enums, modeling customer leads and service catalogs.",
           estimatedMinutes: 25,
           blocks: buildLessonBlocks({
             problemHeading: "Unstructured Data and Orphaned Records",
-            scenarioTitle: "Workplace Scenario: The Broken Customer Service History",
+            scenarioTitle:
+              "Workplace Scenario: The Broken Customer Service History",
             scenarioText:
               "A developer stores all client service visits in a single JSON blob inside a user record. When a farm sells their land and the new owner needs the service history of the 45kW solar pump, the data cannot be queried, foreign keys don't exist, and the records are hopelessly mangled. The agency has to rebuild the database from scratch.",
             conceptHeading: "Relational Modeling with Drizzle ORM",
@@ -1780,8 +1881,10 @@ export const leadNotes = pgTable("lead_notes", {
   note: text("note").notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 });`,
-            comparisonWeak: "Dumping unrelated nested objects into unstructured text columns with no relational constraints.",
-            comparisonStrong: "Defining normalized Drizzle tables with foreign keys, enums, and cascade deletion rules.",
+            comparisonWeak:
+              "Dumping unrelated nested objects into unstructured text columns with no relational constraints.",
+            comparisonStrong:
+              "Defining normalized Drizzle tables with foreign keys, enums, and cascade deletion rules.",
             exerciseTitle: "Design a Service Ticket Schema",
             exerciseText:
               "Write the Drizzle table definition for `maintenanceTickets` referencing `leads.id`, with fields for `technicianName`, `faultDescription`, `priority` (low/medium/urgent), and `resolvedAt`.",
@@ -1809,7 +1912,8 @@ export const leadNotes = pgTable("lead_notes", {
           id: "c5-m1-l3",
           slug: "1-3",
           title: "Schema migrations and zero-downtime data evolution",
-          summary: "drizzle-kit generate and push, handling column additions and backward compatibility.",
+          summary:
+            "drizzle-kit generate and push, handling column additions and backward compatibility.",
           estimatedMinutes: 25,
           blocks: buildLessonBlocks({
             problemHeading: "Downtime and Dropped Columns in Production",
@@ -1834,8 +1938,10 @@ npx drizzle-kit migrate
 
 # 5. Check migration status
 npx tsx scripts/check-db.ts`,
-            comparisonWeak: "Manually executing destructive SQL scripts or dropping tables in production.",
-            comparisonStrong: "Generating version-controlled SQL migrations, reviewing diffs, and adding nullable columns safely.",
+            comparisonWeak:
+              "Manually executing destructive SQL scripts or dropping tables in production.",
+            comparisonStrong:
+              "Generating version-controlled SQL migrations, reviewing diffs, and adding nullable columns safely.",
             exerciseTitle: "Draft a Safe Column Addition Plan",
             exerciseText:
               "Write the migration plan for adding a mandatory `priority` column to an existing table with 10,000 existing rows without causing downtime.",
@@ -1864,17 +1970,21 @@ npx tsx scripts/check-db.ts`,
     {
       id: "c5-m2",
       title: "Authentication, Workflows, and Cloud Secrets",
-      description: "Identity management, admin triage portals, cloud storage, and environment security.",
+      description:
+        "Identity management, admin triage portals, cloud storage, and environment security.",
       lessons: [
         {
           id: "c5-m2-l1",
           slug: "2-1",
-          title: "Authentication vs authorization (who are you vs what can you do)",
-          summary: "Session tokens, role-based access control `admin` vs `staff`.",
+          title:
+            "Authentication vs authorization (who are you vs what can you do)",
+          summary:
+            "Session tokens, role-based access control `admin` vs `staff`.",
           estimatedMinutes: 25,
           blocks: buildLessonBlocks({
             problemHeading: "Confusing Login with Permission Control",
-            scenarioTitle: "Workplace Scenario: The Customer Who Accessed All Competitor Quotes",
+            scenarioTitle:
+              "Workplace Scenario: The Customer Who Accessed All Competitor Quotes",
             scenarioText:
               "A developer implements login authentication. A user creates an account as a farm customer. By changing the URL parameter from `/quotes/102` to `/quotes/103`, the customer views private engineering quotes and pricing structures prepared for competing farms. The developer checked if the user was logged in (Authentication), but never checked if the user owned the record (Authorization).",
             conceptHeading: "Authentication vs Authorization Boundaries",
@@ -1903,8 +2013,10 @@ adminApi.get("/leads", requireRole("staff"), async (c) => {
   const allLeads = await db.select().from(leads).orderBy(desc(leads.createdAt));
   return c.json({ leads: allLeads });
 });`,
-            comparisonWeak: "Checking only `if (isLoggedIn)` without verifying user roles or record ownership.",
-            comparisonStrong: "Enforcing dual checks: 401 Unauthorized for unauthenticated visitors, 403 Forbidden for insufficient permissions.",
+            comparisonWeak:
+              "Checking only `if (isLoggedIn)` without verifying user roles or record ownership.",
+            comparisonStrong:
+              "Enforcing dual checks: 401 Unauthorized for unauthenticated visitors, 403 Forbidden for insufficient permissions.",
             exerciseTitle: "Implement an Ownership Authorization Guard",
             exerciseText:
               "Write an authorization function verifying that a user can only edit a solar project quotation if they are the author or have an 'admin' role.",
@@ -1932,11 +2044,13 @@ adminApi.get("/leads", requireRole("staff"), async (c) => {
           id: "c5-m2-l2",
           slug: "2-2",
           title: "Staff enquiry management workflows and role-based portals",
-          summary: "Building an internal triage dashboard for inquiries, statuses: pending, contacted, closed.",
+          summary:
+            "Building an internal triage dashboard for inquiries, statuses: pending, contacted, closed.",
           estimatedMinutes: 25,
           blocks: buildLessonBlocks({
             problemHeading: "Lost Customer Leads in Cluttered Inboxes",
-            scenarioTitle: "Workplace Scenario: The KES 2.5M Solar Quote Lost in Spam",
+            scenarioTitle:
+              "Workplace Scenario: The KES 2.5M Solar Quote Lost in Spam",
             scenarioText:
               "Apex Rift Engineering was receiving 15 website inquiries a week. The form simply sent an email to info@apexrift.co.ke. Due to email spam filters and two staff members replying to the same customer with conflicting prices, a KES 2,500,000 commercial inquiry from a flower farm sat unanswered for two weeks until the customer went to a competitor.",
             conceptHeading: "The State Machine for Lead Triage",
@@ -1977,8 +2091,10 @@ adminApi.get("/leads", requireRole("staff"), async (c) => {
     </tr>
   );
 }`,
-            comparisonWeak: "Dumping inquiries into an unmonitored shared email inbox with no status tracking.",
-            comparisonStrong: "Building a staff triage table with status dropdowns, direct WhatsApp dispatch links, and audit notes.",
+            comparisonWeak:
+              "Dumping inquiries into an unmonitored shared email inbox with no status tracking.",
+            comparisonStrong:
+              "Building a staff triage table with status dropdowns, direct WhatsApp dispatch links, and audit notes.",
             exerciseTitle: "Draft a Lead Status Transition Matrix",
             exerciseText:
               "Define the validation rules for transitioning a lead from `site_survey_scheduled` to `quoted` (must require survey completion date and estimated capacity).",
@@ -2006,7 +2122,8 @@ adminApi.get("/leads", requireRole("staff"), async (c) => {
           id: "c5-m2-l3",
           slug: "2-3",
           title: "Secure media and document uploads to cloud storage",
-          summary: "Presigned URLs, file size limits, image MIME type validation, S3/Neon object storage.",
+          summary:
+            "Presigned URLs, file size limits, image MIME type validation, S3/Neon object storage.",
           estimatedMinutes: 25,
           blocks: buildLessonBlocks({
             problemHeading: "Crashing the Server with Direct File Uploads",
@@ -2039,8 +2156,10 @@ async function uploadProjectPhoto(file: File): Promise<string> {
 
   return publicUrl;
 }`,
-            comparisonWeak: "Uploading multi-megabyte files directly through server memory, causing crashes and buffer overflows.",
-            comparisonStrong: "Validating MIME types and offloading uploads directly to cloud storage using presigned URLs.",
+            comparisonWeak:
+              "Uploading multi-megabyte files directly through server memory, causing crashes and buffer overflows.",
+            comparisonStrong:
+              "Validating MIME types and offloading uploads directly to cloud storage using presigned URLs.",
             exerciseTitle: "Author an Upload Validation Guard",
             exerciseText:
               "Write a server-side route handler that validates file size (<5MB) and MIME type (`image/jpeg`, `image/webp`) before returning a presigned URL.",
@@ -2068,11 +2187,14 @@ async function uploadProjectPhoto(file: File): Promise<string> {
           id: "c5-m2-l4",
           slug: "2-4",
           title: "Environment configuration and secrets management (.env)",
-          summary: ".env.local vs production secrets, protecting DATABASE_URL and API tokens.",
+          summary:
+            ".env.local vs production secrets, protecting DATABASE_URL and API tokens.",
           estimatedMinutes: 25,
           blocks: buildLessonBlocks({
-            problemHeading: "Accidental Public Commits of Production Database Keys",
-            scenarioTitle: "Workplace Scenario: The Leaked Neon Database URL on GitHub",
+            problemHeading:
+              "Accidental Public Commits of Production Database Keys",
+            scenarioTitle:
+              "Workplace Scenario: The Leaked Neon Database URL on GitHub",
             scenarioText:
               "A developer commits code to a public GitHub repository. They forgot to add `.env` to `.gitignore`. Within 4 minutes, an automated scanner bot detected the Neon PostgreSQL connection string, logged into the database, dropped all tables, and left a ransom note demanding 0.5 Bitcoin.",
             conceptHeading: "Strict Environment Variable Discipline",
@@ -2097,9 +2219,12 @@ export function getEnv() {
   }
   return result.data;
 }`,
-            comparisonWeak: "Hardcoding connection strings in source files or committing `.env` files to git.",
-            comparisonStrong: "Validating environment variables with Zod on server boot and managing secrets via cloud dashboards.",
-            exerciseTitle: "Author a .env.example Template and Validation Schema",
+            comparisonWeak:
+              "Hardcoding connection strings in source files or committing `.env` files to git.",
+            comparisonStrong:
+              "Validating environment variables with Zod on server boot and managing secrets via cloud dashboards.",
+            exerciseTitle:
+              "Author a .env.example Template and Validation Schema",
             exerciseText:
               "Write an authoritative `.env.example` file and matching Zod validator for a web app requiring `DATABASE_URL`, `MPESA_CONSUMER_KEY`, and `PORT`.",
             checklistItems: [
@@ -2153,22 +2278,26 @@ export const courseC6: CanonicalCourse = {
     "Author clear client handover manuals and administrator maintenance guides.",
   ],
   prerequisites: "Forms, Content Management, and Persistent Data (Course C5).",
-  targetAudience: "Web professionals, technical leads, and full-stack builders.",
+  targetAudience:
+    "Web professionals, technical leads, and full-stack builders.",
   modules: [
     {
       id: "c6-m1",
       title: "Quality Assurance & Audits",
-      description: "Automated test suites, mobile performance, and search verification.",
+      description:
+        "Automated test suites, mobile performance, and search verification.",
       lessons: [
         {
           id: "c6-m1-l1",
           slug: "1-1",
           title: "Automated unit and user journey testing with Vitest",
-          summary: "Testing form submission, calculation logic, rendering states.",
+          summary:
+            "Testing form submission, calculation logic, rendering states.",
           estimatedMinutes: 25,
           blocks: buildLessonBlocks({
             problemHeading: "Manual Testing Fatigue and Regression Bugs",
-            scenarioTitle: "Workplace Scenario: The Broken Enquiry Form on Launch Day",
+            scenarioTitle:
+              "Workplace Scenario: The Broken Enquiry Form on Launch Day",
             scenarioText:
               "An agency builds a custom solar sizing calculator. Every time the developer changes a button style, they manually open Chrome, fill out five form fields, and click submit. After doing this 30 times, they get tired and stop testing. On launch day, an edge case with zero-billing inputs causes a divide-by-zero crash that prevents all users from requesting quotes.",
             conceptHeading: "The Vitest Testing Pyramid",
@@ -2202,8 +2331,10 @@ describe("Kenyan Phone Number Formatting", () => {
     expect(formatKenyanPhone("0812345678")).toBeNull();
   });
 });`,
-            comparisonWeak: "Relying purely on manual clicking and hoping changes didn't break untouched features.",
-            comparisonStrong: "Writing fast Vitest test suites that run automatically in CI before any code is deployed.",
+            comparisonWeak:
+              "Relying purely on manual clicking and hoping changes didn't break untouched features.",
+            comparisonStrong:
+              "Writing fast Vitest test suites that run automatically in CI before any code is deployed.",
             exerciseTitle: "Write Vitest Tests for a Quotation Calculator",
             exerciseText:
               "Write 3 Vitest tests verifying an inverter sizing function: normal capacity, minimum floor limit, and over-capacity warning.",
@@ -2230,8 +2361,10 @@ describe("Kenyan Phone Number Formatting", () => {
         {
           id: "c6-m1-l2",
           slug: "1-2",
-          title: "Cross-device mobile audits and WCAG accessibility verification",
-          summary: "Testing on 360px screen widths, keyboard navigation, contrast checks, Lighthouse audits.",
+          title:
+            "Cross-device mobile audits and WCAG accessibility verification",
+          summary:
+            "Testing on 360px screen widths, keyboard navigation, contrast checks, Lighthouse audits.",
           estimatedMinutes: 25,
           blocks: buildLessonBlocks({
             problemHeading: "The 3G Latency Shock and Unreachable Buttons",
@@ -2253,8 +2386,10 @@ describe("Kenyan Phone Number Formatting", () => {
 [x] Cross-Device Mobile Verification:
     - 360px viewport tested: Zero horizontal overflow.
     - Tap targets: All buttons exceed 44x44px.`,
-            comparisonWeak: "Testing only on desktop monitors with high-speed fiber internet and ignoring mobile latency.",
-            comparisonStrong: "Conducting Lighthouse mobile audits, throttling networks to 3G, and verifying WCAG AA keyboard access.",
+            comparisonWeak:
+              "Testing only on desktop monitors with high-speed fiber internet and ignoring mobile latency.",
+            comparisonStrong:
+              "Conducting Lighthouse mobile audits, throttling networks to 3G, and verifying WCAG AA keyboard access.",
             exerciseTitle: "Execute a Chrome DevTools Mobile Audit",
             exerciseText:
               "Audit a web page using Chrome DevTools with 3G throttling enabled. Identify two performance bottlenecks and write fixes.",
@@ -2281,12 +2416,16 @@ describe("Kenyan Phone Number Formatting", () => {
         {
           id: "c6-m1-l3",
           slug: "1-3",
-          title: "Search engine preview cards, social metadata, and structured data",
-          summary: "Validating Twitter/WhatsApp link previews, JSON-LD Organization schema.",
+          title:
+            "Search engine preview cards, social metadata, and structured data",
+          summary:
+            "Validating Twitter/WhatsApp link previews, JSON-LD Organization schema.",
           estimatedMinutes: 25,
           blocks: buildLessonBlocks({
-            problemHeading: "Missing Google Business Cards and Inaccurate Snippets",
-            scenarioTitle: "Workplace Scenario: Searching for Apex Rift on Google",
+            problemHeading:
+              "Missing Google Business Cards and Inaccurate Snippets",
+            scenarioTitle:
+              "Workplace Scenario: Searching for Apex Rift on Google",
             scenarioText:
               "A prospective client searches Google for 'Solar cold storage Nakuru'. Apex Rift Engineering has a live website, but Google shows a generic description: 'Home. Click here to read more.' Meanwhile, a competitor with Schema.org JSON-LD appears at the top with a rich knowledge card showing their phone number, operating hours, and customer reviews.",
             conceptHeading: "Schema.org JSON-LD and Search Snippets",
@@ -2317,9 +2456,12 @@ describe("Kenyan Phone Number Formatting", () => {
   "priceRange": "KES 50,000 - KES 10,000,000"
 }
 </script>`,
-            comparisonWeak: "Relying on default HTML title tags and omitting structured Schema.org data.",
-            comparisonStrong: "Injecting validated Schema.org JSON-LD structured data and testing with Google's Rich Results tool.",
-            exerciseTitle: "Author a Schema.org Block for an Eldoret Cooperative",
+            comparisonWeak:
+              "Relying on default HTML title tags and omitting structured Schema.org data.",
+            comparisonStrong:
+              "Injecting validated Schema.org JSON-LD structured data and testing with Google's Rich Results tool.",
+            exerciseTitle:
+              "Author a Schema.org Block for an Eldoret Cooperative",
             exerciseText:
               "Write a complete Schema.org JSON-LD snippet for an agricultural supply cooperative in Eldoret, specifying address, phone, and services.",
             checklistItems: [
@@ -2347,13 +2489,15 @@ describe("Kenyan Phone Number Formatting", () => {
     {
       id: "c6-m2",
       title: "Production & Operations",
-      description: "Cloud deployments, client handover manuals, and maintenance runbooks.",
+      description:
+        "Cloud deployments, client handover manuals, and maintenance runbooks.",
       lessons: [
         {
           id: "c6-m2-l1",
           slug: "2-1",
           title: "Cloud deployment, preview branches, and custom domains",
-          summary: "Deploying to Cloudflare / Vercel / Railway, SSL certificates, DNS CNAME records.",
+          summary:
+            "Deploying to Cloudflare / Vercel / Railway, SSL certificates, DNS CNAME records.",
           estimatedMinutes: 25,
           blocks: buildLessonBlocks({
             problemHeading: "Downtime and Broken DNS Records During Launch",
@@ -2370,8 +2514,10 @@ describe("Kenyan Phone Number Formatting", () => {
 | CNAME | www | apexrift.pages.dev | Automatic | Directs www subdomain to preview build |
 | TXT | _dmarc | v=DMARC1; p=none; | Automatic | Protects corporate email deliverability |
 | MX | @ | mail.apexrift.co.ke | Automatic | Preserves existing business email |`,
-            comparisonWeak: "Manually copying files via FTP or making unverified DNS changes directly in production.",
-            comparisonStrong: "Using git-connected CI/CD preview branches for client review and verifying DNS records systematically.",
+            comparisonWeak:
+              "Manually copying files via FTP or making unverified DNS changes directly in production.",
+            comparisonStrong:
+              "Using git-connected CI/CD preview branches for client review and verifying DNS records systematically.",
             exerciseTitle: "Draft a DNS Launch Plan",
             exerciseText:
               "Write a 5-step DNS migration checklist for moving an existing `.co.ke` domain to a new Cloudflare/Vercel host without disrupting corporate emails.",
@@ -2399,11 +2545,13 @@ describe("Kenyan Phone Number Formatting", () => {
           id: "c6-m2-l2",
           slug: "2-2",
           title: "Writing client handover manuals and editorial guides",
-          summary: "Creating markdown documentation for non-technical clients, password storage, update procedures.",
+          summary:
+            "Creating markdown documentation for non-technical clients, password storage, update procedures.",
           estimatedMinutes: 25,
           blocks: buildLessonBlocks({
             problemHeading: "The Panicked Post-Launch Support Calls",
-            scenarioTitle: "Workplace Scenario: 'How Do I Change the Phone Number?'",
+            scenarioTitle:
+              "Workplace Scenario: 'How Do I Change the Phone Number?'",
             scenarioText:
               "Three days after launching the website, the agency receives eight phone calls from the client's office manager: 'Where do the customer quotes go? How do I add a new project photo? What is the password for the database?' The developers are interrupted constantly because no handover manual was written.",
             conceptHeading: "The Client Operations & Handover Manual",
@@ -2425,8 +2573,10 @@ Date: October 2026 | Version: 1.0
 - Hosting Provider: Cloudflare Pages (Auto-renews annually)
 - Domain Registrar: Safaricom Domains (Expires: 12 Nov 2027)
 - Technical Support Agency: support@rauell.systems`,
-            comparisonWeak: "Handing over a website with a verbal 'Let us know if you have questions' and zero documentation.",
-            comparisonStrong: "Delivering a comprehensive, jargon-free Client Operations Manual covering daily workflows and support contacts.",
+            comparisonWeak:
+              "Handing over a website with a verbal 'Let us know if you have questions' and zero documentation.",
+            comparisonStrong:
+              "Delivering a comprehensive, jargon-free Client Operations Manual covering daily workflows and support contacts.",
             exerciseTitle: "Author a 1-Page Non-Technical Staff Guide",
             exerciseText:
               "Write a 1-page guide for a non-technical receptionist explaining how to log into the staff portal and export monthly customer inquiries to Excel.",
@@ -2453,8 +2603,10 @@ Date: October 2026 | Version: 1.0
         {
           id: "c6-m2-l3",
           slug: "2-3",
-          title: "Backups, logging, health monitoring, and maintenance runbooks",
-          summary: "Automated database snapshots, error tracking with Sentry/logs, uptime monitoring.",
+          title:
+            "Backups, logging, health monitoring, and maintenance runbooks",
+          summary:
+            "Automated database snapshots, error tracking with Sentry/logs, uptime monitoring.",
           estimatedMinutes: 25,
           blocks: buildLessonBlocks({
             problemHeading: "Silent Outages and Unrecoverable Database Loss",
@@ -2483,8 +2635,10 @@ Date: October 2026 | Version: 1.0
 4. STEP 4: Client Communication & Post-Mortem
    - Notify client coordinator with estimated recovery time.
    - After resolution, document root cause in POST_MORTEM.md and add automated test to prevent recurrence.`,
-            comparisonWeak: "Having zero uptime alerts, no test restores, and panicking when an outage occurs.",
-            comparisonStrong: "Setting up 60-second health monitors, automated database snapshots, and a documented Incident Runbook.",
+            comparisonWeak:
+              "Having zero uptime alerts, no test restores, and panicking when an outage occurs.",
+            comparisonStrong:
+              "Setting up 60-second health monitors, automated database snapshots, and a documented Incident Runbook.",
             exerciseTitle: "Draft an Incident Response Runbook",
             exerciseText:
               "Write a 4-step Incident Response Runbook for handling an expired SSL certificate on a live client website.",

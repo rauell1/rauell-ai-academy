@@ -1,5 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, ArrowRight, Clock, CheckCircle2, BookOpen, Lock } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Clock,
+  CheckCircle2,
+  BookOpen,
+  Lock,
+} from "lucide-react";
 import {
   courses as staticCourses,
   pathways as staticPathways,
@@ -39,50 +46,50 @@ type ApiPathwayDetail = {
 function PathwayDetail() {
   const { pathwaySlug } = Route.useParams();
   const { data: session } = authClient.useSession();
-  const { data: pathway, loading, error } = useApi<ApiPathwayDetail>(
-    `/pathways/${pathwaySlug}`,
-  );
+  const {
+    data: pathway,
+    loading,
+    error,
+  } = useApi<ApiPathwayDetail>(`/pathways/${pathwaySlug}`);
 
   const canonical = getPathwayBySlug(pathwaySlug);
   const staticFound = staticPathways.find((p) => p.slug === pathwaySlug);
 
   const fallbackCourses: PathwayCourse[] = canonical
-    ? (
-        canonical.courseSlugs
-          .map((cSlug, idx): PathwayCourse | null => {
-            const found = canonicalCourses.find(
-              (c) => c.slug === cSlug || (c.aliases && c.aliases.includes(cSlug)),
-            );
-            if (!found) return null;
-            return {
-              id: found.slug,
-              slug: found.slug,
-              title: found.title,
-              summary: found.summary || found.description,
-              level: found.level,
-              estimatedMinutes: found.estimatedMinutes,
-              skills: found.outcomes || [],
-              learningOutcomes: found.outcomes || [],
-              isRequired: true,
-              sortOrder: idx,
-            };
-          })
-          .filter((c): c is PathwayCourse => c !== null)
-      )
+    ? canonical.courseSlugs
+        .map((cSlug, idx): PathwayCourse | null => {
+          const found = canonicalCourses.find(
+            (c) => c.slug === cSlug || (c.aliases && c.aliases.includes(cSlug)),
+          );
+          if (!found) return null;
+          return {
+            id: found.slug,
+            slug: found.slug,
+            title: found.title,
+            summary: found.summary || found.description,
+            level: found.level,
+            estimatedMinutes: found.estimatedMinutes,
+            skills: found.outcomes || [],
+            learningOutcomes: found.outcomes || [],
+            isRequired: true,
+            sortOrder: idx,
+          };
+        })
+        .filter((c): c is PathwayCourse => c !== null)
     : staticFound
-    ? staticCourses.slice(0, staticFound.courses || 3).map((sc, idx) => ({
-        id: sc.slug,
-        slug: sc.slug,
-        title: sc.title,
-        summary: sc.description,
-        level: sc.level,
-        estimatedMinutes: 240,
-        skills: sc.outcomes || [],
-        learningOutcomes: sc.outcomes || [],
-        isRequired: true,
-        sortOrder: idx,
-      }))
-    : [];
+      ? staticCourses.slice(0, staticFound.courses || 3).map((sc, idx) => ({
+          id: sc.slug,
+          slug: sc.slug,
+          title: sc.title,
+          summary: sc.description,
+          level: sc.level,
+          estimatedMinutes: 240,
+          skills: sc.outcomes || [],
+          learningOutcomes: sc.outcomes || [],
+          isRequired: true,
+          sortOrder: idx,
+        }))
+      : [];
 
   const fallbackDetail: ApiPathwayDetail | null = canonical
     ? {
@@ -93,23 +100,29 @@ function PathwayDetail() {
         courses: fallbackCourses,
       }
     : staticFound
-    ? {
-        id: staticFound.slug,
-        slug: staticFound.slug,
-        title: staticFound.title,
-        description: staticFound.copy,
-        courses: fallbackCourses,
-      }
-    : null;
+      ? {
+          id: staticFound.slug,
+          slug: staticFound.slug,
+          title: staticFound.title,
+          description: staticFound.copy,
+          courses: fallbackCourses,
+        }
+      : null;
 
   const activePathway =
-    pathway && pathway.title && Array.isArray(pathway.courses) && pathway.courses.length > 0
+    pathway &&
+    pathway.title &&
+    Array.isArray(pathway.courses) &&
+    pathway.courses.length > 0
       ? pathway
       : fallbackDetail;
 
   if (loading && !activePathway)
     return (
-      <div className="mx-auto max-w-4xl px-5 py-20 text-center text-ink/50" role="status">
+      <div
+        className="mx-auto max-w-4xl px-5 py-20 text-center text-ink/50"
+        role="status"
+      >
         <p className="font-display text-xl font-bold">Loading pathway...</p>
       </div>
     );
@@ -131,7 +144,9 @@ function PathwayDetail() {
       </div>
     );
 
-  const courseList = Array.isArray(activePathway.courses) ? activePathway.courses : [];
+  const courseList = Array.isArray(activePathway.courses)
+    ? activePathway.courses
+    : [];
   const totalMinutes = courseList.reduce(
     (sum, c) => sum + (c.estimatedMinutes || 0),
     0,
@@ -191,11 +206,15 @@ function PathwayDetail() {
                 {/* Content */}
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-3">
-                    <span className="eyebrow text-leaf">{course.level || "Beginner"}</span>
+                    <span className="eyebrow text-leaf">
+                      {course.level || "Beginner"}
+                    </span>
                     <span className="text-xs text-ink/40">·</span>
                     <span className="flex items-center gap-1 text-xs text-ink/50">
                       <Clock className="h-3 w-3" />
-                      {courseHours > 0 ? `${courseHours} hr` : `${courseMinutes} min`}
+                      {courseHours > 0
+                        ? `${courseHours} hr`
+                        : `${courseMinutes} min`}
                     </span>
                     {!course.isRequired && (
                       <span className="rounded-full border border-ink/15 px-2 py-0.5 text-[10px] font-bold text-ink/40">
@@ -288,7 +307,10 @@ function PathwayDetail() {
               </div>
               <ul className="mt-4 grid gap-3 sm:grid-cols-2">
                 {canonical.capstoneRubric.map((item, idx) => (
-                  <li key={idx} className="flex items-start gap-2.5 text-sm text-ink/80">
+                  <li
+                    key={idx}
+                    className="flex items-start gap-2.5 text-sm text-ink/80"
+                  >
                     <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-leaf" />
                     <span>{item}</span>
                   </li>
@@ -299,17 +321,23 @@ function PathwayDetail() {
             {/* Learner Profile & Exit Skills */}
             <div className="grid gap-8 md:grid-cols-2">
               <div className="rounded-2xl border border-ink/10 bg-white p-6 shadow-sm">
-                <h3 className="font-display text-lg font-bold text-ink">Intended Learner & Prerequisites</h3>
+                <h3 className="font-display text-lg font-bold text-ink">
+                  Intended Learner & Prerequisites
+                </h3>
                 <p className="mt-3 text-sm leading-6 text-ink/70">
-                  <strong className="text-ink">Target Audience:</strong> {canonical.intendedLearner}
+                  <strong className="text-ink">Target Audience:</strong>{" "}
+                  {canonical.intendedLearner}
                 </p>
                 <p className="mt-3 text-sm leading-6 text-ink/70">
-                  <strong className="text-ink">Entry Requirements:</strong> {canonical.entryRequirements}
+                  <strong className="text-ink">Entry Requirements:</strong>{" "}
+                  {canonical.entryRequirements}
                 </p>
               </div>
 
               <div className="rounded-2xl border border-ink/10 bg-white p-6 shadow-sm">
-                <h3 className="font-display text-lg font-bold text-ink">Observable Exit Skills</h3>
+                <h3 className="font-display text-lg font-bold text-ink">
+                  Observable Exit Skills
+                </h3>
                 <ul className="mt-3 space-y-2 text-sm text-ink/75">
                   {canonical.exitSkills.map((skill, idx) => (
                     <li key={idx} className="flex items-start gap-2">

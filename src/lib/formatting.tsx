@@ -1,11 +1,16 @@
 import React from "react";
 
-export function renderInlineFormatting(text: string, isUser = false): React.ReactNode[] {
+export function renderInlineFormatting(
+  text: string,
+  isUser = false,
+): React.ReactNode[] {
   if (!text) return [];
 
   // Match **bold**, `code`, or *italic*
   // Non-greedy matching within a line
-  const tokens = text.split(/(\*\*[\s\S]+?\*\*|`[\s\S]+?`|\*[^\s*][\s\S]*?[^\s*]\*)/g);
+  const tokens = text.split(
+    /(\*\*[\s\S]+?\*\*|`[\s\S]+?`|\*[^\s*][\s\S]*?[^\s*]\*)/g,
+  );
 
   return tokens.map((token, i) => {
     if (token.startsWith("**") && token.endsWith("**") && token.length >= 4) {

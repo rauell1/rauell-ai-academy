@@ -39,9 +39,12 @@ function Editor() {
     return (
       <section className="mx-auto max-w-2xl px-5 py-24 text-center">
         <p className="eyebrow text-red-600">Access Restricted</p>
-        <h1 className="font-display mt-3 text-3xl font-bold">Administrator Access Required</h1>
+        <h1 className="font-display mt-3 text-3xl font-bold">
+          Administrator Access Required
+        </h1>
         <p className="mt-4 text-sm leading-6 text-ink/70">
-          Editing course curriculum and module structures requires Administrator privileges.
+          Editing course curriculum and module structures requires Administrator
+          privileges.
         </p>
         <Link
           to="/my-learning"
@@ -85,9 +88,17 @@ function Editor() {
   }
 
   if (query.loading)
-    return <div className="p-10" role="status">Loading editor…</div>;
+    return (
+      <div className="p-10" role="status">
+        Loading editor…
+      </div>
+    );
   if (query.error || !query.data)
-    return <div className="p-10" role="alert">{query.error}</div>;
+    return (
+      <div className="p-10" role="alert">
+        {query.error}
+      </div>
+    );
 
   const course = query.data;
 
@@ -114,10 +125,20 @@ function Editor() {
           }}
           className="rounded-xl border border-ink/15 bg-white px-4 py-3 text-sm font-bold"
         >
-          <option value="" disabled>Change state</option>
-          {["in_review","changes_requested","approved","published","archived","draft","retired"].map(
-            (x) => <option key={x}>{x}</option>,
-          )}
+          <option value="" disabled>
+            Change state
+          </option>
+          {[
+            "in_review",
+            "changes_requested",
+            "approved",
+            "published",
+            "archived",
+            "draft",
+            "retired",
+          ].map((x) => (
+            <option key={x}>{x}</option>
+          ))}
         </select>
       </div>
 
@@ -136,7 +157,9 @@ function Editor() {
         {course.modules.map((module) => (
           <div key={module.id} className="card p-6">
             <div className="flex items-start justify-between gap-3">
-              <h2 className="font-display text-2xl font-bold">{module.title}</h2>
+              <h2 className="font-display text-2xl font-bold">
+                {module.title}
+              </h2>
             </div>
 
             <div className="mt-5 space-y-3">
@@ -157,7 +180,9 @@ function Editor() {
             </div>
 
             <LessonForm
-              onSave={(body) => post(`/admin/modules/${module.id}/lessons`, body)}
+              onSave={(body) =>
+                post(`/admin/modules/${module.id}/lessons`, body)
+              }
               order={module.lessons.length}
             />
           </div>
@@ -348,15 +373,27 @@ function BlockConfigFields({ type }: { type: BlockType }) {
         <>
           <label className="text-xs font-bold">
             Image URL
-            <input name="config.url" placeholder="https://…" className={fieldClass} />
+            <input
+              name="config.url"
+              placeholder="https://…"
+              className={fieldClass}
+            />
           </label>
           <label className="text-xs font-bold">
             Alt text
-            <input name="config.alt" placeholder="Describe the image" className={fieldClass} />
+            <input
+              name="config.alt"
+              placeholder="Describe the image"
+              className={fieldClass}
+            />
           </label>
           <label className="text-xs font-bold">
             Caption
-            <input name="config.caption" placeholder="Optional caption" className={fieldClass} />
+            <input
+              name="config.caption"
+              placeholder="Optional caption"
+              className={fieldClass}
+            />
           </label>
         </>
       );
@@ -365,11 +402,19 @@ function BlockConfigFields({ type }: { type: BlockType }) {
         <>
           <label className="text-xs font-bold">
             Video URL (YouTube, Vimeo, or direct)
-            <input name="config.url" placeholder="https://youtube.com/watch?v=…" className={fieldClass} />
+            <input
+              name="config.url"
+              placeholder="https://youtube.com/watch?v=…"
+              className={fieldClass}
+            />
           </label>
           <label className="text-xs font-bold">
             Caption
-            <input name="config.caption" placeholder="Optional caption" className={fieldClass} />
+            <input
+              name="config.caption"
+              placeholder="Optional caption"
+              className={fieldClass}
+            />
           </label>
         </>
       );
@@ -378,11 +423,19 @@ function BlockConfigFields({ type }: { type: BlockType }) {
         <>
           <label className="text-xs font-bold">
             Audio URL
-            <input name="config.url" placeholder="https://…/audio.mp3" className={fieldClass} />
+            <input
+              name="config.url"
+              placeholder="https://…/audio.mp3"
+              className={fieldClass}
+            />
           </label>
           <label className="text-xs font-bold">
             Caption
-            <input name="config.caption" placeholder="Optional caption" className={fieldClass} />
+            <input
+              name="config.caption"
+              placeholder="Optional caption"
+              className={fieldClass}
+            />
           </label>
         </>
       );
@@ -390,7 +443,11 @@ function BlockConfigFields({ type }: { type: BlockType }) {
       return (
         <label className="text-xs font-bold">
           Language
-          <input name="config.language" placeholder="javascript, python, bash…" className={fieldClass} />
+          <input
+            name="config.language"
+            placeholder="javascript, python, bash…"
+            className={fieldClass}
+          />
         </label>
       );
     case "download":
@@ -398,15 +455,27 @@ function BlockConfigFields({ type }: { type: BlockType }) {
         <>
           <label className="text-xs font-bold">
             File URL
-            <input name="config.url" placeholder="https://…" className={fieldClass} />
+            <input
+              name="config.url"
+              placeholder="https://…"
+              className={fieldClass}
+            />
           </label>
           <label className="text-xs font-bold">
             Filename
-            <input name="config.filename" placeholder="document.pdf" className={fieldClass} />
+            <input
+              name="config.filename"
+              placeholder="document.pdf"
+              className={fieldClass}
+            />
           </label>
           <label className="text-xs font-bold">
             File size (optional)
-            <input name="config.size" placeholder="2.4 MB" className={fieldClass} />
+            <input
+              name="config.size"
+              placeholder="2.4 MB"
+              className={fieldClass}
+            />
           </label>
         </>
       );
@@ -427,7 +496,11 @@ function BlockConfigFields({ type }: { type: BlockType }) {
         <>
           <label className="text-xs font-bold">
             Question
-            <input name="config.question" placeholder="What is…?" className={fieldClass} />
+            <input
+              name="config.question"
+              placeholder="What is…?"
+              className={fieldClass}
+            />
           </label>
           <label className="text-xs font-bold">
             Options (one per line)
@@ -450,7 +523,11 @@ function BlockConfigFields({ type }: { type: BlockType }) {
           </label>
           <label className="text-xs font-bold">
             Explanation (shown after answer)
-            <textarea name="config.explanation" rows={2} className={fieldClass} />
+            <textarea
+              name="config.explanation"
+              rows={2}
+              className={fieldClass}
+            />
           </label>
         </>
       );
@@ -459,7 +536,10 @@ function BlockConfigFields({ type }: { type: BlockType }) {
   }
 }
 
-function parseBlockConfig(type: BlockType, form: FormData): Record<string, unknown> {
+function parseBlockConfig(
+  type: BlockType,
+  form: FormData,
+): Record<string, unknown> {
   const config: Record<string, unknown> = {};
   for (const [key, value] of form.entries()) {
     if (!key.startsWith("config.")) continue;
@@ -469,9 +549,15 @@ function parseBlockConfig(type: BlockType, form: FormData): Record<string, unkno
     if (field === "level") config.level = Number(val);
     else if (field === "correctIndex") config.correctIndex = Number(val) - 1;
     else if (field === "items")
-      config.items = val.split("\n").filter(Boolean).map((t) => ({ text: t.trim() }));
+      config.items = val
+        .split("\n")
+        .filter(Boolean)
+        .map((t) => ({ text: t.trim() }));
     else if (field === "options")
-      config.options = val.split("\n").filter(Boolean).map((t) => t.trim());
+      config.options = val
+        .split("\n")
+        .filter(Boolean)
+        .map((t) => t.trim());
     else config[field] = val;
   }
   return config;
@@ -577,7 +663,11 @@ function EditBlockForm({
     >
       <div className="flex items-center justify-between">
         <span className="text-xs font-bold text-leaf">Editing block</span>
-        <button type="button" onClick={onCancel} className="text-ink/40 hover:text-ink">
+        <button
+          type="button"
+          onClick={onCancel}
+          className="text-ink/40 hover:text-ink"
+        >
           <X className="h-4 w-4" />
         </button>
       </div>
@@ -673,15 +763,27 @@ function EditConfigFields({
         <>
           <label className="text-xs font-bold">
             Image URL
-            <input name="config.url" defaultValue={String(config.url ?? "")} className={fieldClass} />
+            <input
+              name="config.url"
+              defaultValue={String(config.url ?? "")}
+              className={fieldClass}
+            />
           </label>
           <label className="text-xs font-bold">
             Alt text
-            <input name="config.alt" defaultValue={String(config.alt ?? "")} className={fieldClass} />
+            <input
+              name="config.alt"
+              defaultValue={String(config.alt ?? "")}
+              className={fieldClass}
+            />
           </label>
           <label className="text-xs font-bold">
             Caption
-            <input name="config.caption" defaultValue={String(config.caption ?? "")} className={fieldClass} />
+            <input
+              name="config.caption"
+              defaultValue={String(config.caption ?? "")}
+              className={fieldClass}
+            />
           </label>
         </>
       );
@@ -690,11 +792,19 @@ function EditConfigFields({
         <>
           <label className="text-xs font-bold">
             Video URL
-            <input name="config.url" defaultValue={String(config.url ?? "")} className={fieldClass} />
+            <input
+              name="config.url"
+              defaultValue={String(config.url ?? "")}
+              className={fieldClass}
+            />
           </label>
           <label className="text-xs font-bold">
             Caption
-            <input name="config.caption" defaultValue={String(config.caption ?? "")} className={fieldClass} />
+            <input
+              name="config.caption"
+              defaultValue={String(config.caption ?? "")}
+              className={fieldClass}
+            />
           </label>
         </>
       );
@@ -703,11 +813,19 @@ function EditConfigFields({
         <>
           <label className="text-xs font-bold">
             Audio URL
-            <input name="config.url" defaultValue={String(config.url ?? "")} className={fieldClass} />
+            <input
+              name="config.url"
+              defaultValue={String(config.url ?? "")}
+              className={fieldClass}
+            />
           </label>
           <label className="text-xs font-bold">
             Caption
-            <input name="config.caption" defaultValue={String(config.caption ?? "")} className={fieldClass} />
+            <input
+              name="config.caption"
+              defaultValue={String(config.caption ?? "")}
+              className={fieldClass}
+            />
           </label>
         </>
       );
@@ -715,7 +833,11 @@ function EditConfigFields({
       return (
         <label className="text-xs font-bold">
           Language
-          <input name="config.language" defaultValue={String(config.language ?? "")} className={fieldClass} />
+          <input
+            name="config.language"
+            defaultValue={String(config.language ?? "")}
+            className={fieldClass}
+          />
         </label>
       );
     case "download":
@@ -723,15 +845,27 @@ function EditConfigFields({
         <>
           <label className="text-xs font-bold">
             File URL
-            <input name="config.url" defaultValue={String(config.url ?? "")} className={fieldClass} />
+            <input
+              name="config.url"
+              defaultValue={String(config.url ?? "")}
+              className={fieldClass}
+            />
           </label>
           <label className="text-xs font-bold">
             Filename
-            <input name="config.filename" defaultValue={String(config.filename ?? "")} className={fieldClass} />
+            <input
+              name="config.filename"
+              defaultValue={String(config.filename ?? "")}
+              className={fieldClass}
+            />
           </label>
           <label className="text-xs font-bold">
             File size
-            <input name="config.size" defaultValue={String(config.size ?? "")} className={fieldClass} />
+            <input
+              name="config.size"
+              defaultValue={String(config.size ?? "")}
+              className={fieldClass}
+            />
           </label>
         </>
       );
@@ -751,24 +885,45 @@ function EditConfigFields({
     }
     case "knowledge_check": {
       const opts = (config.options as string[] | undefined) ?? [];
-      const ci = typeof config.correctIndex === "number" ? config.correctIndex + 1 : 1;
+      const ci =
+        typeof config.correctIndex === "number" ? config.correctIndex + 1 : 1;
       return (
         <>
           <label className="text-xs font-bold">
             Question
-            <input name="config.question" defaultValue={String(config.question ?? "")} className={fieldClass} />
+            <input
+              name="config.question"
+              defaultValue={String(config.question ?? "")}
+              className={fieldClass}
+            />
           </label>
           <label className="text-xs font-bold">
             Options (one per line)
-            <textarea name="config.options" rows={4} defaultValue={opts.join("\n")} className={fieldClass} />
+            <textarea
+              name="config.options"
+              rows={4}
+              defaultValue={opts.join("\n")}
+              className={fieldClass}
+            />
           </label>
           <label className="text-xs font-bold">
             Correct option number
-            <input name="config.correctIndex" type="number" min="1" defaultValue={ci} className={fieldClass} />
+            <input
+              name="config.correctIndex"
+              type="number"
+              min="1"
+              defaultValue={ci}
+              className={fieldClass}
+            />
           </label>
           <label className="text-xs font-bold">
             Explanation
-            <textarea name="config.explanation" rows={2} defaultValue={String(config.explanation ?? "")} className={fieldClass} />
+            <textarea
+              name="config.explanation"
+              rows={2}
+              defaultValue={String(config.explanation ?? "")}
+              className={fieldClass}
+            />
           </label>
         </>
       );

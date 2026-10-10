@@ -61,7 +61,9 @@ async function uploadVideos() {
   }
 
   if (DRY_RUN) {
-    console.info(`DRY RUN — found ${files.length} files, no uploads will happen.\n`);
+    console.info(
+      `DRY RUN — found ${files.length} files, no uploads will happen.\n`,
+    );
     files.forEach((f) => {
       const mb = (statSync(join(VIDEO_DIR, f)).size / 1024 / 1024).toFixed(1);
       console.info(`  ${f} (${mb} MB)`);
@@ -92,7 +94,9 @@ async function uploadVideos() {
     const sizeMB = (statSync(filePath).size / 1024 / 1024).toFixed(1);
     const key = `${PREFIX}/${file}`;
 
-    process.stdout.write(`  [${success + failed + 1}/${files.length}] ${file} (${sizeMB} MB)… `);
+    process.stdout.write(
+      `  [${success + failed + 1}/${files.length}] ${file} (${sizeMB} MB)… `,
+    );
 
     try {
       const upload = new Upload({
@@ -110,7 +114,9 @@ async function uploadVideos() {
       upload.on("httpUploadProgress", (p) => {
         if (p.loaded && p.total) {
           const pct = Math.round((p.loaded / p.total) * 100);
-          process.stdout.write(`\r  [${success + failed + 1}/${files.length}] ${file} (${sizeMB} MB)… ${pct}%`);
+          process.stdout.write(
+            `\r  [${success + failed + 1}/${files.length}] ${file} (${sizeMB} MB)… ${pct}%`,
+          );
         }
       });
 
@@ -120,7 +126,9 @@ async function uploadVideos() {
       console.info(`\r  [${success}/${files.length}] ${file} (${sizeMB} MB) ✓`);
     } catch (e) {
       failed++;
-      console.error(`\n  FAILED: ${e instanceof Error ? e.message : String(e)}`);
+      console.error(
+        `\n  FAILED: ${e instanceof Error ? e.message : String(e)}`,
+      );
     }
   }
 

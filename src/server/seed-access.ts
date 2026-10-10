@@ -81,7 +81,9 @@ export async function seedAccessControl() {
     const role = roleRows.find((row) => row.key === roleKey);
     if (!role) continue;
     for (const permissionKey of grants) {
-      const permission = permissionRows.find((row) => row.key === permissionKey);
+      const permission = permissionRows.find(
+        (row) => row.key === permissionKey,
+      );
       if (!permission) continue;
       await db
         .insert(rolePermissions)

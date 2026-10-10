@@ -22,9 +22,20 @@ function videoUrl(file: string): string {
 }
 
 type BlockType =
-  | "heading" | "paragraph" | "callout" | "key_takeaway" | "citation"
-  | "rich_text" | "checklist" | "knowledge_check" | "video" | "image"
-  | "audio" | "code" | "table" | "download";
+  | "heading"
+  | "paragraph"
+  | "callout"
+  | "key_takeaway"
+  | "citation"
+  | "rich_text"
+  | "checklist"
+  | "knowledge_check"
+  | "video"
+  | "image"
+  | "audio"
+  | "code"
+  | "table"
+  | "download";
 
 type BlockDef = {
   type: BlockType;
@@ -57,14 +68,15 @@ const curriculum: ModuleDef[] = [
         title: "Make.com Introduction & Setup",
         summary:
           "Get oriented with Make.com and set up your account ready for your first automation.",
-        videoFile: "Make.com Course. Intro. Day 0. How to Learn Business Process Automation..mp4",
+        videoFile:
+          "Make.com Course. Intro. Day 0. How to Learn Business Process Automation..mp4",
         estimatedMinutes: 15,
         blocks: [
           {
             type: "paragraph",
             title: "What is Make.com?",
             plainText:
-              "Make.com (formerly Integromat) is a visual automation platform that lets you connect apps and automate workflows without writing code. Instead of building integrations from scratch, you drag and drop \"modules\" — pre-built connectors for over 1,500 apps — and wire them together into a \"scenario\". A scenario runs automatically based on a trigger: a new email arrives, a form is submitted, or a schedule fires.",
+              'Make.com (formerly Integromat) is a visual automation platform that lets you connect apps and automate workflows without writing code. Instead of building integrations from scratch, you drag and drop "modules" — pre-built connectors for over 1,500 apps — and wire them together into a "scenario". A scenario runs automatically based on a trigger: a new email arrives, a form is submitted, or a schedule fires.',
           },
           {
             type: "callout",
@@ -76,7 +88,7 @@ const curriculum: ModuleDef[] = [
             type: "key_takeaway",
             title: "Key concept: scenarios vs. Zaps vs. workflows",
             plainText:
-              "Make calls its automations \"scenarios\". Zapier calls them \"Zaps\". n8n calls them \"workflows\". They are the same idea — a trigger that starts a chain of actions. The difference is in how complex logic is handled: Make and n8n let you build loops, branches, and error routes inside a single scenario; Zapier keeps each Zap linear by default.",
+              'Make calls its automations "scenarios". Zapier calls them "Zaps". n8n calls them "workflows". They are the same idea — a trigger that starts a chain of actions. The difference is in how complex logic is handled: Make and n8n let you build loops, branches, and error routes inside a single scenario; Zapier keeps each Zap linear by default.',
           },
           {
             type: "checklist",
@@ -94,22 +106,22 @@ const curriculum: ModuleDef[] = [
       },
       {
         title: "Your First Scenario",
-        summary:
-          "Build and run your first end-to-end automation in Make.com.",
-        videoFile: "Make.com Course. Day 1.  Make essentials, JSON, Arrays and Collections, Data Structures..mp4",
+        summary: "Build and run your first end-to-end automation in Make.com.",
+        videoFile:
+          "Make.com Course. Day 1.  Make essentials, JSON, Arrays and Collections, Data Structures..mp4",
         estimatedMinutes: 20,
         blocks: [
           {
             type: "paragraph",
             title: "How a scenario runs",
             plainText:
-              "Every Make scenario starts with a trigger module — the event that kicks everything off. The trigger watches for something (a new row in a Google Sheet, a new email, an incoming webhook) and passes its data as a \"bundle\" to the next module. Each subsequent module receives that bundle, does something with it (sends a message, creates a record, transforms data), and passes results forward. Make runs the whole chain once per bundle, or once per item if the bundle contains a list.",
+              'Every Make scenario starts with a trigger module — the event that kicks everything off. The trigger watches for something (a new row in a Google Sheet, a new email, an incoming webhook) and passes its data as a "bundle" to the next module. Each subsequent module receives that bundle, does something with it (sends a message, creates a record, transforms data), and passes results forward. Make runs the whole chain once per bundle, or once per item if the bundle contains a list.',
           },
           {
             type: "callout",
             title: "Try this: your first live scenario",
             plainText:
-              "Build a scenario that watches a Google Sheet for new rows and sends yourself a Slack (or email) message with the row contents. This covers the core Make pattern: trigger → map fields → action. Run it manually first with \"Run once\", then activate it on a schedule.",
+              'Build a scenario that watches a Google Sheet for new rows and sends yourself a Slack (or email) message with the row contents. This covers the core Make pattern: trigger → map fields → action. Run it manually first with "Run once", then activate it on a schedule.',
           },
           {
             type: "key_takeaway",
@@ -123,7 +135,8 @@ const curriculum: ModuleDef[] = [
         title: "Filters & Routers",
         summary:
           "Control data flow with conditional filters and multi-branch routers.",
-        videoFile: "Make.com Course. Day 2. Make Fundamentals. Canvas, Variables, Functions..mp4",
+        videoFile:
+          "Make.com Course. Day 2. Make Fundamentals. Canvas, Variables, Functions..mp4",
         estimatedMinutes: 20,
         blocks: [
           {
@@ -136,7 +149,7 @@ const curriculum: ModuleDef[] = [
             type: "callout",
             title: "Practice: priority-based email router",
             plainText:
-              "Build a scenario triggered by new emails. Add a router with two branches: branch 1 filters for emails containing \"URGENT\" in the subject and creates a high-priority task; branch 2 handles everything else and adds a row to a log sheet. This pattern — one trigger, multiple branches — handles the majority of real-world automation logic.",
+              'Build a scenario triggered by new emails. Add a router with two branches: branch 1 filters for emails containing "URGENT" in the subject and creates a high-priority task; branch 2 handles everything else and adds a row to a log sheet. This pattern — one trigger, multiple branches — handles the majority of real-world automation logic.',
           },
           {
             type: "key_takeaway",
@@ -150,7 +163,8 @@ const curriculum: ModuleDef[] = [
         title: "Iterators & Aggregators",
         summary:
           "Process lists of items one by one and combine results back together.",
-        videoFile: "Make.com Course. Day 3. Connection, Webhooks, and Filters..mp4",
+        videoFile:
+          "Make.com Course. Day 3. Connection, Webhooks, and Filters..mp4",
         estimatedMinutes: 20,
         blocks: [
           {
@@ -163,7 +177,7 @@ const curriculum: ModuleDef[] = [
             type: "callout",
             title: "Practice: process a sheet row by row",
             plainText:
-              "Create a scenario that reads all rows from a Google Sheet (use the \"Search Rows\" module), passes the result through an iterator, transforms each row (e.g. format a date, concatenate fields), then aggregates the transformed rows into a single CSV text and emails it to yourself.",
+              'Create a scenario that reads all rows from a Google Sheet (use the "Search Rows" module), passes the result through an iterator, transforms each row (e.g. format a date, concatenate fields), then aggregates the transformed rows into a single CSV text and emails it to yourself.',
           },
           {
             type: "key_takeaway",
@@ -204,7 +218,8 @@ const curriculum: ModuleDef[] = [
         title: "Error Handling",
         summary:
           "Build resilient automations that recover gracefully from failures.",
-        videoFile: "Make.com Full Course. Day 5.  How Work With Data In Complex Arrays..mp4",
+        videoFile:
+          "Make.com Full Course. Day 5.  How Work With Data In Complex Arrays..mp4",
         estimatedMinutes: 20,
         blocks: [
           {
@@ -229,9 +244,9 @@ const curriculum: ModuleDef[] = [
       },
       {
         title: "Scheduling & Data Stores",
-        summary:
-          "Run automations on a schedule and persist data between runs.",
-        videoFile: "Make.com Full Course. Day 6. How To Group And Aggregate The Data.(1).mp4",
+        summary: "Run automations on a schedule and persist data between runs.",
+        videoFile:
+          "Make.com Full Course. Day 6. How To Group And Aggregate The Data.(1).mp4",
         estimatedMinutes: 20,
         blocks: [
           {
@@ -248,7 +263,8 @@ const curriculum: ModuleDef[] = [
           },
           {
             type: "key_takeaway",
-            title: "Data Stores replace the need for a database in simple automations",
+            title:
+              "Data Stores replace the need for a database in simple automations",
             plainText:
               "For small volumes (under a few thousand records), Data Stores handle state management without spinning up a separate database. For larger volumes or complex queries, connect Make to an external database via the MySQL, PostgreSQL, or Airtable modules.",
           },
@@ -258,7 +274,8 @@ const curriculum: ModuleDef[] = [
         title: "Advanced Scenarios",
         summary:
           "Combine everything you've learned into complex, production-ready automations.",
-        videoFile: "Make.com Full Course. Day 7. How to Make HTTP Requests. HTTP Module..mp4",
+        videoFile:
+          "Make.com Full Course. Day 7. How to Make HTTP Requests. HTTP Module..mp4",
         estimatedMinutes: 25,
         blocks: [
           {
@@ -332,7 +349,8 @@ const curriculum: ModuleDef[] = [
         title: "n8n: Your First Workflow",
         summary:
           "Install n8n (or use n8n Cloud) and build your first automated workflow.",
-        videoFile: "YTDown.com_YouTube_Day-1-of-30-Day-AI-Automation-Challenge_Media_0V1GdbMYrEI_006_144p.mp4",
+        videoFile:
+          "YTDown.com_YouTube_Day-1-of-30-Day-AI-Automation-Challenge_Media_0V1GdbMYrEI_006_144p.mp4",
         estimatedMinutes: 20,
         blocks: [
           {
@@ -345,13 +363,13 @@ const curriculum: ModuleDef[] = [
             type: "callout",
             title: "Get started: n8n Cloud free trial",
             plainText:
-              "Sign up for n8n Cloud at n8n.io for a free trial — no server setup needed. Once inside, click \"New Workflow\", add a Manual Trigger node, then add a Set node to define some test data, and finally add an HTTP Request node to call a public API. Execute the workflow and inspect each node's output panel. This three-node pattern is the foundation of almost every n8n workflow.",
+              'Sign up for n8n Cloud at n8n.io for a free trial — no server setup needed. Once inside, click "New Workflow", add a Manual Trigger node, then add a Set node to define some test data, and finally add an HTTP Request node to call a public API. Execute the workflow and inspect each node\'s output panel. This three-node pattern is the foundation of almost every n8n workflow.',
           },
           {
             type: "key_takeaway",
             title: "n8n nodes vs. Make modules",
             plainText:
-              "n8n calls its building blocks \"nodes\"; Make calls them \"modules\". The concepts are identical. Where n8n shines over Make is the Code node — drop in a JavaScript function to transform data any way you need, without leaving the workflow editor.",
+              'n8n calls its building blocks "nodes"; Make calls them "modules". The concepts are identical. Where n8n shines over Make is the Code node — drop in a JavaScript function to transform data any way you need, without leaving the workflow editor.',
           },
         ],
       },
@@ -359,7 +377,8 @@ const curriculum: ModuleDef[] = [
         title: "n8n: Connecting Services",
         summary:
           "Connect n8n to external services using credentials and pre-built integrations.",
-        videoFile: "YTDown.com_YouTube_Day-2of-30-Day-AI-Automation-Challenge_Media_qqAgJMPp0Jw_002_720p.mp4",
+        videoFile:
+          "YTDown.com_YouTube_Day-2of-30-Day-AI-Automation-Challenge_Media_qqAgJMPp0Jw_002_720p.mp4",
         estimatedMinutes: 20,
         blocks: [
           {
@@ -386,7 +405,8 @@ const curriculum: ModuleDef[] = [
         title: "n8n: External Integrations",
         summary:
           "Build workflows that communicate with third-party services and handle real-world data.",
-        videoFile: "YTDown.com_YouTube_Day-3-of-30-Day-AI-Automation-Challenge_Media_Kxdgh_HPeDM_004_360p.mp4",
+        videoFile:
+          "YTDown.com_YouTube_Day-3-of-30-Day-AI-Automation-Challenge_Media_Kxdgh_HPeDM_004_360p.mp4",
         estimatedMinutes: 20,
         blocks: [
           {
@@ -413,14 +433,15 @@ const curriculum: ModuleDef[] = [
         title: "n8n: JSON & Data Transformation",
         summary:
           "Manipulate and reshape data using n8n's expression engine and Code node.",
-        videoFile: "YTDown.com_YouTube_n8n-for-Beginners-Understanding-JSON-&-D_Media_AAAp7wXT1fY_003_480p.mp4",
+        videoFile:
+          "YTDown.com_YouTube_n8n-for-Beginners-Understanding-JSON-&-D_Media_AAAp7wXT1fY_003_480p.mp4",
         estimatedMinutes: 25,
         blocks: [
           {
             type: "paragraph",
             title: "Understanding n8n's data model",
             plainText:
-              "Every n8n node passes data as an array of items. Each item is a JSON object with a \"json\" key containing your actual data. When a trigger fires and returns five records, n8n creates five items and processes them in parallel through the rest of the workflow. Understanding this structure matters the moment you need to merge items, access data from a previous node mid-workflow, or debug why a node is producing unexpected output.",
+              'Every n8n node passes data as an array of items. Each item is a JSON object with a "json" key containing your actual data. When a trigger fires and returns five records, n8n creates five items and processes them in parallel through the rest of the workflow. Understanding this structure matters the moment you need to merge items, access data from a previous node mid-workflow, or debug why a node is producing unexpected output.',
           },
           {
             type: "paragraph",
@@ -438,7 +459,7 @@ const curriculum: ModuleDef[] = [
             type: "key_takeaway",
             title: "n8n items vs. JSON arrays",
             plainText:
-              "Don't confuse n8n items with JSON arrays. If a node returns a JSON array inside one item, downstream nodes see one item — not many. Use the \"Split Out\" node to turn a JSON array property into multiple n8n items so the rest of the workflow processes each one individually.",
+              'Don\'t confuse n8n items with JSON arrays. If a node returns a JSON array inside one item, downstream nodes see one item — not many. Use the "Split Out" node to turn a JSON array property into multiple n8n items so the rest of the workflow processes each one individually.',
           },
         ],
       },
@@ -446,7 +467,8 @@ const curriculum: ModuleDef[] = [
         title: "n8n: Variables & Expressions",
         summary:
           "Use variables and dynamic expressions to build flexible, reusable workflows.",
-        videoFile: "Your First n8n Workflow Variables & Expressions Explained (Day 5 of 30-Day AI Automation Challenge).mp4",
+        videoFile:
+          "Your First n8n Workflow Variables & Expressions Explained (Day 5 of 30-Day AI Automation Challenge).mp4",
         estimatedMinutes: 20,
         blocks: [
           {
@@ -473,7 +495,8 @@ const curriculum: ModuleDef[] = [
         title: "n8n: Build an AI Chatbot",
         summary:
           "Create a conversational AI chatbot workflow using n8n's AI nodes.",
-        videoFile: "Build Your OWN AI Chatbot from SCRATCH in n8n (Day 6 of 30-Day AI Automation Challenge).mp4",
+        videoFile:
+          "Build Your OWN AI Chatbot from SCRATCH in n8n (Day 6 of 30-Day AI Automation Challenge).mp4",
         estimatedMinutes: 25,
         blocks: [
           {
@@ -507,7 +530,8 @@ const curriculum: ModuleDef[] = [
         title: "Zapier for Beginners",
         summary:
           "Learn the fundamentals of Zapier and create your first working Zap.",
-        videoFile: "Zapier AI Tutorial for Beginners_ Automation Made Simple 🟧.mp4",
+        videoFile:
+          "Zapier AI Tutorial for Beginners_ Automation Made Simple 🟧.mp4",
         estimatedMinutes: 30,
         blocks: [
           {
@@ -532,7 +556,7 @@ const curriculum: ModuleDef[] = [
             type: "key_takeaway",
             title: "Zapier tasks vs. Make operations",
             plainText:
-              "Zapier bills per \"task\" — one successful action execution. Make bills per \"operation\" — one module execution. A Zap with three action steps consumes three tasks per run. A Make scenario with three modules consumes three operations per run. At low volumes they are comparable; at high volumes Make is usually cheaper.",
+              'Zapier bills per "task" — one successful action execution. Make bills per "operation" — one module execution. A Zap with three action steps consumes three tasks per run. A Make scenario with three modules consumes three operations per run. At low volumes they are comparable; at high volumes Make is usually cheaper.',
           },
           {
             type: "checklist",
@@ -566,7 +590,7 @@ const curriculum: ModuleDef[] = [
             type: "callout",
             title: "Practice: lead routing Zap with Paths",
             plainText:
-              "Build a Zap triggered by a form submission (use Zapier's built-in \"Webhooks by Zapier\" catch URL or a Typeform/Jotform trigger). Add a Paths step with three branches: Path A for leads from a specific region, Path B for leads above a certain budget threshold, Path C for everything else. Each path creates a task in a different project board column or sends to a different team Slack channel. This is the Paths pattern that powers most CRM and sales automations.",
+              'Build a Zap triggered by a form submission (use Zapier\'s built-in "Webhooks by Zapier" catch URL or a Typeform/Jotform trigger). Add a Paths step with three branches: Path A for leads from a specific region, Path B for leads above a certain budget threshold, Path C for everything else. Each path creates a task in a different project board column or sends to a different team Slack channel. This is the Paths pattern that powers most CRM and sales automations.',
           },
           {
             type: "paragraph",
@@ -593,7 +617,8 @@ const curriculum: ModuleDef[] = [
         title: "Build an AI Customer Support Agent",
         summary:
           "Create an AI agent that handles customer support queries automatically — end to end.",
-        videoFile: "YTDown.com_YouTube_Building-an-AI-Agent-for-Customer-Suppor_Media_jX8k42jOc3M_004_360p.mp4",
+        videoFile:
+          "YTDown.com_YouTube_Building-an-AI-Agent-for-Customer-Suppor_Media_jX8k42jOc3M_004_360p.mp4",
         estimatedMinutes: 35,
         blocks: [
           {
@@ -626,20 +651,21 @@ const curriculum: ModuleDef[] = [
         title: "How to Build & Sell AI Agents",
         summary:
           "Turn your automation skills into a product or service that generates real income.",
-        videoFile: "How_to_Build_Sell_AI_Automations_Ultimate_Beginner_s_Guide_720p.mp4",
+        videoFile:
+          "How_to_Build_Sell_AI_Automations_Ultimate_Beginner_s_Guide_720p.mp4",
         estimatedMinutes: 40,
         blocks: [
           {
             type: "paragraph",
             title: "The AI agent opportunity",
             plainText:
-              "Most small and medium businesses know they should be using AI automation but don't have the skills to build it. This gap is a real market. A developer or no-code builder who can design, build, and maintain an AI agent workflow for a client can charge anywhere from a few hundred dollars for a simple automation to tens of thousands for a complex multi-agent system. The key is packaging your skills as a clear service with a defined outcome, not a vague \"AI consulting\" offer.",
+              'Most small and medium businesses know they should be using AI automation but don\'t have the skills to build it. This gap is a real market. A developer or no-code builder who can design, build, and maintain an AI agent workflow for a client can charge anywhere from a few hundred dollars for a simple automation to tens of thousands for a complex multi-agent system. The key is packaging your skills as a clear service with a defined outcome, not a vague "AI consulting" offer.',
           },
           {
             type: "paragraph",
             title: "The build-to-sell approach",
             plainText:
-              "The most effective way to sell AI agents is to build a specific solution for a specific industry before you have a client. A working demo of a \"restaurant reservation and follow-up agent\" is easier to sell to a restaurant owner than a proposal for one. Build a vertical-specific agent, record a walkthrough video, post it where your target buyers spend time, and sell the setup as a service with an optional monthly maintenance retainer. This productised approach scales better than custom consulting.",
+              'The most effective way to sell AI agents is to build a specific solution for a specific industry before you have a client. A working demo of a "restaurant reservation and follow-up agent" is easier to sell to a restaurant owner than a proposal for one. Build a vertical-specific agent, record a walkthrough video, post it where your target buyers spend time, and sell the setup as a service with an optional monthly maintenance retainer. This productised approach scales better than custom consulting.',
           },
           {
             type: "callout",
