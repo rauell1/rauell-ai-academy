@@ -7,6 +7,8 @@ import {
   ChevronRight,
   Menu,
   X,
+  Maximize2,
+  Minimize2,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { apiRequest, type ApiCourse, type ApiModule, useApi } from "@/lib/api";
@@ -62,6 +64,7 @@ function LessonContent() {
   const courseQuery = useApi<ApiCourse>(`/courses/${courseSlug}`);
   const [mi, li] = lessonSlug.split("-").map(Number);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [focusMode, setFocusMode] = useState(false);
 
   // Static fallback if API course data is unavailable
   const canonicalCourse = getCourseBySlug(courseSlug);
@@ -331,19 +334,38 @@ function LessonContent() {
               <ArrowLeft className="h-4 w-4" />
               {course.title}
             </Link>
-            <button
-              onClick={() => setSidebarOpen((o) => !o)}
-              className="ml-auto rounded-lg p-1.5 text-white/65 transition hover:bg-white/10 hover:text-white lg:hidden"
-              aria-label="Toggle lesson navigation"
-              aria-expanded={sidebarOpen}
-              aria-controls="lesson-navigation"
-            >
-              {sidebarOpen ? (
-                <X className="h-5 w-5" />
-              ) : (
-                <Menu className="h-5 w-5" />
-              )}
-            </button>
+            
+            <div className="ml-auto flex items-center gap-3">
+              <button
+                onClick={() => setFocusMode((m) => !m)}
+                className="hidden items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-white/20 lg:flex"
+              >
+                {focusMode ? (
+                  <>
+                    <Minimize2 className="h-3.5 w-3.5" />
+                    Exit focus
+                  </>
+                ) : (
+                  <>
+                    <Maximize2 className="h-3.5 w-3.5" />
+                    Focus
+                  </>
+                )}
+              </button>
+              <button
+                onClick={() => setSidebarOpen((o) => !o)}
+                className="rounded-lg p-1.5 text-white/65 transition hover:bg-white/10 hover:text-white lg:hidden"
+                aria-label="Toggle lesson navigation"
+                aria-expanded={sidebarOpen}
+                aria-controls="lesson-navigation"
+              >
+                {sidebarOpen ? (
+                  <X className="h-5 w-5" />
+                ) : (
+                  <Menu className="h-5 w-5" />
+                )}
+              </button>
+            </div>
           </div>
         </div>
 
@@ -353,7 +375,7 @@ function LessonContent() {
             id="lesson-navigation"
             className={`${
               sidebarOpen ? "block" : "hidden"
-            } w-full shrink-0 border-b border-ink/10 bg-white lg:block lg:w-72 lg:border-b-0 lg:border-r`}
+            } ${focusMode ? "lg:hidden" : "lg:block"} w-full shrink-0 border-b border-ink/10 bg-white lg:w-72 lg:border-b-0 lg:border-r`}
           >
             <nav
               aria-label="Course lessons"
@@ -376,9 +398,14 @@ function LessonContent() {
           {/* Main content */}
           <div className="min-w-0 flex-1">
             <article className="mx-auto max-w-2xl px-6 py-12 lg:px-10">
-              <p className="eyebrow text-leaf">
-                Module {mi} · Lesson {li}
-              </p>
+              <nav aria-label="Breadcrumb" className="mb-6 flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-ink/50">
+                <Link to="/my-learning" className="hover:text-ink transition">My Learning</Link>
+                <ChevronRight className="h-3 w-3" />
+                <Link to="/courses/$courseSlug" params={{ courseSlug }} className="hover:text-ink transition">{course.title}</Link>
+                <ChevronRight className="h-3 w-3" />
+                <span className="text-leaf">Module {mi}</span>
+              </nav>
+              
               <h1 className="font-display mt-4 text-3xl font-bold text-ink md:text-4xl">
                 {lesson?.title ?? selected.title}
               </h1>

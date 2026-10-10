@@ -210,17 +210,29 @@ function DashboardContent({ data }: { data: DashboardData }) {
               <h3 className="font-display mt-3 text-2xl font-bold">
                 {item.title}
               </h3>
-              <div className="mt-5 h-2 rounded-full bg-ink/10">
-                <div
-                  className="h-full rounded-full bg-leaf"
-                  style={{
-                    width: `${(item.completionBasisPoints ?? 0) / 100}%`,
-                  }}
-                />
+              <div className="mt-5 flex items-center gap-4">
+                <div className="relative h-12 w-12 shrink-0">
+                  <svg className="h-full w-full -rotate-90" viewBox="0 0 36 36">
+                    <path
+                      className="fill-none stroke-ink/10"
+                      strokeWidth="3"
+                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    />
+                    <path
+                      className="fill-none stroke-leaf"
+                      strokeWidth="3"
+                      strokeDasharray={`${(item.completionBasisPoints ?? 0) / 100}, 100`}
+                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    />
+                  </svg>
+                  <div className="absolute inset-0 grid place-items-center">
+                    <span className="text-[10px] font-bold text-ink">
+                      {((item.completionBasisPoints ?? 0) / 100).toFixed(0)}%
+                    </span>
+                  </div>
+                </div>
+                <p className="text-xs font-semibold text-ink/60">Course progress</p>
               </div>
-              <p className="mt-2 text-xs text-ink/45">
-                {((item.completionBasisPoints ?? 0) / 100).toFixed(0)}% complete
-              </p>
               <div className="mt-5 flex flex-wrap items-center gap-4">
                 <Link
                   to="/courses/$courseSlug"

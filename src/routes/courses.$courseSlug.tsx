@@ -8,6 +8,7 @@ import {
   Layers3,
   Lock,
   PlayCircle,
+  Circle,
 } from "lucide-react";
 import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
@@ -299,14 +300,13 @@ function CourseContent() {
                         }}
                         className="group flex items-center gap-3 border-b border-ink/5 px-5 py-4 last:border-0 hover:bg-mint/10 transition"
                       >
-                        <PlayCircle className="h-4 w-4 text-ink/40 group-hover:text-leaf transition" />
+                        {progress.completed.has(lessonSlug) ? (
+                          <CheckCircle2 className="h-4 w-4 text-leaf transition" />
+                        ) : (
+                          <Circle className="h-4 w-4 text-ink/40 group-hover:text-leaf transition" />
+                        )}
                         <span className="text-sm font-semibold text-ink group-hover:text-ink">
                           {lesson.title}
-                          {progress.completed.has(lessonSlug) && (
-                            <span className="ml-2 text-xs text-leaf">
-                              Completed
-                            </span>
-                          )}
                         </span>
                         <ArrowRight className="ml-auto h-4 w-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition" />
                       </Link>
@@ -321,11 +321,6 @@ function CourseContent() {
                         <Lock className="h-4 w-4 text-ink/35 group-hover:text-leaf transition" />
                         <span className="text-sm font-semibold text-ink/75 group-hover:text-ink">
                           {lesson.title}
-                          {progress.completed.has(lessonSlug) && (
-                            <span className="ml-2 text-xs text-leaf">
-                              Completed
-                            </span>
-                          )}
                         </span>
                         <span className="ml-auto text-[11px] font-bold text-ink/40 group-hover:text-leaf flex items-center gap-1 transition">
                           Account required <ArrowRight className="h-3 w-3" />

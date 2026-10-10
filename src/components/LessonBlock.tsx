@@ -443,9 +443,10 @@ function KnowledgeCheck({
   const [revealed, setReveal] = useState(false);
   const isCorrect = selected === correctIndex;
   return (
-    <div className="rounded-2xl border border-ink/15 p-5">
+    <div className="card relative mt-6 overflow-hidden border border-ink/10 bg-white p-6 shadow-sm">
+      <div className="absolute left-0 top-0 h-full w-1.5 bg-leaf/60"></div>
       <p className="eyebrow mb-3 text-leaf">Knowledge check</p>
-      <p className="font-bold">{question}</p>
+      <p className="font-bold text-lg">{question}</p>
       <ul className="mt-4 space-y-2">
         {options.map((opt, i) => {
           let cls =
