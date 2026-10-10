@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { ACADEMY_BRAND } from "../lib/brand";
 
 const DEFAULT_DATABASE_URL =
   "postgresql://postgres:postgres@localhost:5432/rauell_academy";
@@ -19,9 +20,29 @@ const serverEnvSchema = z.object({
     .enum(["local", "preview", "production"])
     .default("production"),
   BETTER_AUTH_SECRET: z.string().min(16).default(DEFAULT_BETTER_AUTH_SECRET),
-  APP_ORIGIN: z.string().default("https://learn.rauell.systems"),
+  APP_ORIGIN: z
+    .string()
+    .url()
+    .refine(
+      (value) =>
+        ["http:", "https:"].includes(new URL(value).protocol) &&
+        !new URL(value).username &&
+        !new URL(value).password &&
+        new URL(value).pathname === "/" &&
+        !new URL(value).search &&
+        !new URL(value).hash,
+      "APP_ORIGIN must be an HTTP(S) origin without credentials, path, query, or fragment",
+    )
+    .default(ACADEMY_BRAND.origin),
   RESEND_API_KEY: z.string().startsWith("re_").optional(),
-  EMAIL_FROM: z.string().email().optional(),
+  EMAIL_FROM: z
+    .string()
+    .transform((value) => {
+      const formatted = value.match(/^[^<>\r\n]+<([^<>\r\n]+)>$/);
+      return formatted ? formatted[1].trim() : value.trim();
+    })
+    .pipe(z.string().email())
+    .optional(),
   BLOB_READ_WRITE_TOKEN: z.string().optional(),
   MAX_PROJECT_UPLOAD_BYTES: z.coerce
     .number()
@@ -31,7 +52,10 @@ const serverEnvSchema = z.object({
   NVIDIA_API_KEY: z.string().optional(),
   NVIDIA_API_KEY_1: z.string().optional(),
   NVIDIA_API_KEY_2: z.string().optional(),
-  NVIDIA_BASE_URL: z.string().url().default("https://integrate.api.nvidia.com/v1"),
+  NVIDIA_BASE_URL: z
+    .string()
+    .url()
+    .default("https://integrate.api.nvidia.com/v1"),
   NVIDIA_MODEL: z.string().default("meta/llama-3.2-90b-vision-instruct"),
   NVIDIA_MODEL_HEAVY: z.string().default("meta/llama-3.2-90b-vision-instruct"),
   NVIDIA_MODEL_LIGHT: z.string().default("meta/llama-3.2-11b-vision-instruct"),
@@ -49,8 +73,10 @@ export function getServerEnv(source: NodeJS.ProcessEnv = process.env) {
     const vercelHost =
       source.VERCEL_PROJECT_PRODUCTION_URL ||
       source.VERCEL_URL ||
-      "learn.rauell.systems";
-    origin = vercelHost.startsWith("http") ? vercelHost : `https://${vercelHost}`;
+      new URL(ACADEMY_BRAND.origin).host;
+    origin = vercelHost.startsWith("http")
+      ? vercelHost
+      : `https://${vercelHost}`;
   }
 
   const defaultDbEnv =

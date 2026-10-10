@@ -14,21 +14,32 @@ export const Route = createFileRoute("/forgot-password")({
 function ForgotPassword() {
   const [busy, setBusy] = useState(false);
   const [sent, setSent] = useState(false);
+  const [error, setError] = useState("");
   async function submit(e: SubmitEvent) {
     e.preventDefault();
     setBusy(true);
     const data = new FormData(e.currentTarget);
-    await authClient.requestPasswordReset({
-      email: String(data.get("email")),
-      redirectTo: "/reset-password",
-    });
-    setBusy(false);
-    setSent(true);
+    setError("");
+    try {
+      const result = await authClient.requestPasswordReset({
+        email: String(data.get("email")),
+        redirectTo: "/reset-password",
+      });
+      if (result.error)
+        setError("We could not process your reset request. Please try again.");
+      else setSent(true);
+    } catch {
+      setError(
+        "We could not connect to the Academy account service. Please try again.",
+      );
+    } finally {
+      setBusy(false);
+    }
   }
   return (
     <AuthCard
       title="Reset your password"
-      copy="Enter your email. If an account is eligible, we will send password reset instructions."
+      copy="Enter the email address for your Rauell AI Academy account to request a secure password reset link."
     >
       <form onSubmit={submit}>
         <label className="text-sm font-bold">
@@ -42,9 +53,10 @@ function ForgotPassword() {
           />
         </label>
         <FormStatus
+          error={error}
           success={
             sent
-              ? "If an eligible account exists, reset instructions have been sent."
+              ? "If an eligible account exists, look for a Rauell AI Academy email with reset instructions. Check your spam folder if needed."
               : undefined
           }
         />

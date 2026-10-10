@@ -30,7 +30,10 @@ export const auth = betterAuth({
       "http://localhost:5173",
       "http://localhost:3000",
     ];
-    if (origin && (origin.endsWith(".vercel.app") || origin.endsWith(".rauell.systems"))) {
+    if (
+      origin &&
+      (origin.endsWith(".vercel.app") || origin.endsWith(".rauell.systems"))
+    ) {
       return [...defaults, origin];
     }
     return defaults;
@@ -71,9 +74,15 @@ export const auth = betterAuth({
       try {
         await sendAuthEmail({
           to: user.email,
-          subject: "Reset your Rauell AI Academy password",
-          text: `Use this secure link to reset your password: ${url}\n\nIf you did not request this, you can ignore this message.`,
-          html: `<p>Use the secure link below to reset your Rauell AI Academy password.</p><p><a href="${url}">Reset password</a></p><p>If you did not request this, you can ignore this message.</p>`,
+          subject: "Reset your password",
+          title: "Reset your Academy password",
+          preview: "A secure link to reset your Rauell AI Academy password.",
+          paragraphs: [
+            "We received a request to reset the password for your Rauell AI Academy account. Use the secure link below to choose a new password.",
+          ],
+          action: { label: "Reset password", url },
+          notice:
+            "If you did not request a password reset, ignore this email. Your password will not change unless you complete the reset.",
         });
       } catch (err) {
         console.warn("Failed sending password reset email:", err);
@@ -87,9 +96,15 @@ export const auth = betterAuth({
       try {
         await sendAuthEmail({
           to: user.email,
-          subject: "Verify your Rauell AI Academy account",
-          text: `Verify your Academy email address: ${url}`,
-          html: `<p>Welcome to Rauell AI Academy.</p><p><a href="${url}">Verify your email address</a></p>`,
+          subject: "Verify your email address",
+          title: "Welcome to Rauell AI Academy",
+          preview: "Confirm the email address for your Academy account.",
+          paragraphs: [
+            "Confirm your email address using the secure link below. This helps us keep your Academy account and learning notifications connected to you.",
+          ],
+          action: { label: "Verify email address", url },
+          notice:
+            "If you did not create this account, ignore this email. Do not forward this verification link.",
         });
       } catch (err) {
         console.warn("Failed sending email verification:", err);

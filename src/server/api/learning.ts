@@ -6,6 +6,8 @@ import { completionBasisPoints } from "../../lib/progress";
 import { auth } from "../auth";
 import { getDb } from "../db";
 import { sendAuthEmail } from "../email";
+import { academyUrl } from "../../lib/brand";
+import { getServerEnv } from "../env";
 import {
   auditLogs,
   courseProgress,
@@ -257,7 +259,10 @@ learningApi.get("/courses/:slug", async (c) => {
 learningApi.get("/lessons/:id", async (c) => {
   const session = await sessionFor(c.req.raw.headers);
   if (!session) {
-    return c.json({ error: "Authentication required to access lesson content." }, 401);
+    return c.json(
+      { error: "Authentication required to access lesson content." },
+      401,
+    );
   }
   const db = getDb();
   const [lesson] = await db
@@ -329,9 +334,20 @@ learningApi.post("/courses/:courseId/enrol", async (c) => {
   await recalculate(row.id);
   await sendAuthEmail({
     to: session.user.email,
-    subject: `Enrolled in ${course.title}`,
-    text: `You are enrolled in ${course.title}. Continue at ${new URL(c.req.url).origin}/courses/${course.slug}`,
-    html: `<p>Your Academy enrolment is confirmed.</p><p><a href="${new URL(c.req.url).origin}/courses/${encodeURIComponent(course.slug)}">Continue learning</a></p>`,
+    subject: `Enrolment confirmed: ${course.title}`,
+    title: "Your next useful skill starts here",
+    preview: `Your enrolment in ${course.title} is confirmed.`,
+    paragraphs: [
+      `You are enrolled in ${course.title}.`,
+      "Open your course to review the learning outcomes and prerequisites, then start or continue your next lesson at your own pace.",
+    ],
+    action: {
+      label: "Open your course",
+      url: academyUrl(
+        `/courses/${encodeURIComponent(course.slug)}`,
+        getServerEnv().APP_ORIGIN,
+      ),
+    },
   });
   return c.json({ enrolment: row }, 201);
 });

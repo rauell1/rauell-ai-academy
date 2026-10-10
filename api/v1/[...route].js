@@ -32,6 +32,34 @@ import { drizzle } from "drizzle-orm/neon-http";
 
 // src/server/env.ts
 import { z } from "zod";
+
+// src/lib/brand.ts
+var ACADEMY_BRAND = {
+  name: "Rauell AI Academy",
+  tagline: "Practical AI learning. Build useful things. Prove they work.",
+  origin: "https://learn.rauell.systems",
+  logoPath: "/academy-logo.png",
+  hubUrl: "https://rauell.systems",
+  contactEmail: "contact@rauell.systems",
+  colors: {
+    navy: "#0b1830",
+    lime: "#c9f260",
+    paper: "#fdfcf8",
+    cream: "#f6f5ef"
+  }
+};
+function academyUrl(path, origin = ACADEMY_BRAND.origin) {
+  const base = new URL(origin);
+  if (!["https:", "http:"].includes(base.protocol) || base.username || base.password)
+    throw new Error(
+      "Academy origin must be an HTTP or HTTPS origin without credentials."
+    );
+  if (!path.startsWith("/") || path.startsWith("//") || path.includes("\\"))
+    throw new Error("Academy links must use a local absolute path.");
+  return new URL(path, base.origin).href;
+}
+
+// src/server/env.ts
 var DEFAULT_DATABASE_URL = "postgresql://postgres:postgres@localhost:5432/rauell_academy";
 var DEFAULT_BETTER_AUTH_SECRET = "placeholder-auth-secret-replace-with-real-env-var-in-production";
 var serverEnvSchema = z.object({
@@ -40,9 +68,15 @@ var serverEnvSchema = z.object({
   DATABASE_URL: z.string().url().startsWith("postgres").default(DEFAULT_DATABASE_URL),
   DATABASE_ENVIRONMENT: z.enum(["local", "preview", "production"]).default("production"),
   BETTER_AUTH_SECRET: z.string().min(16).default(DEFAULT_BETTER_AUTH_SECRET),
-  APP_ORIGIN: z.string().default("https://learn.rauell.systems"),
+  APP_ORIGIN: z.string().url().refine(
+    (value) => ["http:", "https:"].includes(new URL(value).protocol) && !new URL(value).username && !new URL(value).password && new URL(value).pathname === "/" && !new URL(value).search && !new URL(value).hash,
+    "APP_ORIGIN must be an HTTP(S) origin without credentials, path, query, or fragment"
+  ).default(ACADEMY_BRAND.origin),
   RESEND_API_KEY: z.string().startsWith("re_").optional(),
-  EMAIL_FROM: z.string().email().optional(),
+  EMAIL_FROM: z.string().transform((value) => {
+    const formatted = value.match(/^[^<>\r\n]+<([^<>\r\n]+)>$/);
+    return formatted ? formatted[1].trim() : value.trim();
+  }).pipe(z.string().email()).optional(),
   BLOB_READ_WRITE_TOKEN: z.string().optional(),
   MAX_PROJECT_UPLOAD_BYTES: z.coerce.number().int().positive().default(10 * 1024 * 1024),
   NVIDIA_API_KEY: z.string().optional(),
@@ -59,7 +93,7 @@ function getServerEnv(source = process.env) {
   const runtime = source.VERCEL_ENV ?? (source.NODE_ENV === "production" ? "production" : "development");
   let origin = source.APP_ORIGIN;
   if (!origin || runtime === "production" && origin.includes("localhost")) {
-    const vercelHost = source.VERCEL_PROJECT_PRODUCTION_URL || source.VERCEL_URL || "learn.rauell.systems";
+    const vercelHost = source.VERCEL_PROJECT_PRODUCTION_URL || source.VERCEL_URL || new URL(ACADEMY_BRAND.origin).host;
     origin = vercelHost.startsWith("http") ? vercelHost : `https://${vercelHost}`;
   }
   const defaultDbEnv = runtime === "preview" ? "preview" : runtime === "production" ? "production" : "local";
@@ -865,6 +899,56 @@ function getDb() {
 
 // src/server/email.ts
 import { Resend } from "resend";
+
+// src/server/email-template.ts
+function escapeEmailHtml(value) {
+  return value.replace(
+    /[&<>"']/g,
+    (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[character]
+  );
+}
+function renderAcademyEmail(message, origin) {
+  const home = academyUrl("/", origin);
+  const logo = academyUrl(ACADEMY_BRAND.logoPath, origin);
+  const action = new URL(message.action.url);
+  if (action.origin !== new URL(home).origin || action.username || action.password)
+    throw new Error(
+      "Email action must point to the configured Academy origin."
+    );
+  const subject = `${ACADEMY_BRAND.name} \u2014 ${message.subject.replace(/[\r\n]+/g, " ")}`;
+  const e = escapeEmailHtml;
+  const url = e(action.href);
+  const c = ACADEMY_BRAND.colors;
+  const html = `<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${e(subject)}</title></head>
+<body style="margin:0;padding:0;background:${c.cream};font-family:Arial,Helvetica,sans-serif;color:${c.navy}">
+<div style="display:none;max-height:0;overflow:hidden;opacity:0">${e(message.preview)}</div>
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:${c.cream}"><tr><td align="center" style="padding:24px 12px">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:600px;background:${c.paper};border:1px solid #d9ddd4;border-radius:16px">
+<tr><td style="padding:28px 24px;border-bottom:4px solid ${c.lime}"><a href="${e(home)}" style="color:${c.navy};text-decoration:none"><img src="${e(logo)}" alt="${e(ACADEMY_BRAND.name)} logo" width="56" height="56" style="display:block;border:0;margin-bottom:12px"><strong style="font-size:22px">${e(ACADEMY_BRAND.name)}</strong></a><p style="margin:8px 0 0;font-size:13px;line-height:20px;color:#536070">${e(ACADEMY_BRAND.tagline)}</p></td></tr>
+<tr><td style="padding:28px 24px"><h1 style="margin:0 0 20px;font-size:26px;line-height:34px">${e(message.title)}</h1>
+${message.paragraphs.map((paragraph) => `<p style="margin:0 0 16px;font-size:16px;line-height:26px;white-space:pre-line">${e(paragraph)}</p>`).join("\n")}
+<table role="presentation" cellspacing="0" cellpadding="0" style="margin:24px 0"><tr><td bgcolor="${c.navy}" style="border-radius:24px"><a href="${url}" style="display:inline-block;padding:14px 24px;border:1px solid ${c.navy};border-radius:24px;color:#ffffff;text-decoration:none;font-size:15px;font-weight:bold">${e(message.action.label)}</a></td></tr></table>
+<p style="font-size:13px;line-height:22px;color:#536070">If the button does not work, copy and paste this link into your browser:<br><a href="${url}" style="color:${c.navy};word-break:break-all">${url}</a></p>
+${message.notice ? `<p style="margin-top:24px;padding:14px;background:${c.cream};font-size:13px;line-height:22px;color:#536070">${e(message.notice)}</p>` : ""}
+</td></tr><tr><td style="padding:24px;border-top:1px solid #d9ddd4;font-size:12px;line-height:20px;color:#536070"><strong>${e(ACADEMY_BRAND.name)}</strong><br>Part of the <a href="${ACADEMY_BRAND.hubUrl}" style="color:${c.navy}">Rauell Systems</a> ecosystem.<br><a href="${e(home)}" style="color:${c.navy}">Visit the Academy</a> \xB7 <a href="mailto:${ACADEMY_BRAND.contactEmail}" style="color:${c.navy}">Contact Rauell Systems</a><p style="margin:12px 0 0">This is an account or learning notification. Never share your password or secure account links.</p></td></tr>
+</table></td></tr></table></body></html>`;
+  const text2 = [
+    ACADEMY_BRAND.name,
+    ACADEMY_BRAND.tagline,
+    message.title,
+    ...message.paragraphs,
+    `${message.action.label}: ${action.href}`,
+    ...message.notice ? [message.notice] : [],
+    `Visit the Academy: ${home}`,
+    `Part of Rauell Systems: ${ACADEMY_BRAND.hubUrl}`,
+    `Contact Rauell Systems: ${ACADEMY_BRAND.contactEmail}`,
+    "Never share your password or secure account links."
+  ].join("\n\n");
+  return { subject, html, text: text2 };
+}
+
+// src/server/email.ts
 async function sendAuthEmail(message) {
   const env2 = getServerEnv();
   if (!env2.RESEND_API_KEY || !env2.EMAIL_FROM) {
@@ -874,13 +958,12 @@ async function sendAuthEmail(message) {
     return;
   }
   try {
+    const rendered = renderAcademyEmail(message, env2.APP_ORIGIN);
     const resend = new Resend(env2.RESEND_API_KEY);
     const result = await resend.emails.send({
-      from: env2.EMAIL_FROM,
+      from: `${ACADEMY_BRAND.name} <${env2.EMAIL_FROM}>`,
       to: message.to,
-      subject: message.subject,
-      text: message.text,
-      html: message.html
+      ...rendered
     });
     if (result.error) {
       console.warn("Transactional email delivery failed:", result.error);
@@ -947,11 +1030,14 @@ var auth = betterAuth({
       try {
         await sendAuthEmail({
           to: user.email,
-          subject: "Reset your Rauell AI Academy password",
-          text: `Use this secure link to reset your password: ${url}
-
-If you did not request this, you can ignore this message.`,
-          html: `<p>Use the secure link below to reset your Rauell AI Academy password.</p><p><a href="${url}">Reset password</a></p><p>If you did not request this, you can ignore this message.</p>`
+          subject: "Reset your password",
+          title: "Reset your Academy password",
+          preview: "A secure link to reset your Rauell AI Academy password.",
+          paragraphs: [
+            "We received a request to reset the password for your Rauell AI Academy account. Use the secure link below to choose a new password."
+          ],
+          action: { label: "Reset password", url },
+          notice: "If you did not request a password reset, ignore this email. Your password will not change unless you complete the reset."
         });
       } catch (err) {
         console.warn("Failed sending password reset email:", err);
@@ -965,9 +1051,14 @@ If you did not request this, you can ignore this message.`,
       try {
         await sendAuthEmail({
           to: user.email,
-          subject: "Verify your Rauell AI Academy account",
-          text: `Verify your Academy email address: ${url}`,
-          html: `<p>Welcome to Rauell AI Academy.</p><p><a href="${url}">Verify your email address</a></p>`
+          subject: "Verify your email address",
+          title: "Welcome to Rauell AI Academy",
+          preview: "Confirm the email address for your Academy account.",
+          paragraphs: [
+            "Confirm your email address using the secure link below. This helps us keep your Academy account and learning notifications connected to you."
+          ],
+          action: { label: "Verify email address", url },
+          notice: "If you did not create this account, ignore this email. Do not forward this verification link."
         });
       } catch (err) {
         console.warn("Failed sending email verification:", err);
@@ -1185,7 +1276,10 @@ learningApi.get("/courses/:slug", async (c) => {
 learningApi.get("/lessons/:id", async (c) => {
   const session = await sessionFor(c.req.raw.headers);
   if (!session) {
-    return c.json({ error: "Authentication required to access lesson content." }, 401);
+    return c.json(
+      { error: "Authentication required to access lesson content." },
+      401
+    );
   }
   const db2 = getDb();
   const [lesson] = await db2.select({
@@ -1239,9 +1333,20 @@ learningApi.post("/courses/:courseId/enrol", async (c) => {
   await recalculate(row.id);
   await sendAuthEmail({
     to: session.user.email,
-    subject: `Enrolled in ${course.title}`,
-    text: `You are enrolled in ${course.title}. Continue at ${new URL(c.req.url).origin}/courses/${course.slug}`,
-    html: `<p>Your Academy enrolment is confirmed.</p><p><a href="${new URL(c.req.url).origin}/courses/${encodeURIComponent(course.slug)}">Continue learning</a></p>`
+    subject: `Enrolment confirmed: ${course.title}`,
+    title: "Your next useful skill starts here",
+    preview: `Your enrolment in ${course.title} is confirmed.`,
+    paragraphs: [
+      `You are enrolled in ${course.title}.`,
+      "Open your course to review the learning outcomes and prerequisites, then start or continue your next lesson at your own pace."
+    ],
+    action: {
+      label: "Open your course",
+      url: academyUrl(
+        `/courses/${encodeURIComponent(course.slug)}`,
+        getServerEnv().APP_ORIGIN
+      )
+    }
   });
   return c.json({ enrolment: row }, 201);
 });
@@ -1888,7 +1993,11 @@ operationsApi.patch(
       c.req.raw.headers,
       PERMISSIONS.CONTENT_EDIT
     );
-    const [row] = await getDb().update(lessonBlocks).set({ ...c.req.valid("json"), updatedBy: session.user.id, updatedAt: /* @__PURE__ */ new Date() }).where(eq4(lessonBlocks.id, c.req.param("id"))).returning();
+    const [row] = await getDb().update(lessonBlocks).set({
+      ...c.req.valid("json"),
+      updatedBy: session.user.id,
+      updatedAt: /* @__PURE__ */ new Date()
+    }).where(eq4(lessonBlocks.id, c.req.param("id"))).returning();
     if (!row) return c.json({ error: "Block not found." }, 404);
     await audit(session.user.id, "lesson_block.edited", "lesson_block", row.id);
     return c.json({ block: row });
@@ -2273,9 +2382,18 @@ operationsApi.post(
     if (learner)
       await sendAuthEmail({
         to: learner.email,
-        subject: "Your Academy project has feedback",
-        text: `Your project review status is ${input.decision}. Feedback: ${input.feedback}`,
-        html: `<p>Your project review status is <strong>${input.decision}</strong>.</p><p>Sign in to the Academy to read instructor feedback.</p>`
+        subject: "Your project review is ready",
+        title: "Feedback for your Academy project",
+        preview: "Your instructor has reviewed your project submission.",
+        paragraphs: [
+          `Review decision: ${input.decision.replaceAll("_", " ")}.`,
+          `Instructor feedback: ${input.feedback}`,
+          "Open My learning and follow your project link to review the feedback and your next steps."
+        ],
+        action: {
+          label: "Open My learning",
+          url: academyUrl("/my-learning", getServerEnv().APP_ORIGIN)
+        }
       });
     return c.json({ status: input.decision });
   }
@@ -2356,12 +2474,21 @@ operationsApi.post("/courses/:id/certificate", async (c) => {
     set: { updatedAt: /* @__PURE__ */ new Date() }
   }).returning();
   await audit(session.user.id, "certificate.issued", "certificate", row.id);
-  const verifyUrl = `${new URL(c.req.url).origin}/verify/${row.certificateNumber}`;
+  const verifyUrl = academyUrl(
+    `/verify/${encodeURIComponent(row.certificateNumber)}`,
+    getServerEnv().APP_ORIGIN
+  );
   await sendAuthEmail({
     to: session.user.email,
-    subject: `Your ${course.title} certificate`,
-    text: `Your course is complete. Verify your certificate at ${verifyUrl}`,
-    html: `<p>Your Academy course completion certificate is ready.</p><p><a href="${verifyUrl}">Verify your certificate</a></p>`
+    subject: `Course completion: ${course.title}`,
+    title: "Your course completion certificate is ready",
+    preview: `Your course completion record for ${course.title} is available.`,
+    paragraphs: [
+      `You have met the completion requirements for ${course.title}.`,
+      `Certificate number: ${row.certificateNumber}.`,
+      "Use the link below to view the certificate's current status and verification details."
+    ],
+    action: { label: "View certificate verification", url: verifyUrl }
   });
   return c.json({ certificate: row });
 });
@@ -2386,7 +2513,10 @@ operationsApi.get("/verify/:number", async (c) => {
     result
   });
   if (!row) return c.json({ status: "not_found" }, 404);
-  const verificationUrl = `${new URL(c.req.url).origin}/verify/${encodeURIComponent(number)}`;
+  const verificationUrl = academyUrl(
+    `/verify/${encodeURIComponent(number)}`,
+    getServerEnv().APP_ORIGIN
+  );
   return c.json({
     ...row,
     verificationUrl,

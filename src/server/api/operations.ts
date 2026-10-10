@@ -7,6 +7,7 @@ import { del, getDownloadUrl, put } from "@vercel/blob";
 import { auth } from "../auth";
 import { getDb } from "../db";
 import { sendAuthEmail } from "../email";
+import { academyUrl } from "../../lib/brand";
 import { getServerEnv } from "../env";
 import {
   canIssueCertificate,
@@ -480,9 +481,12 @@ operationsApi.patch(
   "/admin/blocks/:id",
   zValidator(
     "json",
-    blockInput.partial().omit({ sortOrder: true }).extend({
-      sortOrder: z.number().int().min(0).optional(),
-    }),
+    blockInput
+      .partial()
+      .omit({ sortOrder: true })
+      .extend({
+        sortOrder: z.number().int().min(0).optional(),
+      }),
   ),
   async (c) => {
     const session = await requirePermission(
@@ -491,7 +495,11 @@ operationsApi.patch(
     );
     const [row] = await getDb()
       .update(lessonBlocks)
-      .set({ ...c.req.valid("json"), updatedBy: session.user.id, updatedAt: new Date() })
+      .set({
+        ...c.req.valid("json"),
+        updatedBy: session.user.id,
+        updatedAt: new Date(),
+      })
       .where(eq(lessonBlocks.id, c.req.param("id")))
       .returning();
     if (!row) return c.json({ error: "Block not found." }, 404);
@@ -1027,9 +1035,18 @@ operationsApi.post(
     if (learner)
       await sendAuthEmail({
         to: learner.email,
-        subject: "Your Academy project has feedback",
-        text: `Your project review status is ${input.decision}. Feedback: ${input.feedback}`,
-        html: `<p>Your project review status is <strong>${input.decision}</strong>.</p><p>Sign in to the Academy to read instructor feedback.</p>`,
+        subject: "Your project review is ready",
+        title: "Feedback for your Academy project",
+        preview: "Your instructor has reviewed your project submission.",
+        paragraphs: [
+          `Review decision: ${input.decision.replaceAll("_", " ")}.`,
+          `Instructor feedback: ${input.feedback}`,
+          "Open My learning and follow your project link to review the feedback and your next steps.",
+        ],
+        action: {
+          label: "Open My learning",
+          url: academyUrl("/my-learning", getServerEnv().APP_ORIGIN),
+        },
       });
     return c.json({ status: input.decision });
   },
@@ -1145,12 +1162,21 @@ operationsApi.post("/courses/:id/certificate", async (c) => {
     })
     .returning();
   await audit(session.user.id, "certificate.issued", "certificate", row.id);
-  const verifyUrl = `${new URL(c.req.url).origin}/verify/${row.certificateNumber}`;
+  const verifyUrl = academyUrl(
+    `/verify/${encodeURIComponent(row.certificateNumber)}`,
+    getServerEnv().APP_ORIGIN,
+  );
   await sendAuthEmail({
     to: session.user.email,
-    subject: `Your ${course.title} certificate`,
-    text: `Your course is complete. Verify your certificate at ${verifyUrl}`,
-    html: `<p>Your Academy course completion certificate is ready.</p><p><a href="${verifyUrl}">Verify your certificate</a></p>`,
+    subject: `Course completion: ${course.title}`,
+    title: "Your course completion certificate is ready",
+    preview: `Your course completion record for ${course.title} is available.`,
+    paragraphs: [
+      `You have met the completion requirements for ${course.title}.`,
+      `Certificate number: ${row.certificateNumber}.`,
+      "Use the link below to view the certificate's current status and verification details.",
+    ],
+    action: { label: "View certificate verification", url: verifyUrl },
   });
   return c.json({ certificate: row });
 });
@@ -1179,7 +1205,10 @@ operationsApi.get("/verify/:number", async (c) => {
     result,
   });
   if (!row) return c.json({ status: "not_found" }, 404);
-  const verificationUrl = `${new URL(c.req.url).origin}/verify/${encodeURIComponent(number)}`;
+  const verificationUrl = academyUrl(
+    `/verify/${encodeURIComponent(number)}`,
+    getServerEnv().APP_ORIGIN,
+  );
   return c.json({
     ...row,
     verificationUrl,
