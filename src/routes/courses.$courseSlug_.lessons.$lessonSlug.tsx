@@ -8,12 +8,14 @@ import {
   Menu,
   X,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { apiRequest, type ApiCourse, type ApiModule, useApi } from "@/lib/api";
-import { LessonBlock, type Block } from "@/components/LessonBlock";
+import { type Block } from "@/components/LessonBlock";
 import { courses as staticCourses } from "@/data/academy";
 import { getCourseBySlug, getLessonBySlug } from "@/data/canonical-curriculum";
 import { AITutorDrawer } from "@/components/AITutorDrawer";
+import { FocusedLesson } from "@/components/FocusedLesson";
+import { safeStorageGet, useCourseProgress } from "@/lib/learning-progress";
 import { RequireAuth } from "@/components/RequireAuth";
 
 export const Route = createFileRoute(
@@ -44,13 +46,18 @@ function flattenLessons(course: ApiCourse): FlatLesson[] {
       title: l.title,
       mi: mi + 1,
       li: li + 1,
-      slug: `${mi + 1}-${li + 1}`,
+      slug: l.slug || `${mi + 1}-${li + 1}`,
       moduleTitle: m.title,
     })),
   );
 }
 
 function Lesson() {
+  const { courseSlug, lessonSlug } = Route.useParams();
+  return <LessonContent key={`${courseSlug}:${lessonSlug}`} />;
+}
+
+function LessonContent() {
   const { courseSlug, lessonSlug } = Route.useParams();
   const courseQuery = useApi<ApiCourse>(`/courses/${courseSlug}`);
   const [mi, li] = lessonSlug.split("-").map(Number);
@@ -82,49 +89,54 @@ function Lesson() {
             moduleId: m.id || `${canonicalCourse.slug}-m${mIdx + 1}`,
             slug: l.slug || `${mIdx + 1}-${lIdx + 1}`,
             title: l.title,
-            summary: l.summary || "Practical lesson covering core principles and hands-on exercises.",
+            summary:
+              l.summary ||
+              "Practical lesson covering core principles and hands-on exercises.",
             estimatedMinutes: l.estimatedMinutes || 20,
             sortOrder: lIdx,
           })),
         })),
       }
     : staticFound
-    ? {
-        id: staticFound.slug,
-        slug: staticFound.slug,
-        title: staticFound.title,
-        summary: staticFound.description,
-        description: staticFound.description,
-        level: staticFound.level,
-        estimatedMinutes: 240,
-        learningOutcomes: staticFound.outcomes || [],
-        skills: ["AI Literacy", "Prompting", "Verification"],
-        state: "published",
-        enrolled: false,
-        modules: (staticFound.modules || []).map((m, mIdx) => ({
-          id: `${staticFound.slug}-m${mIdx + 1}`,
-          title: m.title,
-          description: null,
-          sortOrder: mIdx,
-          lessons: (m.lessons || []).map((lTitle, lIdx) => ({
-            id: `${staticFound.slug}-m${mIdx + 1}-l${lIdx + 1}`,
-            moduleId: `${staticFound.slug}-m${mIdx + 1}`,
-            slug: `${mIdx + 1}-${lIdx + 1}`,
-            title: lTitle,
-            summary: "Practical lesson covering core principles and hands-on exercises.",
-            estimatedMinutes: 20,
-            sortOrder: lIdx,
+      ? {
+          id: staticFound.slug,
+          slug: staticFound.slug,
+          title: staticFound.title,
+          summary: staticFound.description,
+          description: staticFound.description,
+          level: staticFound.level,
+          estimatedMinutes: 240,
+          learningOutcomes: staticFound.outcomes || [],
+          skills: ["AI Literacy", "Prompting", "Verification"],
+          state: "published",
+          enrolled: false,
+          modules: (staticFound.modules || []).map((m, mIdx) => ({
+            id: `${staticFound.slug}-m${mIdx + 1}`,
+            title: m.title,
+            description: null,
+            sortOrder: mIdx,
+            lessons: (m.lessons || []).map((lTitle, lIdx) => ({
+              id: `${staticFound.slug}-m${mIdx + 1}-l${lIdx + 1}`,
+              moduleId: `${staticFound.slug}-m${mIdx + 1}`,
+              slug: `${mIdx + 1}-${lIdx + 1}`,
+              title: lTitle,
+              summary:
+                "Practical lesson covering core principles and hands-on exercises.",
+              estimatedMinutes: 20,
+              sortOrder: lIdx,
+            })),
           })),
-        })),
-      }
-    : null;
+        }
+      : null;
 
   const course = courseQuery.data || fallbackCourse;
   const allLessons = course ? flattenLessons(course) : [];
 
   let selected = course?.modules?.[mi - 1]?.lessons?.[li - 1];
   if (!selected && allLessons.length > 0) {
-    const matched = allLessons.find((l) => l.slug === lessonSlug || l.id === lessonSlug);
+    const matched = allLessons.find(
+      (l) => l.slug === lessonSlug || l.id === lessonSlug,
+    );
     if (matched) {
       selected = {
         id: matched.id,
@@ -135,22 +147,13 @@ function Lesson() {
         estimatedMinutes: 20,
         sortOrder: matched.li - 1,
       };
-    } else {
-      const first = allLessons[0];
-      selected = {
-        id: first.id,
-        moduleId: "",
-        slug: first.slug,
-        title: first.title,
-        summary: null,
-        estimatedMinutes: 20,
-        sortOrder: 0,
-      };
     }
   }
 
   const lessonQuery = useApi<LessonPayload>(
-    selected && !selected.id.startsWith(courseSlug) ? `/lessons/${selected.id}` : null,
+    selected && /^[0-9a-f-]{36}$/i.test(selected.id)
+      ? `/lessons/${selected.id}`
+      : null,
   );
   const [status, setStatus] = useState<{
     busy: boolean;
@@ -164,9 +167,20 @@ function Lesson() {
     error: "",
   });
 
-  const currentIdx = allLessons.findIndex(
-    (l) => l.mi === mi && l.li === li,
-  );
+  const progress = useCourseProgress(courseSlug, allLessons);
+  useEffect(() => {
+    if (!sidebarOpen) return;
+    const close = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setSidebarOpen(false);
+    };
+    window.addEventListener("keydown", close);
+    return () => window.removeEventListener("keydown", close);
+  }, [sidebarOpen]);
+  useEffect(() => {
+    setSidebarOpen(false);
+    setStatus({ busy: false, done: false, synced: false, error: "" });
+  }, [courseSlug, lessonSlug]);
+  const currentIdx = allLessons.findIndex((l) => l.slug === lessonSlug);
   const prevLesson = currentIdx > 0 ? allLessons[currentIdx - 1] : null;
   const nextLesson =
     currentIdx < allLessons.length - 1 ? allLessons[currentIdx + 1] : null;
@@ -176,13 +190,18 @@ function Lesson() {
     setStatus({ busy: true, done: false, synced: false, error: "" });
     let synced = false;
     const isUuid = (id?: string) =>
-      Boolean(id && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id));
+      Boolean(
+        id &&
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+          id,
+        ),
+      );
 
     const targetId = isUuid(lessonQuery.data?.id)
       ? lessonQuery.data!.id
       : isUuid(selected?.id)
-      ? selected!.id
-      : null;
+        ? selected!.id
+        : null;
 
     if (targetId) {
       try {
@@ -208,8 +227,10 @@ function Lesson() {
       }
     }
 
+    let savedLocally = false;
     try {
-      localStorage.setItem(`done:${courseSlug}:${lessonSlug}`, "true");
+      localStorage.setItem(`done:${courseSlug}:${lessonSlug}`, "1");
+      savedLocally = true;
       if (synced) {
         localStorage.setItem(`synced:${courseSlug}:${lessonSlug}`, "true");
       }
@@ -217,12 +238,24 @@ function Lesson() {
       // LocalStorage access fails in private modes or quota limit
     }
 
-    setStatus({ busy: false, done: true, synced, error: "" });
+    window.dispatchEvent(new Event("academy-progress"));
+    setStatus({
+      busy: false,
+      done: synced || savedLocally,
+      synced,
+      error:
+        !synced && !savedLocally
+          ? "Your progress could not be saved. Allow browser storage or try again when the account service is available."
+          : "",
+    });
   }
 
   if (courseQuery.loading && !course)
     return (
-      <div className="mx-auto max-w-4xl px-5 py-20 text-center text-ink/50" role="status">
+      <div
+        className="mx-auto max-w-4xl px-5 py-20 text-center text-ink/50"
+        role="status"
+      >
         <p className="font-display text-xl font-bold">Loading lesson…</p>
       </div>
     );
@@ -257,205 +290,207 @@ function Lesson() {
       }
     : null;
 
-  const fallbackPayload: LessonPayload = {
-    id: selected.id,
-    title: selected.title,
-    summary: selected.summary || "Practical lesson covering core principles and actionable techniques.",
-    estimatedMinutes: 20,
-    blocks: [
-      {
-        id: "fb-1",
-        type: "heading",
-        title: "Overview",
-        plainText: null,
-        config: null,
-      },
-      {
-        id: "fb-2",
-        type: "paragraph",
-        title: selected.title,
-        plainText:
-          "In this lesson, you will examine the essential principles, evaluation criteria, and practical methodologies required to solve real-world challenges effectively.",
-        config: null,
-      },
-      {
-        id: "fb-3",
-        type: "callout",
-        title: "Hands-On Practical Activity",
-        plainText:
-          "Apply the lesson concepts to a real scenario from your field: structure the problem, document your assumptions, test your results, and verify against primary evidence.",
-        config: null,
-      },
-      {
-        id: "fb-4",
-        type: "key_takeaway",
-        title: "Key Takeaway",
-        plainText:
-          "High-performance AI workflows combine structured inputs, verifiable constraints, and accountable human oversight.",
-        config: null,
-      },
-    ],
-  };
-
-  const lesson = lessonQuery.data || canonicalPayload || fallbackPayload;
-  const isCompleted = status.done || !!localStorage.getItem(`done:${courseSlug}:${lessonSlug}`);
+  const lesson = lessonQuery.data || canonicalPayload;
+  const isCompleted = status.done || progress.completed.has(lessonSlug);
+  if (!lesson)
+    return (
+      <div className="mx-auto max-w-2xl px-5 py-20">
+        <h1 className="font-display text-3xl font-bold">
+          Lesson content is unavailable.
+        </h1>
+        <p className="mt-4 text-ink/65">
+          Try again when the lesson service is available, or choose another
+          lesson from the course overview.
+        </p>
+        <Link
+          to="/courses/$courseSlug"
+          params={{ courseSlug }}
+          className="secondary-action mt-6"
+        >
+          Course overview
+        </Link>
+      </div>
+    );
 
   return (
     <RequireAuth
-      title="Account Required to Access Lesson"
-      description="Lesson modules, interactive code checkpoints, exercises, and the AI Mentor are reserved for registered academy learners."
+      title="Sign in to continue learning"
+      description="Use your learner account to access lessons, practise with exercises, and record your progress."
       backTo={`/courses/${courseSlug}`}
       backLabel={`Return to ${course?.title || "course"} overview`}
     >
       <div className="flex min-h-screen flex-col bg-paper">
-      {/* Top bar */}
-      <div className="sticky top-0 z-30 border-b border-ink/10 bg-ink px-5 py-3 text-white">
-        <div className="mx-auto flex max-w-7xl items-center gap-4">
-          <Link
-            to="/courses/$courseSlug"
-            params={{ courseSlug }}
-            className="inline-flex items-center gap-2 text-xs font-bold text-white/65 transition hover:text-white"
+        {/* Top bar */}
+        <div className="sticky top-[72px] z-30 border-b border-ink/10 bg-ink px-5 py-3 text-white">
+          <div className="mx-auto flex max-w-7xl items-center gap-4">
+            <Link
+              to="/courses/$courseSlug"
+              params={{ courseSlug }}
+              className="inline-flex items-center gap-2 text-xs font-bold text-white/65 transition hover:text-white"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              {course.title}
+            </Link>
+            <button
+              onClick={() => setSidebarOpen((o) => !o)}
+              className="ml-auto rounded-lg p-1.5 text-white/65 transition hover:bg-white/10 hover:text-white lg:hidden"
+              aria-label="Toggle lesson navigation"
+              aria-expanded={sidebarOpen}
+              aria-controls="lesson-navigation"
+            >
+              {sidebarOpen ? (
+                <X className="h-5 w-5" />
+              ) : (
+                <Menu className="h-5 w-5" />
+              )}
+            </button>
+          </div>
+        </div>
+
+        <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col lg:flex-row">
+          {/* Sidebar */}
+          <aside
+            id="lesson-navigation"
+            className={`${
+              sidebarOpen ? "block" : "hidden"
+            } w-full shrink-0 border-b border-ink/10 bg-white lg:block lg:w-72 lg:border-b-0 lg:border-r`}
           >
-            <ArrowLeft className="h-4 w-4" />
-            {course.title}
-          </Link>
-          <button
-            onClick={() => setSidebarOpen((o) => !o)}
-            className="ml-auto rounded-lg p-1.5 text-white/65 transition hover:bg-white/10 hover:text-white lg:hidden"
-            aria-label="Toggle lesson navigation"
-          >
-            {sidebarOpen ? (
-              <X className="h-5 w-5" />
-            ) : (
-              <Menu className="h-5 w-5" />
-            )}
-          </button>
+            <nav
+              aria-label="Course lessons"
+              className="lg:sticky lg:top-[125px] lg:max-h-[calc(100dvh-125px)] overflow-y-auto p-4"
+            >
+              {(course.modules || []).map((module, mIdx) => (
+                <ModuleNav
+                  key={module.id || mIdx}
+                  module={module}
+                  mIdx={mIdx + 1}
+                  courseSlug={courseSlug}
+                  currentMi={mi}
+                  currentLi={li}
+                  onNavigate={() => setSidebarOpen(false)}
+                />
+              ))}
+            </nav>
+          </aside>
+
+          {/* Main content */}
+          <div className="min-w-0 flex-1">
+            <article className="mx-auto max-w-2xl px-6 py-12 lg:px-10">
+              <p className="eyebrow text-leaf">
+                Module {mi} · Lesson {li}
+              </p>
+              <h1 className="font-display mt-4 text-3xl font-bold text-ink md:text-4xl">
+                {lesson?.title ?? selected.title}
+              </h1>
+              {lesson?.summary && (
+                <p className="mt-4 text-lg leading-8 text-ink/65">
+                  {lesson.summary}
+                </p>
+              )}
+
+              <div className="mt-5 rounded-xl bg-ink/5 p-4">
+                <p className="text-sm font-semibold">
+                  {progress.count} of {progress.total} lessons completed ·{" "}
+                  {lesson.estimatedMinutes} min estimated
+                </p>
+                <progress
+                  aria-label="Course completion"
+                  max={progress.total || 1}
+                  value={progress.count}
+                  className="mt-3 h-2 w-full accent-leaf"
+                />
+                <p className="mt-2 text-xs text-ink/60">
+                  Course completion reflects lessons you mark complete. It is
+                  not an assessment score.
+                </p>
+              </div>
+              <FocusedLesson
+                key={`${courseSlug}:${lessonSlug}`}
+                courseSlug={courseSlug}
+                blocks={lesson.blocks}
+                objective={lesson.summary || selected.title}
+              />
+
+              <AITutorDrawer
+                key={`${courseSlug}:${lessonSlug}`}
+                courseSlug={courseSlug}
+                lessonTitle={lesson.title}
+                pathwayTitle={course?.title}
+                keyTakeaway={lesson.summary || undefined}
+              />
+
+              {status.error && (
+                <p
+                  role="alert"
+                  className="mt-8 rounded-xl bg-red-50 p-4 text-sm text-red-800"
+                >
+                  {status.error}
+                </p>
+              )}
+
+              {/* Completion & Navigation */}
+              <div className="mt-14 flex flex-wrap items-center justify-between gap-4 border-t border-ink/10 pt-8">
+                <div className="flex flex-col gap-1.5">
+                  <button
+                    onClick={complete}
+                    disabled={status.busy || isCompleted}
+                    className={`inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-bold transition ${
+                      isCompleted
+                        ? "bg-leaf/15 text-leaf cursor-default"
+                        : "bg-leaf text-white hover:bg-leaf/85"
+                    }`}
+                  >
+                    <Check className="h-4 w-4" />
+                    {isCompleted
+                      ? "Lesson completed"
+                      : status.busy
+                        ? "Saving progress..."
+                        : "Mark as complete"}
+                  </button>
+                  {isCompleted && (
+                    <span role="status" className="text-xs text-ink/60 ml-1">
+                      {status.synced ||
+                      safeStorageGet(`synced:${courseSlug}:${lessonSlug}`) ===
+                        "true"
+                        ? "Saved to your account"
+                        : "Saved in this browser. Account sync is not confirmed."}
+                    </span>
+                  )}
+                </div>
+
+                <div className="flex gap-3">
+                  {prevLesson && (
+                    <Link
+                      to="/courses/$courseSlug/lessons/$lessonSlug"
+                      params={{
+                        courseSlug,
+                        lessonSlug: prevLesson.slug,
+                      }}
+                      className="inline-flex items-center gap-1.5 rounded-full border border-ink/20 bg-white px-4 py-2.5 text-xs font-bold text-ink transition hover:bg-paper"
+                    >
+                      <ArrowLeft className="h-3.5 w-3.5" />
+                      Previous
+                    </Link>
+                  )}
+                  {nextLesson && (
+                    <Link
+                      to="/courses/$courseSlug/lessons/$lessonSlug"
+                      params={{
+                        courseSlug,
+                        lessonSlug: nextLesson.slug,
+                      }}
+                      className="inline-flex items-center gap-1.5 rounded-full bg-ink px-5 py-2.5 text-xs font-bold text-white transition hover:bg-ink/85"
+                    >
+                      Next lesson
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </Link>
+                  )}
+                </div>
+              </div>
+            </article>
+          </div>
         </div>
       </div>
-
-      <div className="mx-auto flex w-full max-w-7xl flex-1">
-        {/* Sidebar */}
-        <aside
-          className={`${
-            sidebarOpen ? "block" : "hidden"
-          } w-full shrink-0 border-b border-ink/10 bg-white lg:block lg:w-72 lg:border-b-0 lg:border-r`}
-        >
-          <nav className="sticky top-[49px] max-h-[calc(100vh-49px)] overflow-y-auto p-4">
-            {(course.modules || []).map((module, mIdx) => (
-              <ModuleNav
-                key={module.id || mIdx}
-                module={module}
-                mIdx={mIdx + 1}
-                courseSlug={courseSlug}
-                currentMi={mi}
-                currentLi={li}
-                onNavigate={() => setSidebarOpen(false)}
-              />
-            ))}
-          </nav>
-        </aside>
-
-        {/* Main content */}
-        <main className="min-w-0 flex-1">
-          <article className="mx-auto max-w-2xl px-6 py-12 lg:px-10">
-            <p className="eyebrow text-leaf">
-              Module {mi} · Lesson {li}
-            </p>
-            <h1 className="font-display mt-4 text-3xl font-bold text-ink md:text-4xl">
-              {lesson?.title ?? selected.title}
-            </h1>
-            {lesson?.summary && (
-              <p className="mt-4 text-lg leading-8 text-ink/65">
-                {lesson.summary}
-              </p>
-            )}
-
-            {lesson && (
-              <div className="mt-10 space-y-7">
-                {(lesson.blocks || []).map((block) => (
-                  <LessonBlock key={block.id} block={block} />
-                ))}
-              </div>
-            )}
-
-            {status.error && (
-              <p
-                role="alert"
-                className="mt-8 rounded-xl bg-red-50 p-4 text-sm text-red-800"
-              >
-                {status.error}
-              </p>
-            )}
-
-            {/* Completion & Navigation */}
-            <div className="mt-14 flex flex-wrap items-center justify-between gap-4 border-t border-ink/10 pt-8">
-              <div className="flex flex-col gap-1.5">
-                <button
-                  onClick={complete}
-                  disabled={status.busy || isCompleted}
-                  className={`inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-bold transition ${
-                    isCompleted
-                      ? "bg-leaf/15 text-leaf cursor-default"
-                      : "bg-leaf text-white hover:bg-leaf/85"
-                  }`}
-                >
-                  <Check className="h-4 w-4" />
-                  {isCompleted
-                    ? "Lesson completed"
-                    : status.busy
-                    ? "Saving progress..."
-                    : "Mark as complete"}
-                </button>
-                {isCompleted && (
-                  <span className="text-xs text-ink/50 ml-1">
-                    {status.synced ||
-                    localStorage.getItem(`synced:${courseSlug}:${lessonSlug}`) === "true"
-                      ? "✓ Synced with your permanent academy profile"
-                      : "Saved in this browser (Sign in to record in permanent transcript)"}
-                  </span>
-                )}
-              </div>
-
-              <div className="flex gap-3">
-                {prevLesson && (
-                  <Link
-                    to="/courses/$courseSlug/lessons/$lessonSlug"
-                    params={{
-                      courseSlug,
-                      lessonSlug: `${prevLesson.mi}-${prevLesson.li}`,
-                    }}
-                    className="inline-flex items-center gap-1.5 rounded-full border border-ink/20 bg-white px-4 py-2.5 text-xs font-bold text-ink transition hover:bg-paper"
-                  >
-                    <ArrowLeft className="h-3.5 w-3.5" />
-                    Previous
-                  </Link>
-                )}
-                {nextLesson && (
-                  <Link
-                    to="/courses/$courseSlug/lessons/$lessonSlug"
-                    params={{
-                      courseSlug,
-                      lessonSlug: `${nextLesson.mi}-${nextLesson.li}`,
-                    }}
-                    className="inline-flex items-center gap-1.5 rounded-full bg-ink px-5 py-2.5 text-xs font-bold text-white transition hover:bg-ink/85"
-                  >
-                    Next lesson
-                    <ArrowRight className="h-3.5 w-3.5" />
-                  </Link>
-                )}
-              </div>
-            </div>
-          </article>
-        </main>
-      </div>
-
-      <AITutorDrawer
-        courseSlug={courseSlug}
-        lessonTitle={lesson.title}
-        pathwayTitle={course?.title}
-        keyTakeaway={lesson.summary || undefined}
-      />
-    </div>
     </RequireAuth>
   );
 }
@@ -482,6 +517,7 @@ function ModuleNav({
   return (
     <div className="mb-1">
       <button
+        aria-expanded={open}
         onClick={() => setOpen((o) => !o)}
         className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-bold text-ink transition hover:bg-ink/5"
       >
@@ -495,7 +531,7 @@ function ModuleNav({
       {open && (
         <ul className="ml-4 mt-0.5 space-y-0.5 border-l border-ink/10 pl-3">
           {lessons.map((lesson, lIdx) => {
-            const slug = `${mIdx}-${lIdx + 1}`;
+            const slug = lesson.slug || `${mIdx}-${lIdx + 1}`;
             const isCurrent = mIdx === currentMi && lIdx + 1 === currentLi;
             return (
               <li key={lesson.id || lIdx}>
@@ -503,6 +539,7 @@ function ModuleNav({
                   to="/courses/$courseSlug/lessons/$lessonSlug"
                   params={{ courseSlug, lessonSlug: slug }}
                   onClick={onNavigate}
+                  aria-current={isCurrent ? "page" : undefined}
                   className={`block rounded-lg px-3 py-2 text-sm leading-5 transition ${
                     isCurrent
                       ? "bg-leaf/10 font-bold text-leaf"

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export class ApiError extends Error {
   constructor(
@@ -21,11 +21,24 @@ export async function apiRequest<T>(
   try {
     payload = await response.json();
   } catch {
-    throw new ApiError("The server returned an invalid response.", response.status);
+    throw new ApiError(
+      "The server returned an invalid response.",
+      response.status,
+    );
   }
   if (!response.ok)
-    throw new ApiError(payload?.error || "The request failed.", response.status);
-  if (payload && typeof payload === "object" && "error" in payload && !("id" in payload) && !("title" in payload) && !Array.isArray(payload)) {
+    throw new ApiError(
+      payload?.error || "The request failed.",
+      response.status,
+    );
+  if (
+    payload &&
+    typeof payload === "object" &&
+    "error" in payload &&
+    !("id" in payload) &&
+    !("title" in payload) &&
+    !Array.isArray(payload)
+  ) {
     throw new ApiError(payload.error || "The request failed.", response.status);
   }
   return payload as T;
@@ -34,20 +47,33 @@ export function useApi<T>(path: string | null) {
   const [data, setData] = useState<T | null>(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(Boolean(path));
+  const controller = useRef<AbortController | null>(null);
   const load = useCallback(async () => {
-    if (!path) return;
+    controller.current?.abort();
+    if (!path) {
+      setData(null);
+      setError("");
+      setLoading(false);
+      return;
+    }
+    const request = new AbortController();
+    controller.current = request;
     setLoading(true);
     setError("");
     try {
-      setData(await apiRequest<T>(path));
+      const result = await apiRequest<T>(path, { signal: request.signal });
+      if (!request.signal.aborted) setData(result);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "The request failed.");
+      if (!request.signal.aborted)
+        setError(e instanceof Error ? e.message : "The request failed.");
     } finally {
-      setLoading(false);
+      if (!request.signal.aborted) setLoading(false);
     }
   }, [path]);
   useEffect(() => {
+    setData(null);
     void load();
+    return () => controller.current?.abort();
   }, [load]);
   return { data, error, loading, reload: load };
 }

@@ -377,7 +377,7 @@ function Resources() {
                       }`}
                     >
                       <Radio className="h-3 w-3" />
-                      {isStreaming ? "Stop Live Stream" : "Simulate Live Telemetry Stream"}
+                      {isStreaming ? "Stop simulation" : "Simulate telemetry"}
                     </button>
                   </div>
                 </div>

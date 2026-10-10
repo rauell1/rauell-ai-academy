@@ -36,3 +36,27 @@ describe("authoritative progress helpers", () => {
       },
     ]));
 });
+
+it("retains completion records from the previous lesson player", () => {
+  expect(
+    parseLocalProgress(
+      storage({
+        "done:course-one:1-1": "true",
+        "done:course-one:1-2": "false",
+      }),
+    ),
+  ).toEqual([
+    { key: "done:course-one:1-1", courseSlug: "course-one", lessonKey: "1-1" },
+  ]);
+});
+it("treats denied browser storage as unavailable rather than crashing", () => {
+  expect(
+    parseLocalProgress({
+      get length(): number {
+        throw new Error("Denied");
+      },
+      key: () => null,
+      getItem: () => null,
+    }),
+  ).toEqual([]);
+});

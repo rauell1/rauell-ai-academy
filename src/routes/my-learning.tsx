@@ -3,15 +3,19 @@ import { ArrowRight, Award, BookOpenCheck, Target } from "lucide-react";
 import { useMemo, useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { apiRequest, type DashboardData, useApi } from "@/lib/api";
+import { ResumeLearning } from "@/components/ResumeLearning";
 import { parseLocalProgress } from "@/lib/progress";
 export const Route = createFileRoute("/my-learning")({ component: Dashboard });
 function Dashboard() {
   const { data: session, isPending } = authClient.useSession();
   const query = useApi<DashboardData>(session ? "/dashboard" : null);
-  const items = useMemo(
-    () => (session ? parseLocalProgress(localStorage) : []),
-    [session],
-  );
+  const items = useMemo(() => {
+    try {
+      return session ? parseLocalProgress(localStorage) : [];
+    } catch {
+      return [];
+    }
+  }, [session]);
   const [state, setState] = useState({ busy: false, done: false, error: "" });
   if (isPending)
     return (
@@ -71,11 +75,13 @@ function Dashboard() {
             Welcome back, {session.user.name}.
           </h1>
           <p className="mt-3 text-white/55">
-            Your progress is securely connected to your account.
+            Review account progress below. Browser-only records can be imported
+            when the account service is available.
           </p>
         </div>
       </section>
       <section className="mx-auto max-w-7xl px-5 py-12 lg:px-8">
+        <ResumeLearning />
         {items.length > 0 && !state.done && (
           <div className="card mb-8 border-leaf/30 bg-mint/10 p-6">
             <h2 className="font-display text-2xl font-bold">

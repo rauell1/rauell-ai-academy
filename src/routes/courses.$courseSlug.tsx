@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   ArrowLeft,
   ArrowRight,
-  Award,
+  BookOpen,
   CheckCircle2,
   Clock3,
   Layers3,
@@ -13,6 +13,8 @@ import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { apiRequest, type ApiCourse, useApi } from "@/lib/api";
 import { courses as staticCourses } from "@/data/academy";
+import { formatCourseDuration } from "@/lib/catalogue";
+import { useCourseProgress } from "@/lib/learning-progress";
 import { getCourseBySlug } from "@/data/canonical-curriculum";
 
 export const Route = createFileRoute("/courses/$courseSlug")({
@@ -20,6 +22,11 @@ export const Route = createFileRoute("/courses/$courseSlug")({
 });
 
 function CourseDetail() {
+  const { courseSlug } = Route.useParams();
+  return <CourseContent key={courseSlug} />;
+}
+
+function CourseContent() {
   const { courseSlug } = Route.useParams();
   const {
     data: apiCourse,
@@ -56,58 +63,76 @@ function CourseDetail() {
             moduleId: m.id || `${canonicalCourse.slug}-m${mi + 1}`,
             slug: l.slug || `${mi + 1}-${li + 1}`,
             title: l.title,
-            summary: l.summary || "Practical lesson covering core principles and hands-on exercises.",
+            summary:
+              l.summary ||
+              "Practical lesson covering core principles and hands-on exercises.",
             estimatedMinutes: l.estimatedMinutes || 20,
             sortOrder: li,
           })),
         })),
       }
     : staticFound
-    ? {
-        id: staticFound.slug,
-        slug: staticFound.slug,
-        title: staticFound.title,
-        summary: staticFound.description,
-        description: staticFound.description,
-        level: staticFound.level,
-        estimatedMinutes: 240,
-        learningOutcomes: staticFound.outcomes || [
-          "Understand core AI concepts",
-          "Apply prompting techniques",
-          "Verify claims with sources",
-          "Build reliable workflows",
-        ],
-        skills: ["AI Literacy", "Prompting", "Verification"],
-        state: "published",
-        enrolled: false,
-        modules: (staticFound.modules || []).map((m, mi) => ({
-          id: `${staticFound.slug}-m${mi + 1}`,
-          title: m.title,
-          description: null,
-          sortOrder: mi,
-          lessons: m.lessons.map((lTitle, li) => ({
-            id: `${staticFound.slug}-m${mi + 1}-l${li + 1}`,
-            moduleId: `${staticFound.slug}-m${mi + 1}`,
-            slug: `${mi + 1}-${li + 1}`,
-            title: lTitle,
-            summary: "Practical lesson covering core principles and hands-on exercises.",
-            estimatedMinutes: 20,
-            sortOrder: li,
+      ? {
+          id: staticFound.slug,
+          slug: staticFound.slug,
+          title: staticFound.title,
+          summary: staticFound.description,
+          description: staticFound.description,
+          level: staticFound.level,
+          estimatedMinutes: 240,
+          learningOutcomes: staticFound.outcomes || [
+            "Understand core AI concepts",
+            "Apply prompting techniques",
+            "Verify claims with sources",
+            "Build reliable workflows",
+          ],
+          skills: ["AI Literacy", "Prompting", "Verification"],
+          state: "published",
+          enrolled: false,
+          modules: (staticFound.modules || []).map((m, mi) => ({
+            id: `${staticFound.slug}-m${mi + 1}`,
+            title: m.title,
+            description: null,
+            sortOrder: mi,
+            lessons: m.lessons.map((lTitle, li) => ({
+              id: `${staticFound.slug}-m${mi + 1}-l${li + 1}`,
+              moduleId: `${staticFound.slug}-m${mi + 1}`,
+              slug: `${mi + 1}-${li + 1}`,
+              title: lTitle,
+              summary:
+                "Practical lesson covering core principles and hands-on exercises.",
+              estimatedMinutes: 20,
+              sortOrder: li,
+            })),
           })),
-        })),
-      }
-    : null;
+        }
+      : null;
 
   const course =
-    apiCourse && apiCourse.title && Array.isArray(apiCourse.modules) && apiCourse.modules.length > 0
+    apiCourse &&
+    apiCourse.title &&
+    Array.isArray(apiCourse.modules) &&
+    apiCourse.modules.length > 0
       ? apiCourse
       : fallbackCourse;
   const isEnrolled = course?.enrolled || action.done;
-  const firstLessonSlug = "1-1";
+  const progress = useCourseProgress(
+    course?.slug || courseSlug,
+    (course?.modules || []).flatMap((module, mi) =>
+      module.lessons.map((lesson, li) => ({
+        title: lesson.title,
+        slug: lesson.slug || `${mi + 1}-${li + 1}`,
+      })),
+    ),
+  );
+  const firstLessonSlug = progress.next?.slug || "1-1";
 
   if (loading && !course)
     return (
-      <div className="mx-auto max-w-7xl px-5 py-20 text-center text-ink/50" role="status">
+      <div
+        className="mx-auto max-w-7xl px-5 py-20 text-center text-ink/50"
+        role="status"
+      >
         <p className="font-display text-xl font-bold">Loading course...</p>
       </div>
     );
@@ -116,7 +141,9 @@ function CourseDetail() {
     return (
       <div className="mx-auto max-w-3xl px-5 py-20 text-center" role="alert">
         <h1 className="font-display text-3xl font-bold">Course unavailable</h1>
-        <p className="mt-3 text-ink/60">{error || "This course could not be found."}</p>
+        <p className="mt-3 text-ink/60">
+          {error || "This course could not be found."}
+        </p>
         <div className="mt-6 flex justify-center gap-3">
           <button
             onClick={reload}
@@ -154,8 +181,10 @@ function CourseDetail() {
     (sum, m) => sum + (Array.isArray(m.lessons) ? m.lessons.length : 0),
     0,
   );
-  const outcomes = Array.isArray(course.learningOutcomes) ? course.learningOutcomes : [];
-  const hours = Math.round((course.estimatedMinutes || 240) / 60);
+  const outcomes = Array.isArray(course.learningOutcomes)
+    ? course.learningOutcomes
+    : [];
+  const duration = formatCourseDuration(course.estimatedMinutes);
 
   return (
     <>
@@ -169,7 +198,9 @@ function CourseDetail() {
               <ArrowLeft className="h-4 w-4" />
               All courses
             </Link>
-            <p className="eyebrow mt-8 text-mint">{course.level || "Beginner"}</p>
+            <p className="eyebrow mt-8 text-mint">
+              {course.level || "Beginner"}
+            </p>
             <h1 className="font-display mt-4 text-4xl font-bold md:text-5xl">
               {course.title}
             </h1>
@@ -179,26 +210,42 @@ function CourseDetail() {
             <div className="mt-7 flex flex-wrap gap-5 text-sm text-white/60">
               <span className="inline-flex items-center gap-2">
                 <Clock3 className="h-4 w-4" />
-                {hours > 0 ? `${hours} hours` : `${course.estimatedMinutes} min`}
+                {duration}
               </span>
               <span className="inline-flex items-center gap-2">
                 <Layers3 className="h-4 w-4" />
                 {lessonCount} lessons
               </span>
               <span className="inline-flex items-center gap-2">
-                <Award className="h-4 w-4" />
-                Certificate eligible
+                <BookOpen className="h-4 w-4" />
+                Self-paced lessons
               </span>
             </div>
           </div>
           <div className="grid min-h-64 place-items-center rounded-[2rem] bg-mint text-ink">
-            <Award className="h-24 w-24 text-ink/80" />
+            <BookOpen className="h-24 w-24 text-ink/80" />
           </div>
         </div>
       </section>
 
       <section className="mx-auto grid max-w-7xl gap-12 px-5 py-16 lg:grid-cols-[1fr_340px] lg:px-8">
         <div>
+          <div className="mb-10 grid gap-4 sm:grid-cols-2">
+            <div className="card p-5">
+              <p className="eyebrow text-leaf">Who this is for</p>
+              <p className="mt-3 text-sm leading-7 text-ink/75">
+                {canonicalCourse?.targetAudience ||
+                  "Learners interested in the skills and outcomes described below."}
+              </p>
+            </div>
+            <div className="card p-5">
+              <p className="eyebrow text-leaf">Before you begin</p>
+              <p className="mt-3 text-sm leading-7 text-ink/75">
+                {canonicalCourse?.prerequisites ||
+                  "Prerequisites have not been specified for this course. Review its level and outcomes before starting."}
+              </p>
+            </div>
+          </div>
           {outcomes.length > 0 && (
             <>
               <h2 className="font-display text-3xl font-bold">
@@ -223,7 +270,9 @@ function CourseDetail() {
           </h2>
           <div className="mt-6 space-y-4">
             {moduleList.map((module, mi) => {
-              const lessons = Array.isArray(module.lessons) ? module.lessons : [];
+              const lessons = Array.isArray(module.lessons)
+                ? module.lessons
+                : [];
               return (
                 <div key={module.id || mi} className="card overflow-hidden">
                   <div className="flex items-center gap-4 border-b border-ink/10 bg-paper/50 p-5">
@@ -238,20 +287,26 @@ function CourseDetail() {
                     </span>
                   </div>
                   {lessons.map((lesson, li) => {
-                    const lessonPath = `/courses/${course.slug}/lessons/${mi + 1}-${li + 1}`;
+                    const lessonSlug = lesson.slug || `${mi + 1}-${li + 1}`;
+                    const lessonPath = `/courses/${course.slug}/lessons/${lessonSlug}`;
                     return session ? (
                       <Link
                         key={lesson.id || li}
                         to="/courses/$courseSlug/lessons/$lessonSlug"
                         params={{
                           courseSlug: course.slug,
-                          lessonSlug: `${mi + 1}-${li + 1}`,
+                          lessonSlug,
                         }}
                         className="group flex items-center gap-3 border-b border-ink/5 px-5 py-4 last:border-0 hover:bg-mint/10 transition"
                       >
                         <PlayCircle className="h-4 w-4 text-ink/40 group-hover:text-leaf transition" />
                         <span className="text-sm font-semibold text-ink group-hover:text-ink">
                           {lesson.title}
+                          {progress.completed.has(lessonSlug) && (
+                            <span className="ml-2 text-xs text-leaf">
+                              Completed
+                            </span>
+                          )}
                         </span>
                         <ArrowRight className="ml-auto h-4 w-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition" />
                       </Link>
@@ -266,6 +321,11 @@ function CourseDetail() {
                         <Lock className="h-4 w-4 text-ink/35 group-hover:text-leaf transition" />
                         <span className="text-sm font-semibold text-ink/75 group-hover:text-ink">
                           {lesson.title}
+                          {progress.completed.has(lessonSlug) && (
+                            <span className="ml-2 text-xs text-leaf">
+                              Completed
+                            </span>
+                          )}
                         </span>
                         <span className="ml-auto text-[11px] font-bold text-ink/40 group-hover:text-leaf flex items-center gap-1 transition">
                           Account required <ArrowRight className="h-3 w-3" />
@@ -278,7 +338,7 @@ function CourseDetail() {
             })}
           </div>
 
-          {(course.assessments?.length || course.projects?.length) ? (
+          {course.assessments?.length || course.projects?.length ? (
             <div className="mt-10 grid gap-4 sm:grid-cols-2">
               {course.assessments?.map((item) => {
                 const assessPath = `/assessments/${item.id}`;
@@ -332,7 +392,8 @@ function CourseDetail() {
                     className="card card-lift p-5"
                   >
                     <p className="eyebrow text-leaf flex items-center gap-1.5">
-                      <Lock className="h-3 w-3" /> Final project (Sign in required)
+                      <Lock className="h-3 w-3" /> Final project (Sign in
+                      required)
                     </p>
                     <h3 className="font-display mt-2 text-xl font-bold">
                       {item.title}
@@ -352,6 +413,25 @@ function CourseDetail() {
             <h3 className="font-display mt-3 text-2xl font-bold text-ink">
               {isEnrolled ? "Keep learning." : "Learn at your pace."}
             </h3>
+            {progress.count > 0 && (
+              <div className="mt-5">
+                <p className="text-sm font-semibold">
+                  {progress.count} of {progress.total} lessons completed in this
+                  browser
+                </p>
+                <progress
+                  aria-label="Browser course progress"
+                  max={progress.total || 1}
+                  value={progress.count}
+                  className="mt-3 h-2 w-full accent-leaf"
+                />
+                <p className="mt-2 text-xs text-ink/60">
+                  {progress.next
+                    ? `Next: ${progress.next.title}`
+                    : "All lessons marked complete. You can revisit them anytime."}
+                </p>
+              </div>
+            )}
             {action.error && (
               <p role="alert" className="mt-4 text-sm text-red-700">
                 {action.error}
@@ -360,10 +440,13 @@ function CourseDetail() {
             {isEnrolled ? (
               <Link
                 to="/courses/$courseSlug/lessons/$lessonSlug"
-                params={{ courseSlug: course.slug, lessonSlug: firstLessonSlug }}
+                params={{
+                  courseSlug: course.slug,
+                  lessonSlug: firstLessonSlug,
+                }}
                 className="mt-6 block rounded-full bg-leaf px-5 py-3.5 text-center text-sm font-bold text-white transition hover:bg-leaf/85 shadow-md"
               >
-                Continue learning →
+                {progress.next ? "Continue learning →" : "Review course →"}
               </Link>
             ) : session ? (
               <div className="mt-6 space-y-3">
@@ -376,17 +459,24 @@ function CourseDetail() {
                 </button>
                 <Link
                   to="/courses/$courseSlug/lessons/$lessonSlug"
-                  params={{ courseSlug: course.slug, lessonSlug: firstLessonSlug }}
+                  params={{
+                    courseSlug: course.slug,
+                    lessonSlug: firstLessonSlug,
+                  }}
                   className="block rounded-full border border-ink/20 px-5 py-2.5 text-center text-xs font-bold text-ink transition hover:bg-paper"
                 >
-                  Preview lesson 1 →
+                  {progress.count
+                    ? "Resume next lesson →"
+                    : "Start first lesson →"}
                 </Link>
               </div>
             ) : (
               <div className="mt-6 space-y-3">
                 <Link
                   to="/sign-in"
-                  search={{ redirect: `/courses/${course.slug}/lessons/${firstLessonSlug}` }}
+                  search={{
+                    redirect: `/courses/${course.slug}/lessons/${firstLessonSlug}`,
+                  }}
                   className="block rounded-full bg-leaf px-5 py-3.5 text-center text-sm font-bold text-white transition hover:bg-leaf/90 shadow-md"
                 >
                   Sign in to start learning →

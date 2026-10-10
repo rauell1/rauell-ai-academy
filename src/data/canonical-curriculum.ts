@@ -563,6 +563,14 @@ FORMAT:
     config: { variant: "tip" },
   },
   {
+    id: "a2-m1-l1-practice",
+    type: "callout",
+    title: "Practical exercise: Reply to a Naivasha customer",
+    plainText:
+      "A fictional customer asks: ‘Can you drill a borehole on my farm next week, and how much will it cost?’ Write a prompt for a polite reply in under 100 words. Include the goal, audience, context, source, constraints, and format. You have no site survey or approved quotation: ask for the farm location and a survey appointment, and do not invent prices, water availability, or delivery dates. Self-check: does the reply distinguish known facts from information still needed?",
+    config: { variant: "tip" },
+  },
+  {
     id: "a2-1-1-10",
     type: "knowledge_check",
     title: "Knowledge Check: Prompt Constraints",

@@ -28,7 +28,8 @@ function getVideoEmbed(url: string): { iframe: boolean; src: string } {
   const yt = url.match(
     /(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/,
   );
-  if (yt) return { iframe: true, src: `https://www.youtube.com/embed/${yt[1]}` };
+  if (yt)
+    return { iframe: true, src: `https://www.youtube.com/embed/${yt[1]}` };
   const vimeo = url.match(/vimeo\.com\/(\d+)/);
   if (vimeo)
     return { iframe: true, src: `https://player.vimeo.com/video/${vimeo[1]}` };
@@ -45,16 +46,10 @@ export function LessonBlock({ block }: { block: Block }) {
       const { level = 2 } = cfg<{ level?: number }>(block);
       const text = block.title || block.plainText || "";
       if (level === 3)
-        return (
-          <h3 className="font-display mt-2 text-xl font-bold">{text}</h3>
-        );
+        return <h3 className="font-display mt-2 text-xl font-bold">{text}</h3>;
       if (level === 4)
-        return (
-          <h4 className="font-display mt-2 text-lg font-bold">{text}</h4>
-        );
-      return (
-        <h2 className="font-display mt-2 text-2xl font-bold">{text}</h2>
-      );
+        return <h4 className="font-display mt-2 text-lg font-bold">{text}</h4>;
+      return <h2 className="font-display mt-2 text-2xl font-bold">{text}</h2>;
     }
 
     case "paragraph":
@@ -81,8 +76,11 @@ export function LessonBlock({ block }: { block: Block }) {
     }
 
     case "image": {
-      const { url, alt, caption } =
-        cfg<{ url?: string; alt?: string; caption?: string }>(block);
+      const { url, alt, caption } = cfg<{
+        url?: string;
+        alt?: string;
+        caption?: string;
+      }>(block);
       if (!url) return null;
       return (
         <figure className="my-2">
@@ -157,9 +155,16 @@ export function LessonBlock({ block }: { block: Block }) {
               {block.title || caption || "Audio"}
             </span>
           </div>
-          <audio src={audioSrc} controls preload="metadata" className="w-full" />
+          <audio
+            src={audioSrc}
+            controls
+            preload="metadata"
+            className="w-full"
+          />
           {caption && block.title && (
-            <figcaption className="mt-2 text-xs text-ink/50">{caption}</figcaption>
+            <figcaption className="mt-2 text-xs text-ink/50">
+              {caption}
+            </figcaption>
           )}
         </figure>
       );
@@ -271,8 +276,9 @@ export function LessonBlock({ block }: { block: Block }) {
     }
 
     case "checklist": {
-      const { items } =
-        cfg<{ items?: Array<string | { text: string }> }>(block);
+      const { items } = cfg<{ items?: Array<string | { text: string }> }>(
+        block,
+      );
       const normalized = (items || []).map((item) =>
         typeof item === "string" ? { text: item } : item,
       );
@@ -398,7 +404,8 @@ function ChecklistBlock({
                   ? "border-leaf bg-leaf text-white"
                   : "border-ink/25 bg-white"
               }`}
-              aria-label={checked.has(i) ? "Uncheck" : "Check"}
+              aria-label={`${checked.has(i) ? "Uncheck" : "Check"}: ${item.text}`}
+              aria-pressed={checked.has(i)}
             >
               {checked.has(i) && <Check className="h-3 w-3" />}
             </button>
@@ -446,7 +453,8 @@ function KnowledgeCheck({
           if (revealed) {
             if (i === correctIndex)
               cls = "border-leaf bg-mint/20 text-ink font-bold";
-            else if (i === selected) cls = "border-red-300 bg-red-50 text-red-700";
+            else if (i === selected)
+              cls = "border-red-300 bg-red-50 text-red-700";
             else cls = "border-ink/10 bg-white text-ink/40";
           } else if (i === selected) {
             cls = "border-ink bg-ink text-white";
@@ -455,6 +463,7 @@ function KnowledgeCheck({
             <li key={i}>
               <button
                 onClick={() => !revealed && setSelected(i)}
+                aria-pressed={selected === i}
                 disabled={revealed}
                 className={`w-full rounded-xl border px-4 py-3 text-left text-sm transition ${cls}`}
               >
@@ -474,6 +483,7 @@ function KnowledgeCheck({
       )}
       {revealed && (
         <div
+          role="status"
           className={`mt-4 rounded-xl p-4 text-sm ${
             isCorrect ? "bg-mint/20 text-ink" : "bg-red-50 text-red-800"
           }`}
@@ -489,9 +499,16 @@ function KnowledgeCheck({
               </>
             )}
           </p>
-          {explanation && (
-            <p className="mt-1 text-ink/70">{explanation}</p>
-          )}
+          {explanation && <p className="mt-1 text-ink/70">{explanation}</p>}
+          <button
+            onClick={() => {
+              setSelected(null);
+              setReveal(false);
+            }}
+            className="mt-3 font-bold underline underline-offset-4"
+          >
+            Try again
+          </button>
         </div>
       )}
     </div>

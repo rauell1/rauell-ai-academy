@@ -16,17 +16,27 @@ class ErrorBoundary extends Component<
   static getDerivedStateFromError(error: unknown) {
     return {
       hasError: true,
-      message: error instanceof Error ? error.message : "An unexpected error occurred.",
+      message:
+        error instanceof Error
+          ? error.message
+          : "An unexpected error occurred.",
     };
   }
   render() {
     if (this.state.hasError) {
       return (
         <div className="mx-auto max-w-2xl px-5 py-24 text-center">
-          <h1 className="font-display text-3xl font-bold text-ink">Something went wrong</h1>
-          <p className="mt-4 text-sm leading-7 text-ink/60">{this.state.message}</p>
+          <h1 className="font-display text-3xl font-bold text-ink">
+            Something went wrong
+          </h1>
+          <p className="mt-4 text-sm leading-7 text-ink/60">
+            {this.state.message}
+          </p>
           <button
-            onClick={() => { this.setState({ hasError: false, message: "" }); window.location.reload(); }}
+            onClick={() => {
+              this.setState({ hasError: false, message: "" });
+              window.location.reload();
+            }}
             className="mt-8 rounded-full bg-ink px-6 py-3 text-sm font-bold text-white"
           >
             Reload page
@@ -52,6 +62,17 @@ export function Header() {
   const { data: session, isPending } = authClient.useSession();
   const { data: rbac } = useRbac();
   useEffect(() => setOpen(false), [location.pathname]);
+  useEffect(() => {
+    if (!open) return;
+    const close = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setOpen(false);
+        document.getElementById("navigation-toggle")?.focus();
+      }
+    };
+    window.addEventListener("keydown", close);
+    return () => window.removeEventListener("keydown", close);
+  }, [open]);
   return (
     <header className="sticky top-0 z-50 border-b border-ink/10 bg-cream/90 backdrop-blur-xl">
       <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between px-5 lg:px-8">
@@ -80,6 +101,9 @@ export function Header() {
             <Link
               key={to}
               to={to}
+              aria-current={
+                location.pathname.startsWith(to) ? "page" : undefined
+              }
               className={`rounded-full px-3.5 py-2 text-[13px] font-semibold transition ${location.pathname.startsWith(to) ? "bg-ink text-white" : "text-ink/65 hover:bg-white hover:text-ink"}`}
             >
               {label}
@@ -94,7 +118,7 @@ export function Header() {
               );
             }}
             className="inline-flex items-center gap-2 rounded-full border border-ink/10 bg-white/80 px-3 py-1.5 text-xs font-medium text-ink/70 hover:border-ink/20 hover:text-ink transition"
-            title="Search courses, lessons, and labs"
+            title="Search courses, pathways, and labs"
           >
             <span>Search</span>
             <kbd className="rounded bg-ink/5 px-1.5 py-0.5 font-mono text-[10px] text-ink/50">
@@ -152,17 +176,38 @@ export function Header() {
         <button
           onClick={() => setOpen(!open)}
           className="grid h-10 w-10 place-items-center rounded-full border border-ink/15 lg:hidden"
-          aria-label="Toggle navigation"
+          id="navigation-toggle"
+          aria-label={open ? "Close navigation" : "Open navigation"}
+          aria-expanded={open}
+          aria-controls="mobile-navigation"
         >
           {open ? <X /> : <Menu />}
         </button>
       </div>
       {open && (
-        <nav className="border-t border-ink/10 bg-paper p-5 lg:hidden">
+        <nav
+          id="mobile-navigation"
+          aria-label="Mobile navigation"
+          className="max-h-[calc(100dvh-72px)] overflow-y-auto border-t border-ink/10 bg-paper p-5 lg:hidden"
+        >
+          <button
+            onClick={() => {
+              setOpen(false);
+              window.dispatchEvent(
+                new KeyboardEvent("keydown", { key: "k", ctrlKey: true }),
+              );
+            }}
+            className="secondary-action mb-3 w-full"
+          >
+            Search the Academy
+          </button>
           {nav.map(([to, label]) => (
             <Link
               key={to}
               to={to}
+              aria-current={
+                location.pathname.startsWith(to) ? "page" : undefined
+              }
               className="block border-b border-ink/10 py-3 text-base font-bold"
             >
               {label}
@@ -296,8 +341,11 @@ export function Footer() {
 export function AppLayout({ children }: { children: ReactNode }) {
   return (
     <>
+      <a href="#main-content" className="skip-link">
+        Skip to content
+      </a>
       <Header />
-      <main>
+      <main id="main-content" tabIndex={-1}>
         <ErrorBoundary>{children}</ErrorBoundary>
       </main>
       <Footer />

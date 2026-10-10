@@ -1,5 +1,12 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { ArrowLeft, CheckCircle2, Lock, LogIn, Sparkles, UserPlus } from "lucide-react";
+import {
+  ArrowLeft,
+  CheckCircle2,
+  Lock,
+  LogIn,
+  Sparkles,
+  UserPlus,
+} from "lucide-react";
 import React, { type ReactNode } from "react";
 import { authClient } from "@/lib/auth-client";
 
@@ -14,7 +21,7 @@ interface RequireAuthProps {
 export function RequireAuth({
   children,
   title = "Account Required to Access Learning Content",
-  description = "All curriculum lessons, interactive exercises, capstone projects, and AI mentors are reserved for registered academy learners.",
+  description = "Sign in to access lessons, practise with exercises, and record your progress.",
   backTo,
   backLabel = "Return to overview",
 }: RequireAuthProps) {
@@ -26,7 +33,7 @@ export function RequireAuth({
       <div className="mx-auto flex min-h-[60vh] max-w-md flex-col items-center justify-center px-5 py-20 text-center">
         <div className="h-10 w-10 animate-spin rounded-full border-3 border-leaf border-t-transparent" />
         <p className="mt-4 font-mono text-xs font-bold uppercase tracking-wider text-ink/60">
-          Verifying learner authorization...
+          Checking your account…
         </p>
       </div>
     );
@@ -47,7 +54,7 @@ export function RequireAuth({
           </div>
         </div>
 
-        <p className="eyebrow text-leaf">Protected Learning Environment</p>
+        <p className="eyebrow text-leaf">Your learner account</p>
         <h1 className="font-display mt-2 text-3xl font-extrabold text-ink sm:text-4xl">
           {title}
         </h1>
@@ -59,15 +66,15 @@ export function RequireAuth({
         <div className="mt-8 grid w-full max-w-md gap-2.5 rounded-2xl border border-ink/10 bg-paper/60 p-4 text-left text-xs sm:text-sm">
           <div className="flex items-center gap-2.5 font-medium text-ink/80">
             <CheckCircle2 className="h-4 w-4 shrink-0 text-leaf" />
-            <span>Interactive lessons & code verification checkpoints</span>
+            <span>Focused lessons and practical exercises</span>
           </div>
           <div className="flex items-center gap-2.5 font-medium text-ink/80">
             <CheckCircle2 className="h-4 w-4 shrink-0 text-leaf" />
-            <span>Live AI Mentor drawer & contextual assistance</span>
+            <span>Knowledge checks with answer explanations</span>
           </div>
           <div className="flex items-center gap-2.5 font-medium text-ink/80">
             <CheckCircle2 className="h-4 w-4 shrink-0 text-leaf" />
-            <span>Persistent learning progress, badges & certificates</span>
+            <span>Lesson progress and next steps</span>
           </div>
         </div>
 

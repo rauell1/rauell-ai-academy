@@ -7,14 +7,22 @@ export function parseLocalProgress(
   storage: Pick<Storage, "length" | "key" | "getItem">,
 ): LocalProgressItem[] {
   const items: LocalProgressItem[] = [];
-  for (let i = 0; i < storage.length; i += 1) {
-    const key = storage.key(i);
-    if (!key || !key.startsWith("done:") || storage.getItem(key) !== "1")
-      continue;
-    const [, courseSlug, lessonKey, ...extra] = key.split(":");
-    if (!courseSlug || !/^\d+-\d+$/.test(lessonKey || "") || extra.length)
-      continue;
-    items.push({ key, courseSlug, lessonKey });
+  try {
+    for (let i = 0; i < storage.length; i += 1) {
+      const key = storage.key(i);
+      if (
+        !key ||
+        !key.startsWith("done:") ||
+        !["1", "true"].includes(storage.getItem(key) || "")
+      )
+        continue;
+      const [, courseSlug, lessonKey, ...extra] = key.split(":");
+      if (!courseSlug || !/^\d+-\d+$/.test(lessonKey || "") || extra.length)
+        continue;
+      items.push({ key, courseSlug, lessonKey });
+    }
+  } catch {
+    return items;
   }
   return items;
 }
