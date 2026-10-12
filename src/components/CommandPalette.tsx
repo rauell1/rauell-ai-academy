@@ -229,12 +229,12 @@ export function CommandPalette() {
         role="dialog"
         aria-modal="true"
         aria-label="Search the Academy"
-        className="w-full max-w-xl rounded-2xl bg-white shadow-2xl border border-zinc-200 overflow-hidden flex flex-col max-h-[75vh]"
+        className="w-full max-w-xl rounded-2xl bg-paper shadow-2xl border border-line overflow-hidden flex flex-col max-h-[75vh] dark:border-white/10 dark:bg-[#121927]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Search Input Bar */}
-        <div className="flex items-center px-4 py-3.5 border-b border-zinc-200 gap-3 bg-zinc-50/50">
-          <Search className="h-5 w-5 text-zinc-400 shrink-0" />
+        <div className="flex items-center px-4 py-3.5 border-b border-line gap-3 bg-paper-muted/50 dark:border-white/10 dark:bg-[#161f30]">
+          <Search className="h-5 w-5 text-ink/40 dark:text-ink/50 shrink-0" />
           <input
             aria-label="Search courses, labs, and pathways"
             type="text"
@@ -243,13 +243,13 @@ export function CommandPalette() {
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Search courses, pathways, labs, or case studies... (e.g. solar, prompting, water)"
-            className="min-w-0 flex-1 bg-transparent text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none"
+            className="min-w-0 flex-1 bg-transparent text-sm text-ink placeholder:text-ink/40 focus:outline-none dark:placeholder:text-ink/40"
           />
           <button
             type="button"
             aria-label="Close search"
             onClick={() => setIsOpen(false)}
-            className="rounded p-2 text-zinc-600"
+            className="rounded p-2 text-ink/60 hover:text-ink"
           >
             <X className="h-4 w-4" />
           </button>
@@ -257,22 +257,22 @@ export function CommandPalette() {
             <button
               aria-label="Clear search"
               onClick={() => setQuery("")}
-              className="text-zinc-400 hover:text-zinc-600 rounded p-1"
+              className="text-ink/40 hover:text-ink rounded p-1"
             >
               <X className="h-4 w-4" />
             </button>
           )}
-          <kbd className="hidden sm:inline-block rounded bg-zinc-200/80 px-2 py-0.5 text-[10px] font-mono text-zinc-600">
+          <kbd className="hidden sm:inline-block rounded bg-ink/5 dark:bg-white/10 px-2 py-0.5 text-[10px] font-mono text-ink/60">
             ESC
           </kbd>
         </div>
 
         {/* Results List */}
-        <div className="overflow-y-auto p-2 divide-y divide-zinc-100">
+        <div className="overflow-y-auto p-2 divide-y divide-line/40 dark:divide-white/5">
           {filteredItems.length === 0 ? (
-            <div className="py-12 text-center text-sm text-zinc-500">
+            <div className="py-12 text-center text-sm text-ink/60">
               No results found for{" "}
-              <span className="font-semibold text-zinc-700">"{query}"</span>.
+              <span className="font-semibold text-ink">"{query}"</span>.
             </div>
           ) : (
             filteredItems.map((item, index) => {
@@ -285,22 +285,22 @@ export function CommandPalette() {
                   onMouseEnter={() => setSelectedIndex(index)}
                   className={`w-full text-left flex items-center justify-between p-3 rounded-xl cursor-pointer transition-colors ${
                     isSelected
-                      ? "bg-emerald-50 text-emerald-950"
-                      : "hover:bg-zinc-50 text-zinc-800"
+                      ? "bg-mint/20 text-ink dark:bg-mint/15 dark:text-white"
+                      : "hover:bg-ink/5 text-ink/80 dark:hover:bg-white/5 dark:text-ink/80"
                   }`}
                 >
                   <div className="flex items-center gap-3 overflow-hidden">
                     <div
                       className={`flex h-8 w-8 items-center justify-center rounded-lg shrink-0 ${
                         item.category === "Pathway"
-                          ? "bg-amber-100 text-amber-800"
+                          ? "bg-amber-100 text-amber-900 dark:bg-amber-950/60 dark:text-amber-300"
                           : item.category === "Course"
-                            ? "bg-blue-100 text-blue-800"
+                            ? "bg-blue-100 text-blue-900 dark:bg-blue-950/60 dark:text-blue-300"
                             : item.category === "Lab"
-                              ? "bg-emerald-100 text-emerald-800"
+                              ? "bg-emerald-100 text-emerald-900 dark:bg-emerald-950/60 dark:text-emerald-300"
                               : item.category === "Case Study"
-                                ? "bg-purple-100 text-purple-800"
-                                : "bg-zinc-100 text-zinc-700"
+                                ? "bg-purple-100 text-purple-900 dark:bg-purple-950/60 dark:text-purple-300"
+                                : "bg-ink/5 text-ink dark:bg-white/10 dark:text-ink"
                       }`}
                     >
                       {item.category === "Pathway" && (
@@ -321,20 +321,20 @@ export function CommandPalette() {
                     </div>
                     <div className="overflow-hidden">
                       <div className="flex items-center gap-2">
-                        <span className="font-medium text-sm truncate">
+                        <span className="font-semibold text-sm truncate text-ink">
                           {item.title}
                         </span>
-                        <span className="text-[10px] uppercase font-semibold tracking-wider px-1.5 py-0.2 rounded bg-zinc-100 text-zinc-600">
+                        <span className="text-[10px] uppercase font-mono font-semibold tracking-wider px-1.5 py-0.2 rounded bg-ink/5 text-ink/60 dark:bg-white/10 dark:text-ink/70">
                           {item.category}
                         </span>
                       </div>
-                      <p className="text-xs text-zinc-500 truncate">
+                      <p className="text-xs text-ink/60 truncate mt-0.5">
                         {item.description}
                       </p>
                     </div>
                   </div>
                   <ArrowRight
-                    className={`h-4 w-4 text-emerald-600 shrink-0 transition-opacity ${
+                    className={`h-4 w-4 text-leaf dark:text-mint shrink-0 transition-opacity ${
                       isSelected ? "opacity-100" : "opacity-0"
                     }`}
                   />
@@ -345,26 +345,26 @@ export function CommandPalette() {
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between px-4 py-2 bg-zinc-50 border-t border-zinc-200 text-[11px] text-zinc-500">
+        <div className="flex items-center justify-between px-4 py-2.5 bg-paper-muted/60 border-t border-line text-[11px] text-ink/60 dark:border-white/10 dark:bg-[#0e1420]">
           <div className="flex items-center gap-3">
             <span>
-              <kbd className="rounded bg-zinc-200 px-1.5 py-0.5 font-mono text-[10px]">
+              <kbd className="rounded bg-ink/5 dark:bg-white/10 px-1.5 py-0.5 font-mono text-[10px]">
                 ↑
               </kbd>
-              <kbd className="rounded bg-zinc-200 px-1.5 py-0.5 font-mono text-[10px] ml-1">
+              <kbd className="rounded bg-ink/5 dark:bg-white/10 px-1.5 py-0.5 font-mono text-[10px] ml-1">
                 ↓
               </kbd>{" "}
               navigate
             </span>
             <span>
-              <kbd className="rounded bg-zinc-200 px-1.5 py-0.5 font-mono text-[10px]">
+              <kbd className="rounded bg-ink/5 dark:bg-white/10 px-1.5 py-0.5 font-mono text-[10px]">
                 ↵
               </kbd>{" "}
               select
             </span>
           </div>
-          <span className="inline-flex items-center gap-2">
-            <AcademyLogo decorative className="h-5 w-5" />
+          <span className="inline-flex items-center gap-2 font-mono">
+            <AcademyLogo decorative className="h-4 w-4" />
             Academy Search
           </span>
         </div>

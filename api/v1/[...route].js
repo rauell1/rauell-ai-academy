@@ -2705,23 +2705,28 @@ async function callOpenAiCompatible(params) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 2e4);
   try {
-    const res = await fetch(`${params.url.replace(/\/+$/, "")}/chat/completions`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${params.apiKey}`
-      },
-      body: JSON.stringify({
-        model: params.model,
-        messages: params.messages,
-        temperature: params.temperature ?? 0.2,
-        max_tokens: params.maxTokens ?? 1500
-      }),
-      signal: controller.signal
-    });
+    const res = await fetch(
+      `${params.url.replace(/\/+$/, "")}/chat/completions`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${params.apiKey}`
+        },
+        body: JSON.stringify({
+          model: params.model,
+          messages: params.messages,
+          temperature: params.temperature ?? 0.2,
+          max_tokens: params.maxTokens ?? 1500
+        }),
+        signal: controller.signal
+      }
+    );
     if (!res.ok) {
       const errText = await res.text().catch(() => "");
-      throw new Error(`LLM upstream error ${res.status}: ${errText.slice(0, 200)}`);
+      throw new Error(
+        `LLM upstream error ${res.status}: ${errText.slice(0, 200)}`
+      );
     }
     const json = await res.json();
     const content = json?.choices?.[0]?.message?.content;
@@ -2736,7 +2741,10 @@ async function callOpenAiCompatible(params) {
 aiApi.post("/ai/chat", zValidator3("json", chatSchema), async (c) => {
   const session = await getActiveSession(c.req.raw.headers);
   if (!session) {
-    return c.json({ error: "Authentication required to consult the AI Mentor." }, 401);
+    return c.json(
+      { error: "Authentication required to consult the AI Mentor." },
+      401
+    );
   }
   const startTime = Date.now();
   const input = c.req.valid("json");
@@ -2779,7 +2787,10 @@ aiApi.post("/ai/chat", zValidator3("json", chatSchema), async (c) => {
         latencyMs: Date.now() - startTime
       });
     } catch (err) {
-      console.warn("NVIDIA NIM API call failed, falling back to offline mentor:", err);
+      console.warn(
+        "NVIDIA NIM API call failed, falling back to offline mentor:",
+        err
+      );
     }
   }
   if (env2.NEON_AI_GATEWAY_TOKEN && env2.NEON_AI_GATEWAY_BASE_URL) {
@@ -2801,7 +2812,10 @@ aiApi.post("/ai/chat", zValidator3("json", chatSchema), async (c) => {
         latencyMs: Date.now() - startTime
       });
     } catch (err) {
-      console.warn("Neon AI Gateway call failed, falling back to offline mentor:", err);
+      console.warn(
+        "Neon AI Gateway call failed, falling back to offline mentor:",
+        err
+      );
     }
   }
   const lastUserMsg = [...input.messages].reverse().find((m) => m.role === "user")?.content || "";
@@ -2817,7 +2831,10 @@ aiApi.post("/ai/chat", zValidator3("json", chatSchema), async (c) => {
 aiApi.post("/ai/evaluate", zValidator3("json", evaluateSchema), async (c) => {
   const session = await getActiveSession(c.req.raw.headers);
   if (!session) {
-    return c.json({ error: "Authentication required to run AI evaluations." }, 401);
+    return c.json(
+      { error: "Authentication required to run AI evaluations." },
+      401
+    );
   }
   const startTime = Date.now();
   const input = c.req.valid("json");
@@ -2852,7 +2869,10 @@ aiApi.post("/ai/evaluate", zValidator3("json", evaluateSchema), async (c) => {
         latencyMs: Date.now() - startTime
       });
     } catch (err) {
-      console.warn("NVIDIA evaluation failed, falling back to local evaluator:", err);
+      console.warn(
+        "NVIDIA evaluation failed, falling back to local evaluator:",
+        err
+      );
     }
   }
   const localOutput = generateLocalEvaluation(input);

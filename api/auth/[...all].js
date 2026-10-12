@@ -1123,10 +1123,14 @@ async function handler(req, res) {
   } catch (error) {
     console.error("Auth API Handler Exception:", error);
     if (res && typeof res.status === "function") {
-      return res.status(500).json({ error: "Authentication system encountered an unexpected error." });
+      return res.status(500).json({
+        error: "Authentication system encountered an unexpected error."
+      });
     }
     return new Response(
-      JSON.stringify({ error: "Authentication system encountered an unexpected error." }),
+      JSON.stringify({
+        error: "Authentication system encountered an unexpected error."
+      }),
       {
         status: 500,
         headers: { "Content-Type": "application/json" }

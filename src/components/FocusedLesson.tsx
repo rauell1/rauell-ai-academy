@@ -37,7 +37,11 @@ export function FocusedLesson({
             key={item.id}
             onClick={() => go(index)}
             aria-current={index === step ? "step" : undefined}
-            className={`rounded-full border px-3 py-2 text-xs font-semibold ${index === step ? "border-ink bg-ink text-white" : "border-ink/15 bg-white text-ink/70"}`}
+            className={`rounded-full border px-3.5 py-1.5 text-xs font-semibold transition ${
+              index === step
+                ? "border-ink bg-ink text-white dark:border-white/20 dark:bg-white/15"
+                : "border-line bg-paper text-ink/70 hover:border-ink/30 dark:border-white/10 dark:text-ink/80"
+            }`}
           >
             {index + 1}. {item.title}
           </button>
@@ -50,7 +54,7 @@ export function FocusedLesson({
           hidden={index !== step}
           tabIndex={-1}
           aria-label={item.title}
-          className="mt-7 rounded-2xl border border-ink/10 bg-white p-5 sm:p-7"
+          className="mt-7 card p-6 sm:p-8"
         >
           <p className="eyebrow text-leaf">
             Stage {index + 1} of {sections.length}

@@ -19,6 +19,7 @@ import { AITutorDrawer } from "@/components/AITutorDrawer";
 import { FocusedLesson } from "@/components/FocusedLesson";
 import { safeStorageGet, useCourseProgress } from "@/lib/learning-progress";
 import { RequireAuth } from "@/components/RequireAuth";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export const Route = createFileRoute(
   "/courses/$courseSlug_/lessons/$lessonSlug",
@@ -322,39 +323,51 @@ function LessonContent() {
       backTo={`/courses/${courseSlug}`}
       backLabel={`Return to ${course?.title || "course"} overview`}
     >
-      <div className="flex min-h-screen flex-col bg-paper">
-        {/* Top bar */}
-        <div className="sticky top-[72px] z-30 border-b border-ink/10 bg-ink px-5 py-3 text-white">
+      <div className="flex min-h-screen flex-col bg-cream/40 text-ink transition-colors dark:bg-[#080d16]">
+        {/* Workspace Top Bar */}
+        <div className="sticky top-[72px] z-30 border-b border-line/80 bg-paper/90 px-5 py-2.5 backdrop-blur-xl transition-colors dark:border-white/10 dark:bg-[#0c1322]">
           <div className="mx-auto flex max-w-7xl items-center gap-4">
             <Link
               to="/courses/$courseSlug"
               params={{ courseSlug }}
-              className="inline-flex items-center gap-2 text-xs font-bold text-white/65 transition hover:text-white"
+              className="inline-flex items-center gap-2 text-xs font-bold text-ink/70 transition hover:text-ink dark:text-ink/75 dark:hover:text-white"
             >
               <ArrowLeft className="h-4 w-4" />
-              {course.title}
+              <span className="hidden sm:inline">{course.title}</span>
+              <span className="sm:hidden">Overview</span>
             </Link>
 
-            <div className="ml-auto flex items-center gap-3">
+            {/* Quick Completion Pill */}
+            <div className="hidden md:flex items-center gap-2 rounded-full border border-line bg-paper px-3 py-1 font-mono text-[11px] text-ink/70 dark:border-white/10 dark:text-ink/80">
+              <span className="h-1.5 w-1.5 rounded-full bg-mint" />
+              <span>
+                {progress.count} of {progress.total} completed ({progress.total > 0 ? Math.round((progress.count / progress.total) * 100) : 0}%)
+              </span>
+            </div>
+
+            <div className="ml-auto flex items-center gap-2.5">
               <button
                 onClick={() => setFocusMode((m) => !m)}
-                className="hidden items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-white/20 lg:flex"
+                className="hidden items-center gap-1.5 rounded-full border border-line bg-paper px-3 py-1 text-xs font-semibold text-ink transition hover:border-ink/30 dark:border-white/15 dark:text-ink/90 lg:flex"
               >
                 {focusMode ? (
                   <>
                     <Minimize2 className="h-3.5 w-3.5" />
-                    Exit focus
+                    <span>Exit focus</span>
                   </>
                 ) : (
                   <>
                     <Maximize2 className="h-3.5 w-3.5" />
-                    Focus
+                    <span>Focus mode</span>
                   </>
                 )}
               </button>
+
+              <ThemeToggle compact />
+
               <button
                 onClick={() => setSidebarOpen((o) => !o)}
-                className="rounded-lg p-1.5 text-white/65 transition hover:bg-white/10 hover:text-white lg:hidden"
+                className="rounded-lg border border-line bg-paper p-1.5 text-ink transition hover:border-ink/30 lg:hidden dark:border-white/10"
                 aria-label="Toggle lesson navigation"
                 aria-expanded={sidebarOpen}
                 aria-controls="lesson-navigation"
@@ -375,7 +388,7 @@ function LessonContent() {
             id="lesson-navigation"
             className={`${
               sidebarOpen ? "block" : "hidden"
-            } ${focusMode ? "lg:hidden" : "lg:block"} w-full shrink-0 border-b border-ink/10 bg-white lg:w-72 lg:border-b-0 lg:border-r`}
+            } ${focusMode ? "lg:hidden" : "lg:block"} w-full shrink-0 border-b border-line bg-paper/60 backdrop-blur-md lg:w-72 lg:border-b-0 lg:border-r dark:border-white/10 dark:bg-[#0c1322]`}
           >
             <nav
               aria-label="Course lessons"
@@ -426,22 +439,28 @@ function LessonContent() {
                 </p>
               )}
 
-              <div className="mt-5 rounded-xl bg-ink/5 p-4">
-                <p className="text-sm font-semibold">
-                  {progress.count} of {progress.total} lessons completed ·{" "}
-                  {lesson.estimatedMinutes} min estimated
-                </p>
-                <progress
-                  aria-label="Course completion"
-                  max={progress.total || 1}
-                  value={progress.count}
-                  className="mt-3 h-2 w-full accent-leaf"
-                />
-                <p className="mt-2 text-xs text-ink/60">
-                  Course completion reflects lessons you mark complete. It is
-                  not an assessment score.
+              <div className="mt-6 card p-5 border border-line bg-paper dark:border-white/10 dark:bg-[#121927]">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm font-bold text-ink">
+                    Course Progress
+                  </p>
+                  <span className="font-mono text-xs font-semibold text-leaf dark:text-mint">
+                    {progress.count} / {progress.total} Completed
+                  </span>
+                </div>
+                <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-ink/10 dark:bg-white/10">
+                  <div
+                    className="h-full bg-mint transition-all duration-300"
+                    style={{
+                      width: `${progress.total > 0 ? (progress.count / progress.total) * 100 : 0}%`,
+                    }}
+                  />
+                </div>
+                <p className="mt-2.5 text-xs text-ink/60 dark:text-ink/70">
+                  Estimated time: {lesson.estimatedMinutes} min · Progress is recorded as you complete stages.
                 </p>
               </div>
+
               <FocusedLesson
                 key={`${courseSlug}:${lessonSlug}`}
                 courseSlug={courseSlug}
@@ -460,22 +479,22 @@ function LessonContent() {
               {status.error && (
                 <p
                   role="alert"
-                  className="mt-8 rounded-xl bg-red-50 p-4 text-sm text-red-800"
+                  className="mt-8 rounded-xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-600 dark:text-red-400"
                 >
                   {status.error}
                 </p>
               )}
 
               {/* Completion & Navigation */}
-              <div className="mt-14 flex flex-wrap items-center justify-between gap-4 border-t border-ink/10 pt-8">
+              <div className="mt-14 flex flex-wrap items-center justify-between gap-4 border-t border-line/80 pt-8 dark:border-white/10">
                 <div className="flex flex-col gap-1.5">
                   <button
                     onClick={complete}
                     disabled={status.busy || isCompleted}
                     className={`inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-bold transition ${
                       isCompleted
-                        ? "bg-leaf/15 text-leaf cursor-default"
-                        : "bg-leaf text-white hover:bg-leaf/85"
+                        ? "bg-mint/20 text-leaf dark:bg-mint/15 dark:text-mint border border-mint/30 cursor-default"
+                        : "primary-action"
                     }`}
                   >
                     <Check className="h-4 w-4" />
@@ -486,17 +505,17 @@ function LessonContent() {
                         : "Mark as complete"}
                   </button>
                   {isCompleted && (
-                    <span role="status" className="text-xs text-ink/60 ml-1">
+                    <span role="status" className="font-mono text-[11px] text-ink/60 dark:text-ink/70 ml-1">
                       {status.synced ||
                       safeStorageGet(`synced:${courseSlug}:${lessonSlug}`) ===
                         "true"
-                        ? "Saved to your account"
-                        : "Saved in this browser. Account sync is not confirmed."}
+                        ? "Saved to account"
+                        : "Saved locally in browser"}
                     </span>
                   )}
                 </div>
 
-                <div className="flex gap-3">
+                <div className="flex items-center gap-3">
                   {prevLesson && (
                     <Link
                       to="/courses/$courseSlug/lessons/$lessonSlug"
@@ -504,7 +523,7 @@ function LessonContent() {
                         courseSlug,
                         lessonSlug: prevLesson.slug,
                       }}
-                      className="inline-flex items-center gap-1.5 rounded-full border border-ink/20 bg-white px-4 py-2.5 text-xs font-bold text-ink transition hover:bg-paper"
+                      className="secondary-action"
                     >
                       <ArrowLeft className="h-3.5 w-3.5" />
                       Previous
@@ -517,9 +536,9 @@ function LessonContent() {
                         courseSlug,
                         lessonSlug: nextLesson.slug,
                       }}
-                      className="inline-flex items-center gap-1.5 rounded-full bg-ink px-5 py-2.5 text-xs font-bold text-white transition hover:bg-ink/85"
+                      className="primary-action"
                     >
-                      Next lesson
+                      <span>Next lesson</span>
                       <ArrowRight className="h-3.5 w-3.5" />
                     </Link>
                   )}
@@ -553,21 +572,21 @@ function ModuleNav({
   const lessons = Array.isArray(module.lessons) ? module.lessons : [];
 
   return (
-    <div className="mb-1">
+    <div className="mb-1.5">
       <button
         aria-expanded={open}
         onClick={() => setOpen((o) => !o)}
-        className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-bold text-ink transition hover:bg-ink/5"
+        className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm font-bold text-ink transition hover:bg-ink/5 dark:hover:bg-white/5"
       >
         {open ? (
-          <ChevronDown className="h-4 w-4 shrink-0 text-ink/40" />
+          <ChevronDown className="h-4 w-4 shrink-0 text-ink/40 dark:text-ink/50" />
         ) : (
-          <ChevronRight className="h-4 w-4 shrink-0 text-ink/40" />
+          <ChevronRight className="h-4 w-4 shrink-0 text-ink/40 dark:text-ink/50" />
         )}
         <span className="flex-1 leading-5">{module.title}</span>
       </button>
       {open && (
-        <ul className="ml-4 mt-0.5 space-y-0.5 border-l border-ink/10 pl-3">
+        <ul className="ml-4 mt-1 space-y-0.5 border-l border-line pl-3 dark:border-white/10">
           {lessons.map((lesson, lIdx) => {
             const slug = lesson.slug || `${mIdx}-${lIdx + 1}`;
             const isCurrent = mIdx === currentMi && lIdx + 1 === currentLi;
@@ -580,8 +599,8 @@ function ModuleNav({
                   aria-current={isCurrent ? "page" : undefined}
                   className={`block rounded-lg px-3 py-2 text-sm leading-5 transition ${
                     isCurrent
-                      ? "bg-leaf/10 font-bold text-leaf"
-                      : "text-ink/65 hover:bg-ink/5 hover:text-ink"
+                      ? "bg-mint/20 font-bold text-leaf dark:bg-mint/15 dark:text-mint"
+                      : "text-ink/65 hover:bg-ink/5 hover:text-ink dark:text-ink/75 dark:hover:bg-white/5 dark:hover:text-white"
                   }`}
                 >
                   {lesson.title}
