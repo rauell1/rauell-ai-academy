@@ -76,7 +76,7 @@ function Home() {
           </div>
 
           {/* Right Hero Bento Box */}
-          <div className="learning-board card relative overflow-hidden border border-line/80 bg-ink p-7 text-white shadow-2xl dark:border-white/10 dark:bg-[#0d1424] sm:p-8">
+          <div className="learning-board relative overflow-hidden rounded-[1.5rem] border border-white/15 bg-[#0b1830] p-7 text-white shadow-2xl dark:border-white/10 dark:bg-[#0c1322] sm:p-8">
             <div className="flex items-center justify-between border-b border-white/15 pb-5">
               <span className="eyebrow flex items-center gap-1.5 text-mint">
                 <Terminal className="h-3.5 w-3.5" />
@@ -273,7 +273,7 @@ function Home() {
 
       {/* The Rauell Methodology Bento Grid */}
       <section className="mx-auto grid max-w-7xl gap-8 px-5 py-20 lg:grid-cols-2 lg:px-8">
-        <div className="card relative overflow-hidden border border-mint/40 bg-mint/15 p-8 sm:p-10 dark:bg-mint/10 dark:border-mint/30">
+        <div className="relative overflow-hidden rounded-[1.25rem] border border-mint/40 bg-mint/15 p-8 shadow-xs sm:p-10 dark:border-mint/30 dark:bg-mint/10">
           <p className="eyebrow text-leaf dark:text-mint">The Rauell Approach</p>
           <h2 className="font-display mt-4 text-3xl sm:text-4xl font-bold tracking-tight text-ink">
             Learning that holds up

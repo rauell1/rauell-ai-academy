@@ -50,6 +50,10 @@ export function applyTheme(theme: Theme) {
   }
 }
 
+export function initTheme() {
+  applyTheme(getStoredTheme());
+}
+
 export function useTheme() {
   const [theme, setThemeState] = useState<Theme>(getStoredTheme);
   const [resolvedTheme, setResolvedTheme] = useState<"light" | "dark">(() =>

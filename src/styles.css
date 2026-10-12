@@ -220,11 +220,35 @@ button {
 }
 
 .learning-board {
+  background-color: #0b1830 !important;
+  color: #ffffff !important;
   background-image: radial-gradient(
     circle at 100% 0,
     #c9f26018,
     transparent 55%
   );
+}
+
+.dark .learning-board,
+[data-theme="dark"] .learning-board {
+  background-color: #0c1322 !important;
+  color: #ffffff !important;
+}
+
+/* Guard: any dark element pairing bg-ink with text-white must maintain dark navy background */
+.bg-ink.text-white,
+.text-white.bg-ink,
+[class*="bg-ink"][class*="text-white"] {
+  background-color: #0b1830;
+  color: #ffffff;
+}
+
+.dark .bg-ink.text-white,
+.dark .text-white.bg-ink,
+[data-theme="dark"] .bg-ink.text-white,
+[data-theme="dark"] .text-white.bg-ink {
+  background-color: #121d33;
+  color: #ffffff;
 }
 
 .primary-action,

@@ -158,47 +158,46 @@ export function Header() {
           </a>
 
           {/* Auth State */}
-          {!isPending &&
-            (session ? (
-              <div className="flex items-center gap-2 pl-1">
-                {rbac?.isAdmin && (
-                  <Link
-                    to="/admin"
-                    className="rounded-full border border-line bg-paper px-3 py-1.5 text-xs font-bold text-ink transition hover:border-ink/30 dark:border-white/15"
-                  >
-                    Admin
-                  </Link>
-                )}
-                {rbac?.isInstructor && !rbac?.isAdmin && (
-                  <Link
-                    to="/instructor"
-                    className="rounded-full border border-line bg-paper px-3 py-1.5 text-xs font-bold text-ink transition hover:border-ink/30 dark:border-white/15"
-                  >
-                    Instructor
-                  </Link>
-                )}
+          {session ? (
+            <div className="flex items-center gap-2 pl-1">
+              {rbac?.isAdmin && (
                 <Link
-                  to="/my-learning"
-                  className="rounded-full bg-mint px-4 py-2 text-xs font-extrabold text-[#0b1830] transition hover:brightness-105 shadow-xs"
-                >
-                  My learning
-                </Link>
-                <Link
-                  to="/account"
+                  to="/admin"
                   className="rounded-full border border-line bg-paper px-3 py-1.5 text-xs font-bold text-ink transition hover:border-ink/30 dark:border-white/15"
-                  title="Your account"
                 >
-                  Account
+                  Admin
                 </Link>
-              </div>
-            ) : (
+              )}
+              {rbac?.isInstructor && !rbac?.isAdmin && (
+                <Link
+                  to="/instructor"
+                  className="rounded-full border border-line bg-paper px-3 py-1.5 text-xs font-bold text-ink transition hover:border-ink/30 dark:border-white/15"
+                >
+                  Instructor
+                </Link>
+              )}
               <Link
-                to="/sign-in"
-                className="rounded-full bg-mint px-4.5 py-2 text-xs font-extrabold text-[#0b1830] transition hover:brightness-105 shadow-xs"
+                to="/my-learning"
+                className="rounded-full bg-mint px-4 py-2 text-xs font-extrabold text-[#0b1830] transition hover:brightness-105 shadow-xs"
               >
-                Sign in
+                My learning
               </Link>
-            ))}
+              <Link
+                to="/account"
+                className="rounded-full border border-line bg-paper px-3 py-1.5 text-xs font-bold text-ink transition hover:border-ink/30 dark:border-white/15"
+                title="Your account"
+              >
+                Account
+              </Link>
+            </div>
+          ) : (
+            <Link
+              to="/sign-in"
+              className="rounded-full bg-mint px-4.5 py-2 text-xs font-extrabold text-[#0b1830] transition hover:brightness-105 shadow-xs"
+            >
+              Sign in
+            </Link>
+          )}
         </div>
 
         {/* Mobile menu and theme toggle */}
