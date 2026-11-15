@@ -1538,6 +1538,59 @@ import { z as z3 } from "zod";
 import QRCode from "qrcode";
 import { del, getDownloadUrl, put } from "@vercel/blob";
 
+// src/server/object-storage.ts
+import { AwsClient } from "aws4fetch";
+var cached;
+function config() {
+  const endpoint = process.env.AWS_ENDPOINT_URL_S3?.replace(/\/+$/, "");
+  const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
+  const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
+  const bucket = process.env.OBJECT_STORAGE_BUCKET;
+  if (!endpoint || !accessKeyId || !secretAccessKey || !bucket) return null;
+  const region = process.env.AWS_REGION || "auto";
+  const key = [endpoint, accessKeyId, bucket, region].join("|");
+  if (cached?.key !== key) {
+    cached = { key, config: { endpoint, bucket, client: new AwsClient({ accessKeyId, secretAccessKey, service: "s3", region }) } };
+  }
+  return cached.config;
+}
+function objectStorageConfigured() {
+  return config() !== null;
+}
+function requireConfig() {
+  const value = config();
+  if (!value) throw new Error("Object storage is not configured");
+  return value;
+}
+function objectUrl({ endpoint, bucket }, key) {
+  if (!key || key.startsWith("/") || key.split("/").some((part) => part === ".." || part === "")) {
+    throw new Error("Invalid object key");
+  }
+  return `${endpoint}/${encodeURIComponent(bucket)}/${key.split("/").map(encodeURIComponent).join("/")}`;
+}
+async function putObject(key, body, contentType) {
+  const storage = requireConfig();
+  const payload = body instanceof Blob ? await body.arrayBuffer() : body;
+  const response = await storage.client.fetch(objectUrl(storage, key), {
+    method: "PUT",
+    body: payload,
+    headers: { "Content-Type": contentType || "application/octet-stream" }
+  });
+  if (!response.ok) throw new Error(`Object storage upload failed (${response.status})`);
+}
+async function deleteObject(key) {
+  const storage = requireConfig();
+  const response = await storage.client.fetch(objectUrl(storage, key), { method: "DELETE" });
+  if (!response.ok && response.status !== 404) throw new Error(`Object storage delete failed (${response.status})`);
+}
+async function presignGetUrl(key, expiresInSeconds = 900) {
+  const storage = requireConfig();
+  const url = new URL(objectUrl(storage, key));
+  url.searchParams.set("X-Amz-Expires", String(expiresInSeconds));
+  const signed = await storage.client.sign(url.toString(), { method: "GET", aws: { signQuery: true } });
+  return signed.url;
+}
+
 // src/server/domain.ts
 function gradeObjectiveQuestions(questions2, answers) {
   let earned = 0, total = 0, manualReview = false;
@@ -1639,6 +1692,8 @@ async function requirePermission(headers, permission) {
 }
 
 // src/server/api/operations.ts
+var OBJECT_STORAGE_PREFIX = "s3:";
+var fileStorageConfigured = () => objectStorageConfigured() || Boolean(getServerEnv().BLOB_READ_WRITE_TOKEN);
 var courseInput = z3.object({
   title: z3.string().min(3).max(180),
   slug: z3.string().regex(/^[a-z0-9-]+$/).max(120),
@@ -2547,7 +2602,7 @@ operationsApi.post(
 operationsApi.post("/files/project", async (c) => {
   const session = await currentSession(c.req.raw.headers);
   if (!session) return c.json({ error: "Authentication required." }, 401);
-  if (!getServerEnv().BLOB_READ_WRITE_TOKEN)
+  if (!fileStorageConfigured())
     return c.json({ error: "File storage is not configured." }, 503);
   const body = await c.req.parseBody();
   const file = body.file;
@@ -2564,14 +2619,21 @@ operationsApi.post("/files/project", async (c) => {
   if (!allowed.has(file.type) || file.size > getServerEnv().MAX_PROJECT_UPLOAD_BYTES)
     return c.json({ error: "File type or size is not allowed." }, 415);
   const safeName = `projects/${session.user.id}/${crypto.randomUUID()}`;
-  const blob = await put(safeName, file, {
-    access: "private",
-    addRandomSuffix: false
-  });
+  let storageKey;
+  if (objectStorageConfigured()) {
+    await putObject(safeName, file, file.type);
+    storageKey = OBJECT_STORAGE_PREFIX + safeName;
+  } else {
+    const blob = await put(safeName, file, {
+      access: "private",
+      addRandomSuffix: false
+    });
+    storageKey = blob.pathname;
+  }
   const [row] = await getDb().insert(storedFiles).values({
     ownerId: session.user.id,
     purpose: "project_submission",
-    storageKey: blob.pathname,
+    storageKey,
     originalName: file.name.slice(0, 255),
     mimeType: file.type,
     sizeBytes: file.size,
@@ -2585,7 +2647,7 @@ operationsApi.post("/files/project", async (c) => {
 operationsApi.get("/files/:id/download", async (c) => {
   const session = await currentSession(c.req.raw.headers);
   if (!session) return c.json({ error: "Authentication required." }, 401);
-  if (!getServerEnv().BLOB_READ_WRITE_TOKEN)
+  if (!fileStorageConfigured())
     return c.json({ error: "File storage is not configured." }, 503);
   const [file] = await getDb().select().from(storedFiles).where(
     and3(
@@ -2595,12 +2657,13 @@ operationsApi.get("/files/:id/download", async (c) => {
     )
   ).limit(1);
   if (!file) return c.json({ error: "File not found." }, 404);
-  return c.json({ url: await getDownloadUrl(file.storageKey) });
+  const url = file.storageKey.startsWith(OBJECT_STORAGE_PREFIX) ? await presignGetUrl(file.storageKey.slice(OBJECT_STORAGE_PREFIX.length)) : await getDownloadUrl(file.storageKey);
+  return c.json({ url });
 });
 operationsApi.delete("/files/:id", async (c) => {
   const session = await currentSession(c.req.raw.headers);
   if (!session) return c.json({ error: "Authentication required." }, 401);
-  if (!getServerEnv().BLOB_READ_WRITE_TOKEN)
+  if (!fileStorageConfigured())
     return c.json({ error: "File storage is not configured." }, 503);
   const db2 = getDb();
   const [file] = await db2.select().from(storedFiles).where(
@@ -2610,7 +2673,9 @@ operationsApi.delete("/files/:id", async (c) => {
     )
   ).limit(1);
   if (!file) return c.json({ error: "File not found." }, 404);
-  await del(file.storageKey);
+  if (file.storageKey.startsWith(OBJECT_STORAGE_PREFIX))
+    await deleteObject(file.storageKey.slice(OBJECT_STORAGE_PREFIX.length));
+  else await del(file.storageKey);
   await db2.update(storedFiles).set({ state: "deleted", deletedAt: /* @__PURE__ */ new Date(), updatedAt: /* @__PURE__ */ new Date() }).where(eq4(storedFiles.id, file.id));
   return c.json({ deleted: true });
 });
@@ -3079,7 +3144,7 @@ function generateLocalEvaluation(input) {
 }
 
 // src/server/routes/api-v1.ts
-var config = {
+var config2 = {
   runtime: "nodejs"
 };
 var app = new Hono4().basePath("/api/v1");
@@ -3132,6 +3197,6 @@ async function handler(req, res) {
   return (await nodeListener())(req, res);
 }
 export {
-  config,
+  config2 as config,
   handler as default
 };

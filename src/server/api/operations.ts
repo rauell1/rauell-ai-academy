@@ -4,6 +4,12 @@ import { and, asc, count, eq, inArray, sql } from "drizzle-orm";
 import { z } from "zod";
 import QRCode from "qrcode";
 import { del, getDownloadUrl, put } from "@vercel/blob";
+import { deleteObject, objectStorageConfigured, presignGetUrl, putObject } from "../object-storage";
+
+// Files in S3-compatible object storage (Neon today, R2 later) carry this
+// prefix in stored_files.storage_key; keys without it are in Vercel Blob.
+const OBJECT_STORAGE_PREFIX = "s3:";
+const fileStorageConfigured = () => objectStorageConfigured() || Boolean(getServerEnv().BLOB_READ_WRITE_TOKEN);
 import { auth } from "../auth";
 import { getDb } from "../db";
 import { sendAuthEmail } from "../email";
@@ -1245,7 +1251,7 @@ operationsApi.post(
 operationsApi.post("/files/project", async (c) => {
   const session = await currentSession(c.req.raw.headers);
   if (!session) return c.json({ error: "Authentication required." }, 401);
-  if (!getServerEnv().BLOB_READ_WRITE_TOKEN)
+  if (!fileStorageConfigured())
     return c.json({ error: "File storage is not configured." }, 503);
   const body = await c.req.parseBody();
   const file = body.file;
@@ -1265,16 +1271,23 @@ operationsApi.post("/files/project", async (c) => {
   )
     return c.json({ error: "File type or size is not allowed." }, 415);
   const safeName = `projects/${session.user.id}/${crypto.randomUUID()}`;
-  const blob = await put(safeName, file, {
-    access: "private",
-    addRandomSuffix: false,
-  });
+  let storageKey: string;
+  if (objectStorageConfigured()) {
+    await putObject(safeName, file, file.type);
+    storageKey = OBJECT_STORAGE_PREFIX + safeName;
+  } else {
+    const blob = await put(safeName, file, {
+      access: "private",
+      addRandomSuffix: false,
+    });
+    storageKey = blob.pathname;
+  }
   const [row] = await getDb()
     .insert(storedFiles)
     .values({
       ownerId: session.user.id,
       purpose: "project_submission",
-      storageKey: blob.pathname,
+      storageKey,
       originalName: file.name.slice(0, 255),
       mimeType: file.type,
       sizeBytes: file.size,
@@ -1289,7 +1302,7 @@ operationsApi.post("/files/project", async (c) => {
 operationsApi.get("/files/:id/download", async (c) => {
   const session = await currentSession(c.req.raw.headers);
   if (!session) return c.json({ error: "Authentication required." }, 401);
-  if (!getServerEnv().BLOB_READ_WRITE_TOKEN)
+  if (!fileStorageConfigured())
     return c.json({ error: "File storage is not configured." }, 503);
   const [file] = await getDb()
     .select()
@@ -1303,12 +1316,15 @@ operationsApi.get("/files/:id/download", async (c) => {
     )
     .limit(1);
   if (!file) return c.json({ error: "File not found." }, 404);
-  return c.json({ url: await getDownloadUrl(file.storageKey) });
+  const url = file.storageKey.startsWith(OBJECT_STORAGE_PREFIX)
+    ? await presignGetUrl(file.storageKey.slice(OBJECT_STORAGE_PREFIX.length))
+    : await getDownloadUrl(file.storageKey);
+  return c.json({ url });
 });
 operationsApi.delete("/files/:id", async (c) => {
   const session = await currentSession(c.req.raw.headers);
   if (!session) return c.json({ error: "Authentication required." }, 401);
-  if (!getServerEnv().BLOB_READ_WRITE_TOKEN)
+  if (!fileStorageConfigured())
     return c.json({ error: "File storage is not configured." }, 503);
   const db = getDb();
   const [file] = await db
@@ -1322,7 +1338,9 @@ operationsApi.delete("/files/:id", async (c) => {
     )
     .limit(1);
   if (!file) return c.json({ error: "File not found." }, 404);
-  await del(file.storageKey);
+  if (file.storageKey.startsWith(OBJECT_STORAGE_PREFIX))
+    await deleteObject(file.storageKey.slice(OBJECT_STORAGE_PREFIX.length));
+  else await del(file.storageKey);
   await db
     .update(storedFiles)
     .set({ state: "deleted", deletedAt: new Date(), updatedAt: new Date() })

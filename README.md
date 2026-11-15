@@ -77,5 +77,5 @@ The site runs on Cloudflare Workers. `wrangler.jsonc` serves the Vite build in `
 
 - GitHub repository secrets: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`.
 - Worker secrets (`npx wrangler secret put NAME` or the Cloudflare dashboard): every runtime variable in `.env.example`. `NODE_ENV=production` is set in `wrangler.jsonc`, so `DATABASE_ENVIRONMENT` must be `production` (or unset) and `APP_ORIGIN` should be `https://learn.rauell.systems`.
-- Course files still use Vercel Blob through `BLOB_READ_WRITE_TOKEN`.
+- Course files: new uploads go to Neon object storage (S3-compatible) when `AWS_ENDPOINT_URL_S3`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_REGION` and `OBJECT_STORAGE_BUCKET` are set (Neon project `muddy-moon-24261149`, bucket `course-files`, private). Their `stored_files.storage_key` starts with `s3:`; older files without the prefix are still read from Vercel Blob through `BLOB_READ_WRITE_TOKEN` until they are copied. The same settings can point at Cloudflare R2 later.
 - Local check: `npm run cf:preview` with the variables in `.dev.vars`.
