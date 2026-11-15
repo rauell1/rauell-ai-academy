@@ -4,6 +4,10 @@
   "main": "worker/index.ts",
   "compatibility_date": "2026-11-01",
   "compatibility_flags": ["nodejs_compat"],
+  // Run the Worker near its database and APIs rather than near each visitor.
+  // Without this, every query from a page in Nairobi would cross to the
+  // database region and back, which is slower than Vercel's single region.
+  "placement": { "mode": "smart" },
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",
