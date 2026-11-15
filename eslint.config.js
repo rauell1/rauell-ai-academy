@@ -5,7 +5,7 @@ import reactRefresh from "eslint-plugin-react-refresh";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
-  { ignores: ["dist", "node_modules", "src/routeTree.gen.ts", "drizzle", "api/**"] },
+  { ignores: ["dist", "node_modules", ".wrangler", "src/routeTree.gen.ts", "drizzle", "api/**"] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {

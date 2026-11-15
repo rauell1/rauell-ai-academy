@@ -1,0 +1,7 @@
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://cdn.rauell.systems https://*.r2.dev https://*.rauell.systems; font-src 'self'; media-src 'self' https://cdn.rauell.systems https://*.r2.dev https://*.rauell.systems blob: data:; frame-src 'self' https://www.youtube.com https://player.vimeo.com; connect-src 'self' https://cdn.rauell.systems https://*.r2.dev https://*.rauell.systems; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'

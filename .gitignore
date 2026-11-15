@@ -14,3 +14,7 @@ src/server/video-blob-manifest.json
 
 .freebuff
 .agents
+
+# Cloudflare (Wrangler state, local secrets)
+/.wrangler/
+.dev.vars

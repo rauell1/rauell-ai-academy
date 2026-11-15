@@ -5,7 +5,6 @@ var __export = (target, all) => {
 };
 
 // src/server/routes/api-v1.ts
-import { getRequestListener } from "@hono/node-server";
 import { Hono as Hono4 } from "hono";
 
 // src/server/api/learning.ts
@@ -3118,12 +3117,19 @@ app.onError((error, c) => {
 app.route("/", learningApi);
 app.route("/", operationsApi);
 app.route("/", aiApi);
-var listener = getRequestListener(app.fetch);
+var listener;
+async function nodeListener() {
+  if (!listener) {
+    const { getRequestListener } = await import("@hono/node-server");
+    listener = getRequestListener(app.fetch);
+  }
+  return listener;
+}
 async function handler(req, res) {
   if (!res || typeof req.json === "function" && !req.headers?.host) {
     return app.fetch(req);
   }
-  return listener(req, res);
+  return (await nodeListener())(req, res);
 }
 export {
   config,

@@ -19,7 +19,9 @@
     "db:seed:course:ai": "tsx src/server/seed-course-ai-automation.ts",
     "db:upload:videos": "tsx --env-file .env.local src/server/upload-videos-to-blob.ts",
     "db:migrate:video-urls": "tsx --env-file .env.local src/server/migrate-video-urls.ts",
-    "db:enable:rls": "tsx scripts/enable-rls.ts"
+    "db:enable:rls": "tsx scripts/enable-rls.ts",
+    "cf:preview": "npm run build && wrangler dev",
+    "cf:deploy": "npm run build && wrangler deploy"
   },
   "dependencies": {
     "@hono/node-server": "^2.1.1",
@@ -64,6 +66,7 @@
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.56.1",
     "vite": "^7.3.6",
-    "vitest": "^4.1.10"
+    "vitest": "^4.1.10",
+    "wrangler": "^4.162.0"
   }
 }
