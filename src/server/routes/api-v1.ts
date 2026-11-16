@@ -1,4 +1,3 @@
-import { getRequestListener } from "@hono/node-server";
 import { Hono } from "hono";
 import { learningApi } from "../api/learning";
 import { operationsApi } from "../api/operations";
@@ -54,11 +53,21 @@ app.route("/", learningApi);
 app.route("/", operationsApi);
 app.route("/", aiApi);
 
-const listener = getRequestListener(app.fetch);
+// Loaded only on the Node request/response path. Importing @hono/node-server
+// replaces the global Response class, which breaks Fetch-based runtimes such
+// as Cloudflare Workers (worker/index.ts calls handler(request) directly).
+let listener: ((req: any, res: any) => Promise<unknown>) | undefined;
+async function nodeListener() {
+  if (!listener) {
+    const { getRequestListener } = await import("@hono/node-server");
+    listener = getRequestListener(app.fetch);
+  }
+  return listener;
+}
 
 export default async function handler(req: any, res?: any) {
   if (!res || (typeof req.json === "function" && !req.headers?.host)) {
     return app.fetch(req);
   }
-  return listener(req, res);
+  return (await nodeListener())(req, res);
 }

@@ -5,7 +5,6 @@ var __export = (target, all) => {
 };
 
 // src/server/routes/api-auth.ts
-import { getRequestListener } from "@hono/node-server";
 import { Hono } from "hono";
 
 // src/server/auth.ts
@@ -1110,7 +1109,14 @@ var app = new Hono();
 app.all("*", (c) => {
   return auth.handler(c.req.raw);
 });
-var listener = getRequestListener(app.fetch);
+var listener;
+async function nodeListener() {
+  if (!listener) {
+    const { getRequestListener } = await import("@hono/node-server");
+    listener = getRequestListener(app.fetch);
+  }
+  return listener;
+}
 async function handler(req, res) {
   try {
     if (!res || typeof req.json === "function" && !req.headers?.host) {
@@ -1119,7 +1125,7 @@ async function handler(req, res) {
     if (req.url && req.url.includes("[...all]") && req.headers?.["x-matched-path"]) {
       req.url = req.headers["x-matched-path"];
     }
-    return await listener(req, res);
+    return await (await nodeListener())(req, res);
   } catch (error) {
     console.error("Auth API Handler Exception:", error);
     if (res && typeof res.status === "function") {
