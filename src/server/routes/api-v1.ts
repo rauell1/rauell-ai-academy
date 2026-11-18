@@ -23,7 +23,6 @@ app.use("*", async (c, next) => {
     if (
       origin &&
       !allowed.includes(origin) &&
-      !origin.endsWith(".vercel.app") &&
       !origin.endsWith(".rauell.systems")
     )
       return c.json({ error: "Request origin is not allowed." }, 403);
