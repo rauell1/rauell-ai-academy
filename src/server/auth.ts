@@ -32,7 +32,8 @@ export const auth = betterAuth({
     ];
     if (
       origin &&
-      (origin.endsWith(".vercel.app") || origin.endsWith(".rauell.systems"))
+      // Only our own subdomains. Any *.vercel.app site could be anyone's.
+      origin.endsWith(".rauell.systems")
     ) {
       return [...defaults, origin];
     }
