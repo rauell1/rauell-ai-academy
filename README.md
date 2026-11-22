@@ -1,4 +1,20 @@
+<!-- header:start -->
+<div align="center">
+
 # Rauell AI Academy
+
+**Rauell AI Academy: a practical, mobile-first AI learning environment with courses, pathways, labs, progress tracking and certificates.**
+
+[![Live: learn.rauell.systems](https://img.shields.io/badge/Live-learn.rauell.systems-0d9488?style=for-the-badge&logo=cloudflare&logoColor=white)](https://learn.rauell.systems) ![Status: live](https://img.shields.io/badge/Status-Live-2ea44f?style=for-the-badge) ![Public repository](https://img.shields.io/badge/Repo-Public-555555?style=for-the-badge&logo=github)
+
+![TypeScript](https://img.shields.io/badge/TypeScript-3178c6?style=flat-square&logo=typescript&logoColor=white) ![React](https://img.shields.io/badge/React-20232a?style=flat-square&logo=react&logoColor=white) ![Hono](https://img.shields.io/badge/Hono-e36002?style=flat-square&logo=hono&logoColor=white) ![Cloudflare Workers](https://img.shields.io/badge/Cloudflare_Workers-f38020?style=flat-square&logo=cloudflare&logoColor=white)
+
+[Live site](https://learn.rauell.systems) · [Contributing](CONTRIBUTING.md) · [Security](SECURITY.md) · [Code of conduct](CODE_OF_CONDUCT.md)
+
+</div>
+
+---
+<!-- header:end -->
 
 A practical, mobile-first AI learning environment for `learn.rauell.systems`.
 
