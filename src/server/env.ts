@@ -56,15 +56,11 @@ const serverEnvSchema = z.object({
     .string()
     .url()
     .default("https://integrate.api.nvidia.com/v1"),
-  NVIDIA_MODEL: z.string().default("meta/llama-3.2-90b-vision-instruct"),
-  // Shared model settings used across the Rauell projects; they take precedence
-  // over NVIDIA_MODEL_HEAVY / NVIDIA_MODEL_LIGHT when set.
-  AI_MODEL_HEAVY: z.string().trim().optional(),
-  AI_MODEL_LIGHT: z.string().trim().optional(),
-  NVIDIA_MODEL_HEAVY: z.string().default("meta/llama-3.2-90b-vision-instruct"),
-  NVIDIA_MODEL_LIGHT: z.string().default("meta/llama-3.2-11b-vision-instruct"),
-  NEON_AI_GATEWAY_TOKEN: z.string().optional(),
-  NEON_AI_GATEWAY_BASE_URL: z.string().url().optional(),
+  // Two-model rule: slot 1 is live; slot 2 is a spare used only while slot 1 is empty.
+  AI_MODEL_HEAVY1: z.string().trim().optional(),
+  AI_MODEL_HEAVY2: z.string().trim().optional(),
+  AI_MODEL_LIGHT1: z.string().trim().optional(),
+  AI_MODEL_LIGHT2: z.string().trim().optional(),
 });
 
 export function getServerEnv(source: NodeJS.ProcessEnv = process.env) {
