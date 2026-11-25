@@ -56,6 +56,7 @@ const evaluateSchema = z.object({
  * A call that fails or is cut off is retried once on the other tier's model.
  * Callers cannot choose a model.
  */
+const NVIDIA_BASE_URL = "https://integrate.api.nvidia.com/v1";
 export const DEFAULT_HEAVY_MODEL = "nvidia/nemotron-3.5-super-vl-120b-a12b";
 export const DEFAULT_LIGHT_MODEL = "nvidia/nemotron-3.5-lightning-30b-a3b";
 type Tier = "heavy" | "light";
@@ -87,13 +88,12 @@ async function completeWithFallback(
   first: Tier,
   params: { messages: Array<{ role: string; content: string }>; temperature?: number; maxTokens?: number },
 ): Promise<{ text: string; model: string; tier: Tier; keySource: string } | null> {
-  const env = getServerEnv();
   let cutOff: { text: string; model: string; tier: Tier; keySource: string } | null = null;
   for (const tier of [first, first === "heavy" ? "light" : "heavy"] as Tier[]) {
     const creds = resolveCredentials(tier);
     if (!creds.apiKey || creds.apiKey.length <= 5) continue;
     try {
-      const reply = await callOpenAiCompatible({ url: env.NVIDIA_BASE_URL, apiKey: creds.apiKey, model: creds.model, ...params });
+      const reply = await callOpenAiCompatible({ url: NVIDIA_BASE_URL, apiKey: creds.apiKey, model: creds.model, ...params });
       const result = { text: reply.text, model: creds.model, tier, keySource: creds.keySource };
       if (!reply.truncated) return result;
       cutOff ??= result;
@@ -105,7 +105,6 @@ async function completeWithFallback(
 }
 
 aiApi.get("/ai/status", (c) => {
-  const env = getServerEnv();
   const heavy = resolveCredentials("heavy");
   const light = resolveCredentials("light");
 
@@ -127,7 +126,7 @@ aiApi.get("/ai/status", (c) => {
         role: "In-Lesson Interactive AI Tutor Chat",
       },
     },
-    endpoint: env.NVIDIA_BASE_URL,
+    endpoint: NVIDIA_BASE_URL,
   });
 });
 

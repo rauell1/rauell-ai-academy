@@ -52,10 +52,6 @@ const serverEnvSchema = z.object({
   NVIDIA_API_KEY: z.string().optional(),
   NVIDIA_API_KEY_1: z.string().optional(),
   NVIDIA_API_KEY_2: z.string().optional(),
-  NVIDIA_BASE_URL: z
-    .string()
-    .url()
-    .default("https://integrate.api.nvidia.com/v1"),
   // Two-model rule: slot 1 is live; slot 2 is a spare used only while slot 1 is empty.
   AI_MODEL_HEAVY1: z.string().trim().optional(),
   AI_MODEL_HEAVY2: z.string().trim().optional(),
