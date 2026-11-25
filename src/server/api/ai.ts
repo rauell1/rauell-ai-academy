@@ -57,7 +57,7 @@ function resolveCredentials(tier: "heavy" | "light") {
       null;
     return {
       apiKey: key,
-      model: env.NVIDIA_MODEL_HEAVY || "meta/llama-3.2-90b-vision-instruct",
+      model: env.AI_MODEL_HEAVY || env.NVIDIA_MODEL_HEAVY || "meta/llama-3.2-90b-vision-instruct",
       keySource: env.NVIDIA_API_KEY_1
         ? "NVIDIA_API_KEY_1 (Heavy)"
         : "NVIDIA_API_KEY",
@@ -72,7 +72,7 @@ function resolveCredentials(tier: "heavy" | "light") {
     null;
   return {
     apiKey: key,
-    model: env.NVIDIA_MODEL_LIGHT || "meta/llama-3.2-11b-vision-instruct",
+    model: env.AI_MODEL_LIGHT || env.NVIDIA_MODEL_LIGHT || "meta/llama-3.2-11b-vision-instruct",
     keySource: env.NVIDIA_API_KEY_2
       ? "NVIDIA_API_KEY_2 (Light)"
       : "NVIDIA_API_KEY",

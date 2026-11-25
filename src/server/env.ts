@@ -57,6 +57,10 @@ const serverEnvSchema = z.object({
     .url()
     .default("https://integrate.api.nvidia.com/v1"),
   NVIDIA_MODEL: z.string().default("meta/llama-3.2-90b-vision-instruct"),
+  // Shared model settings used across the Rauell projects; they take precedence
+  // over NVIDIA_MODEL_HEAVY / NVIDIA_MODEL_LIGHT when set.
+  AI_MODEL_HEAVY: z.string().trim().optional(),
+  AI_MODEL_LIGHT: z.string().trim().optional(),
   NVIDIA_MODEL_HEAVY: z.string().default("meta/llama-3.2-90b-vision-instruct"),
   NVIDIA_MODEL_LIGHT: z.string().default("meta/llama-3.2-11b-vision-instruct"),
   NEON_AI_GATEWAY_TOKEN: z.string().optional(),
