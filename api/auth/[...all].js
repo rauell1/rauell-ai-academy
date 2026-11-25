@@ -68,12 +68,11 @@ var serverEnvSchema = z.object({
   NVIDIA_API_KEY: z.string().optional(),
   NVIDIA_API_KEY_1: z.string().optional(),
   NVIDIA_API_KEY_2: z.string().optional(),
-  NVIDIA_BASE_URL: z.string().url().default("https://integrate.api.nvidia.com/v1"),
-  NVIDIA_MODEL: z.string().default("meta/llama-3.2-90b-vision-instruct"),
-  NVIDIA_MODEL_HEAVY: z.string().default("meta/llama-3.2-90b-vision-instruct"),
-  NVIDIA_MODEL_LIGHT: z.string().default("meta/llama-3.2-11b-vision-instruct"),
-  NEON_AI_GATEWAY_TOKEN: z.string().optional(),
-  NEON_AI_GATEWAY_BASE_URL: z.string().url().optional()
+  // Two-model rule: slot 1 is live; slot 2 is a spare used only while slot 1 is empty.
+  AI_MODEL_HEAVY1: z.string().trim().optional(),
+  AI_MODEL_HEAVY2: z.string().trim().optional(),
+  AI_MODEL_LIGHT1: z.string().trim().optional(),
+  AI_MODEL_LIGHT2: z.string().trim().optional()
 });
 function getServerEnv(source = process.env) {
   const runtime = source.VERCEL_ENV ?? (source.NODE_ENV === "production" ? "production" : "development");
@@ -975,7 +974,8 @@ var auth = betterAuth({
       "http://localhost:5173",
       "http://localhost:3000"
     ];
-    if (origin && (origin.endsWith(".vercel.app") || origin.endsWith(".rauell.systems"))) {
+    if (origin && // Only our own subdomains. Any *.vercel.app site could be anyone's.
+    origin.endsWith(".rauell.systems")) {
       return [...defaults, origin];
     }
     return defaults;

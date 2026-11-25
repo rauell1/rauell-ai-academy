@@ -81,12 +81,11 @@ var serverEnvSchema = z.object({
   NVIDIA_API_KEY: z.string().optional(),
   NVIDIA_API_KEY_1: z.string().optional(),
   NVIDIA_API_KEY_2: z.string().optional(),
-  NVIDIA_BASE_URL: z.string().url().default("https://integrate.api.nvidia.com/v1"),
-  NVIDIA_MODEL: z.string().default("meta/llama-3.2-90b-vision-instruct"),
-  NVIDIA_MODEL_HEAVY: z.string().default("meta/llama-3.2-90b-vision-instruct"),
-  NVIDIA_MODEL_LIGHT: z.string().default("meta/llama-3.2-11b-vision-instruct"),
-  NEON_AI_GATEWAY_TOKEN: z.string().optional(),
-  NEON_AI_GATEWAY_BASE_URL: z.string().url().optional()
+  // Two-model rule: slot 1 is live; slot 2 is a spare used only while slot 1 is empty.
+  AI_MODEL_HEAVY1: z.string().trim().optional(),
+  AI_MODEL_HEAVY2: z.string().trim().optional(),
+  AI_MODEL_LIGHT1: z.string().trim().optional(),
+  AI_MODEL_LIGHT2: z.string().trim().optional()
 });
 function getServerEnv(source = process.env) {
   const runtime = source.VERCEL_ENV ?? (source.NODE_ENV === "production" ? "production" : "development");
@@ -988,7 +987,8 @@ var auth = betterAuth({
       "http://localhost:5173",
       "http://localhost:3000"
     ];
-    if (origin && (origin.endsWith(".vercel.app") || origin.endsWith(".rauell.systems"))) {
+    if (origin && // Only our own subdomains. Any *.vercel.app site could be anyone's.
+    origin.endsWith(".rauell.systems")) {
       return [...defaults, origin];
     }
     return defaults;
@@ -2703,7 +2703,6 @@ var chatSchema = z4.object({
     keyTakeaway: z4.string().optional()
   }).optional(),
   tier: z4.enum(["heavy", "light"]).default("light"),
-  model: z4.string().optional(),
   temperature: z4.number().min(0).max(1).optional()
 });
 var evaluateSchema = z4.object({
@@ -2719,34 +2718,47 @@ var evaluateSchema = z4.object({
   inputB: z4.string().max(1e4).optional(),
   criteria: z4.array(z4.string()).optional(),
   context: z4.record(z4.string(), z4.any()).optional(),
-  tier: z4.enum(["heavy", "light"]).default("heavy"),
-  model: z4.string().optional()
+  tier: z4.enum(["heavy", "light"]).default("heavy")
 });
+var NVIDIA_BASE_URL = "https://integrate.api.nvidia.com/v1";
+var DEFAULT_HEAVY_MODEL = "nvidia/nemotron-3.5-super-vl-120b-a12b";
+var DEFAULT_LIGHT_MODEL = "nvidia/nemotron-3.5-lightning-30b-a3b";
+function tierModel(tier) {
+  const env2 = getServerEnv();
+  return tier === "heavy" ? env2.AI_MODEL_HEAVY1 || env2.AI_MODEL_HEAVY2 || DEFAULT_HEAVY_MODEL : env2.AI_MODEL_LIGHT1 || env2.AI_MODEL_LIGHT2 || DEFAULT_LIGHT_MODEL;
+}
 function resolveCredentials(tier) {
   const env2 = getServerEnv();
-  if (tier === "heavy") {
-    const key2 = env2.NVIDIA_API_KEY_1?.trim() || env2.NVIDIA_API_KEY?.trim() || env2.NVIDIA_API_KEY_2?.trim() || null;
-    return {
-      apiKey: key2,
-      model: env2.NVIDIA_MODEL_HEAVY || "meta/llama-3.2-90b-vision-instruct",
-      keySource: env2.NVIDIA_API_KEY_1 ? "NVIDIA_API_KEY_1 (Heavy)" : "NVIDIA_API_KEY"
-    };
-  }
-  const key = env2.NVIDIA_API_KEY_2?.trim() || env2.NVIDIA_API_KEY_1?.trim() || env2.NVIDIA_API_KEY?.trim() || null;
+  const [own, other] = tier === "heavy" ? [env2.NVIDIA_API_KEY_1, env2.NVIDIA_API_KEY_2] : [env2.NVIDIA_API_KEY_2, env2.NVIDIA_API_KEY_1];
+  const key = own?.trim() || env2.NVIDIA_API_KEY?.trim() || other?.trim() || null;
   return {
     apiKey: key,
-    model: env2.NVIDIA_MODEL_LIGHT || "meta/llama-3.2-11b-vision-instruct",
-    keySource: env2.NVIDIA_API_KEY_2 ? "NVIDIA_API_KEY_2 (Light)" : "NVIDIA_API_KEY"
+    model: tierModel(tier),
+    keySource: own?.trim() ? tier === "heavy" ? "NVIDIA_API_KEY_1 (Heavy)" : "NVIDIA_API_KEY_2 (Light)" : "NVIDIA_API_KEY"
   };
 }
+async function completeWithFallback(first, params) {
+  let cutOff = null;
+  for (const tier of [first, first === "heavy" ? "light" : "heavy"]) {
+    const creds = resolveCredentials(tier);
+    if (!creds.apiKey || creds.apiKey.length <= 5) continue;
+    try {
+      const reply = await callOpenAiCompatible({ url: NVIDIA_BASE_URL, apiKey: creds.apiKey, model: creds.model, ...params });
+      const result = { text: reply.text, model: creds.model, tier, keySource: creds.keySource };
+      if (!reply.truncated) return result;
+      cutOff ??= result;
+    } catch (err) {
+      console.warn(`NVIDIA ${tier} model ${creds.model} failed:`, err);
+    }
+  }
+  return cutOff;
+}
 aiApi.get("/ai/status", (c) => {
-  const env2 = getServerEnv();
   const heavy = resolveCredentials("heavy");
   const light = resolveCredentials("light");
-  const hasNeonGateway = Boolean(env2.NEON_AI_GATEWAY_TOKEN);
   return c.json({
-    available: Boolean(heavy.apiKey || light.apiKey || hasNeonGateway),
-    provider: heavy.apiKey || light.apiKey ? "nvidia" : hasNeonGateway ? "neon_gateway" : "local_heuristic",
+    available: Boolean(heavy.apiKey || light.apiKey),
+    provider: heavy.apiKey || light.apiKey ? "nvidia" : "local_heuristic",
     model: heavy.model,
     tiers: {
       heavy: {
@@ -2762,7 +2774,7 @@ aiApi.get("/ai/status", (c) => {
         role: "In-Lesson Interactive AI Tutor Chat"
       }
     },
-    endpoint: env2.NVIDIA_BASE_URL
+    endpoint: NVIDIA_BASE_URL
   });
 });
 async function callOpenAiCompatible(params) {
@@ -2793,11 +2805,12 @@ async function callOpenAiCompatible(params) {
       );
     }
     const json = await res.json();
-    const content = json?.choices?.[0]?.message?.content;
+    const choice = json?.choices?.[0];
+    const content = choice?.message?.content;
     if (typeof content !== "string" || !content.trim()) {
       throw new Error("Empty response received from LLM upstream.");
     }
-    return content.trim();
+    return { text: content.trim(), truncated: choice?.finish_reason === "length" };
   } finally {
     clearTimeout(timer);
   }
@@ -2812,7 +2825,6 @@ aiApi.post("/ai/chat", zValidator3("json", chatSchema), async (c) => {
   }
   const startTime = Date.now();
   const input = c.req.valid("json");
-  const env2 = getServerEnv();
   const systemInstructions = [
     "You are Rauell AI Academy's Senior AI Instructional Mentor.",
     "Your purpose is helping learners master practical, responsible AI applications across business, websites, renewable energy, water resources, and automation in African contexts.",
@@ -2829,58 +2841,21 @@ aiApi.post("/ai/chat", zValidator3("json", chatSchema), async (c) => {
     { role: "system", content: systemInstructions },
     ...input.messages
   ];
-  const creds = resolveCredentials(input.tier || "light");
-  if (creds.apiKey && creds.apiKey.trim().length > 5) {
-    try {
-      const model = input.model || creds.model;
-      const reply = await callOpenAiCompatible({
-        url: env2.NVIDIA_BASE_URL,
-        apiKey: creds.apiKey,
-        model,
-        messages: fullMessages,
-        temperature: input.temperature ?? 0.3,
-        maxTokens: 1200
-      });
-      return c.json({
-        message: reply,
-        provider: "nvidia",
-        model,
-        tier: input.tier || "light",
-        keySource: creds.keySource,
-        isFallback: false,
-        latencyMs: Date.now() - startTime
-      });
-    } catch (err) {
-      console.warn(
-        "NVIDIA NIM API call failed, falling back to offline mentor:",
-        err
-      );
-    }
-  }
-  if (env2.NEON_AI_GATEWAY_TOKEN && env2.NEON_AI_GATEWAY_BASE_URL) {
-    try {
-      const model = input.model || "meta-llama/Meta-Llama-3.1-70B-Instruct";
-      const reply = await callOpenAiCompatible({
-        url: `${env2.NEON_AI_GATEWAY_BASE_URL}/v1`,
-        apiKey: env2.NEON_AI_GATEWAY_TOKEN,
-        model,
-        messages: fullMessages,
-        temperature: input.temperature ?? 0.3,
-        maxTokens: 1200
-      });
-      return c.json({
-        message: reply,
-        provider: "neon_gateway",
-        model,
-        isFallback: false,
-        latencyMs: Date.now() - startTime
-      });
-    } catch (err) {
-      console.warn(
-        "Neon AI Gateway call failed, falling back to offline mentor:",
-        err
-      );
-    }
+  const reply = await completeWithFallback(input.tier || "light", {
+    messages: fullMessages,
+    temperature: input.temperature ?? 0.3,
+    maxTokens: 1200
+  });
+  if (reply) {
+    return c.json({
+      message: reply.text,
+      provider: "nvidia",
+      model: reply.model,
+      tier: reply.tier,
+      keySource: reply.keySource,
+      isFallback: false,
+      latencyMs: Date.now() - startTime
+    });
   }
   const lastUserMsg = [...input.messages].reverse().find((m) => m.role === "user")?.content || "";
   const offlineReply = generateOfflineMentorReply(lastUserMsg, input.context);
@@ -2902,7 +2877,6 @@ aiApi.post("/ai/evaluate", zValidator3("json", evaluateSchema), async (c) => {
   }
   const startTime = Date.now();
   const input = c.req.valid("json");
-  const env2 = getServerEnv();
   const evalPrompt = buildEvaluationPrompt(input);
   const messages = [
     {
@@ -2911,33 +2885,21 @@ aiApi.post("/ai/evaluate", zValidator3("json", evaluateSchema), async (c) => {
     },
     { role: "user", content: evalPrompt }
   ];
-  const creds = resolveCredentials(input.tier || "heavy");
-  if (creds.apiKey && creds.apiKey.trim().length > 5) {
-    try {
-      const model = input.model || creds.model;
-      const response = await callOpenAiCompatible({
-        url: env2.NVIDIA_BASE_URL,
-        apiKey: creds.apiKey,
-        model,
-        messages,
-        temperature: 0.1,
-        maxTokens: 1800
-      });
-      return c.json({
-        output: response,
-        provider: "nvidia",
-        model,
-        tier: input.tier || "heavy",
-        keySource: creds.keySource,
-        isFallback: false,
-        latencyMs: Date.now() - startTime
-      });
-    } catch (err) {
-      console.warn(
-        "NVIDIA evaluation failed, falling back to local evaluator:",
-        err
-      );
-    }
+  const response = await completeWithFallback(input.tier || "heavy", {
+    messages,
+    temperature: 0.1,
+    maxTokens: 1800
+  });
+  if (response) {
+    return c.json({
+      output: response.text,
+      provider: "nvidia",
+      model: response.model,
+      tier: response.tier,
+      keySource: response.keySource,
+      isFallback: false,
+      latencyMs: Date.now() - startTime
+    });
   }
   const localOutput = generateLocalEvaluation(input);
   return c.json({
@@ -3157,7 +3119,7 @@ app.use("*", async (c, next) => {
       "http://localhost:5173",
       "http://localhost:3000"
     ];
-    if (origin && !allowed.includes(origin) && !origin.endsWith(".vercel.app") && !origin.endsWith(".rauell.systems"))
+    if (origin && !allowed.includes(origin) && !origin.endsWith(".rauell.systems"))
       return c.json({ error: "Request origin is not allowed." }, 403);
   }
   await next();
