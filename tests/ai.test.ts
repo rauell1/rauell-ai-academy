@@ -163,7 +163,68 @@ describe("AI Integration & NVIDIA Gateway API (/api/v1/ai)", () => {
     expect(json).toHaveProperty("tiers");
     expect(json.tiers).toHaveProperty("heavy");
     expect(json.tiers).toHaveProperty("light");
-    expect(json.tiers.heavy.model).toContain("90b");
-    expect(json.tiers.light.model).toContain("11b");
+    expect(json.tiers.heavy.model).toBe("nvidia/nemotron-3.5-super-vl-120b-a12b");
+    expect(json.tiers.light.model).toBe("nvidia/nemotron-3.5-lightning-30b-a3b");
+  });
+});
+
+describe("two-model rule", () => {
+  const models: string[] = [];
+  const reply = (model: string, ok: boolean, finish = "stop") =>
+    ok
+      ? new Response(JSON.stringify({ choices: [{ message: { content: `from ${model}` }, finish_reason: finish }] }), { status: 200 })
+      : new Response("busy", { status: 503 });
+
+  beforeEach(() => {
+    models.length = 0;
+    vi.stubEnv("NVIDIA_API_KEY_1", "heavy-key-123");
+    vi.stubEnv("NVIDIA_API_KEY_2", "light-key-123");
+    for (const k of ["AI_MODEL_HEAVY1", "AI_MODEL_HEAVY2", "AI_MODEL_LIGHT1", "AI_MODEL_LIGHT2"]) vi.stubEnv(k, "");
+    mockedGetActiveSession.mockResolvedValue({ user: { id: "u1" } } as never);
+  });
+
+  it("uses slot 1, else the slot 2 spare, else the defaults", async () => {
+    const { tierModel, DEFAULT_HEAVY_MODEL, DEFAULT_LIGHT_MODEL } = await import("../src/server/api/ai");
+    expect(tierModel("heavy")).toBe(DEFAULT_HEAVY_MODEL);
+    expect(tierModel("light")).toBe(DEFAULT_LIGHT_MODEL);
+    vi.stubEnv("AI_MODEL_LIGHT2", "spare/light");
+    expect(tierModel("light")).toBe("spare/light");
+    vi.stubEnv("AI_MODEL_LIGHT1", "live/light");
+    expect(tierModel("light")).toBe("live/light");
+  });
+
+  it("retries a failed evaluation on the light model, ignores a caller's model, and tries no third model", async () => {
+    const { DEFAULT_HEAVY_MODEL, DEFAULT_LIGHT_MODEL } = await import("../src/server/api/ai");
+    vi.stubGlobal("fetch", vi.fn(async (_u: string, init: RequestInit) => {
+      const model = JSON.parse(String(init.body)).model;
+      models.push(model);
+      return reply(model, model !== DEFAULT_HEAVY_MODEL);
+    }));
+    const res = await aiApi.request("/ai/evaluate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ taskType: "rubric_evaluation", inputA: "Answer", model: "someone/else" }),
+    });
+    const json = await res.json();
+    expect(json.model).toBe(DEFAULT_LIGHT_MODEL);
+    expect(models).toEqual([DEFAULT_HEAVY_MODEL, DEFAULT_LIGHT_MODEL]);
+    vi.unstubAllGlobals();
+  });
+
+  it("retries a cut-off mentor reply on the heavy model", async () => {
+    const { DEFAULT_HEAVY_MODEL, DEFAULT_LIGHT_MODEL } = await import("../src/server/api/ai");
+    vi.stubGlobal("fetch", vi.fn(async (_u: string, init: RequestInit) => {
+      const model = JSON.parse(String(init.body)).model;
+      models.push(model);
+      return reply(model, true, model === DEFAULT_LIGHT_MODEL ? "length" : "stop");
+    }));
+    const res = await aiApi.request("/ai/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ messages: [{ role: "user", content: "Explain inverters" }] }),
+    });
+    expect((await res.json()).model).toBe(DEFAULT_HEAVY_MODEL);
+    expect(models).toEqual([DEFAULT_LIGHT_MODEL, DEFAULT_HEAVY_MODEL]);
+    vi.unstubAllGlobals();
   });
 });

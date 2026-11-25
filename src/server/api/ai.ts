@@ -25,7 +25,6 @@ const chatSchema = z.object({
     })
     .optional(),
   tier: z.enum(["heavy", "light"]).default("light"),
-  model: z.string().optional(),
   temperature: z.number().min(0).max(1).optional(),
 });
 
@@ -43,56 +42,76 @@ const evaluateSchema = z.object({
   criteria: z.array(z.string()).optional(),
   context: z.record(z.string(), z.any()).optional(),
   tier: z.enum(["heavy", "light"]).default("heavy"),
-  model: z.string().optional(),
 });
 
-function resolveCredentials(tier: "heavy" | "light") {
+/**
+ * Two-model rule (owner's standing instruction, 25 November 2026): the academy
+ * uses exactly two NVIDIA models, a heavy one and a light one, and no other.
+ *
+ *   AI_MODEL_HEAVY1  live heavy model (evaluations, labs, rubric assessment)
+ *   AI_MODEL_LIGHT1  live light model (the in-lesson mentor chat)
+ *   AI_MODEL_HEAVY2  spare heavy model, used only while AI_MODEL_HEAVY1 is empty
+ *   AI_MODEL_LIGHT2  spare light model, used only while AI_MODEL_LIGHT1 is empty
+ *
+ * A call that fails or is cut off is retried once on the other tier's model.
+ * Callers cannot choose a model.
+ */
+export const DEFAULT_HEAVY_MODEL = "nvidia/nemotron-3.5-super-vl-120b-a12b";
+export const DEFAULT_LIGHT_MODEL = "nvidia/nemotron-3.5-lightning-30b-a3b";
+type Tier = "heavy" | "light";
+
+export function tierModel(tier: Tier): string {
   const env = getServerEnv();
+  return tier === "heavy"
+    ? env.AI_MODEL_HEAVY1 || env.AI_MODEL_HEAVY2 || DEFAULT_HEAVY_MODEL
+    : env.AI_MODEL_LIGHT1 || env.AI_MODEL_LIGHT2 || DEFAULT_LIGHT_MODEL;
+}
 
-  if (tier === "heavy") {
-    const key =
-      env.NVIDIA_API_KEY_1?.trim() ||
-      env.NVIDIA_API_KEY?.trim() ||
-      env.NVIDIA_API_KEY_2?.trim() ||
-      null;
-    return {
-      apiKey: key,
-      model: env.AI_MODEL_HEAVY || env.NVIDIA_MODEL_HEAVY || "meta/llama-3.2-90b-vision-instruct",
-      keySource: env.NVIDIA_API_KEY_1
-        ? "NVIDIA_API_KEY_1 (Heavy)"
-        : "NVIDIA_API_KEY",
-    };
-  }
-
-  // Light tier
-  const key =
-    env.NVIDIA_API_KEY_2?.trim() ||
-    env.NVIDIA_API_KEY_1?.trim() ||
-    env.NVIDIA_API_KEY?.trim() ||
-    null;
+function resolveCredentials(tier: Tier) {
+  const env = getServerEnv();
+  const [own, other] = tier === "heavy"
+    ? [env.NVIDIA_API_KEY_1, env.NVIDIA_API_KEY_2]
+    : [env.NVIDIA_API_KEY_2, env.NVIDIA_API_KEY_1];
+  const key = own?.trim() || env.NVIDIA_API_KEY?.trim() || other?.trim() || null;
   return {
     apiKey: key,
-    model: env.AI_MODEL_LIGHT || env.NVIDIA_MODEL_LIGHT || "meta/llama-3.2-11b-vision-instruct",
-    keySource: env.NVIDIA_API_KEY_2
-      ? "NVIDIA_API_KEY_2 (Light)"
+    model: tierModel(tier),
+    keySource: own?.trim()
+      ? tier === "heavy" ? "NVIDIA_API_KEY_1 (Heavy)" : "NVIDIA_API_KEY_2 (Light)"
       : "NVIDIA_API_KEY",
   };
+}
+
+/** The tier's model first, then the other tier's model once. */
+async function completeWithFallback(
+  first: Tier,
+  params: { messages: Array<{ role: string; content: string }>; temperature?: number; maxTokens?: number },
+): Promise<{ text: string; model: string; tier: Tier; keySource: string } | null> {
+  const env = getServerEnv();
+  let cutOff: { text: string; model: string; tier: Tier; keySource: string } | null = null;
+  for (const tier of [first, first === "heavy" ? "light" : "heavy"] as Tier[]) {
+    const creds = resolveCredentials(tier);
+    if (!creds.apiKey || creds.apiKey.length <= 5) continue;
+    try {
+      const reply = await callOpenAiCompatible({ url: env.NVIDIA_BASE_URL, apiKey: creds.apiKey, model: creds.model, ...params });
+      const result = { text: reply.text, model: creds.model, tier, keySource: creds.keySource };
+      if (!reply.truncated) return result;
+      cutOff ??= result;
+    } catch (err) {
+      console.warn(`NVIDIA ${tier} model ${creds.model} failed:`, err);
+    }
+  }
+  return cutOff;
 }
 
 aiApi.get("/ai/status", (c) => {
   const env = getServerEnv();
   const heavy = resolveCredentials("heavy");
   const light = resolveCredentials("light");
-  const hasNeonGateway = Boolean(env.NEON_AI_GATEWAY_TOKEN);
 
   return c.json({
-    available: Boolean(heavy.apiKey || light.apiKey || hasNeonGateway),
-    provider:
-      heavy.apiKey || light.apiKey
-        ? "nvidia"
-        : hasNeonGateway
-          ? "neon_gateway"
-          : "local_heuristic",
+    available: Boolean(heavy.apiKey || light.apiKey),
+    provider: heavy.apiKey || light.apiKey ? "nvidia" : "local_heuristic",
     model: heavy.model,
     tiers: {
       heavy: {
@@ -119,7 +138,7 @@ async function callOpenAiCompatible(params: {
   messages: Array<{ role: string; content: string }>;
   temperature?: number;
   maxTokens?: number;
-}): Promise<string> {
+}): Promise<{ text: string; truncated: boolean }> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 20000);
 
@@ -150,11 +169,12 @@ async function callOpenAiCompatible(params: {
     }
 
     const json = (await res.json()) as any;
-    const content = json?.choices?.[0]?.message?.content;
+    const choice = json?.choices?.[0];
+    const content = choice?.message?.content;
     if (typeof content !== "string" || !content.trim()) {
       throw new Error("Empty response received from LLM upstream.");
     }
-    return content.trim();
+    return { text: content.trim(), truncated: choice?.finish_reason === "length" };
   } finally {
     clearTimeout(timer);
   }
@@ -171,7 +191,6 @@ aiApi.post("/ai/chat", zValidator("json", chatSchema), async (c) => {
 
   const startTime = Date.now();
   const input = c.req.valid("json");
-  const env = getServerEnv();
 
   const systemInstructions = [
     "You are Rauell AI Academy's Senior AI Instructional Mentor.",
@@ -197,63 +216,21 @@ aiApi.post("/ai/chat", zValidator("json", chatSchema), async (c) => {
     ...input.messages,
   ];
 
-  // Try NVIDIA NIM
-  const creds = resolveCredentials(input.tier || "light");
-  if (creds.apiKey && creds.apiKey.trim().length > 5) {
-    try {
-      const model = input.model || creds.model;
-      const reply = await callOpenAiCompatible({
-        url: env.NVIDIA_BASE_URL,
-        apiKey: creds.apiKey,
-        model,
-        messages: fullMessages,
-        temperature: input.temperature ?? 0.3,
-        maxTokens: 1200,
-      });
-
-      return c.json({
-        message: reply,
-        provider: "nvidia",
-        model,
-        tier: input.tier || "light",
-        keySource: creds.keySource,
-        isFallback: false,
-        latencyMs: Date.now() - startTime,
-      });
-    } catch (err) {
-      console.warn(
-        "NVIDIA NIM API call failed, falling back to offline mentor:",
-        err,
-      );
-    }
-  }
-
-  // Try Neon AI Gateway if available
-  if (env.NEON_AI_GATEWAY_TOKEN && env.NEON_AI_GATEWAY_BASE_URL) {
-    try {
-      const model = input.model || "meta-llama/Meta-Llama-3.1-70B-Instruct";
-      const reply = await callOpenAiCompatible({
-        url: `${env.NEON_AI_GATEWAY_BASE_URL}/v1`,
-        apiKey: env.NEON_AI_GATEWAY_TOKEN,
-        model,
-        messages: fullMessages,
-        temperature: input.temperature ?? 0.3,
-        maxTokens: 1200,
-      });
-
-      return c.json({
-        message: reply,
-        provider: "neon_gateway",
-        model,
-        isFallback: false,
-        latencyMs: Date.now() - startTime,
-      });
-    } catch (err) {
-      console.warn(
-        "Neon AI Gateway call failed, falling back to offline mentor:",
-        err,
-      );
-    }
+  const reply = await completeWithFallback(input.tier || "light", {
+    messages: fullMessages,
+    temperature: input.temperature ?? 0.3,
+    maxTokens: 1200,
+  });
+  if (reply) {
+    return c.json({
+      message: reply.text,
+      provider: "nvidia",
+      model: reply.model,
+      tier: reply.tier,
+      keySource: reply.keySource,
+      isFallback: false,
+      latencyMs: Date.now() - startTime,
+    });
   }
 
   // Intelligent Contextual Offline Mentor Fallback
@@ -281,7 +258,6 @@ aiApi.post("/ai/evaluate", zValidator("json", evaluateSchema), async (c) => {
 
   const startTime = Date.now();
   const input = c.req.valid("json");
-  const env = getServerEnv();
 
   const evalPrompt = buildEvaluationPrompt(input);
   const messages = [
@@ -293,35 +269,21 @@ aiApi.post("/ai/evaluate", zValidator("json", evaluateSchema), async (c) => {
     { role: "user", content: evalPrompt },
   ];
 
-  // Try NVIDIA NIM
-  const creds = resolveCredentials(input.tier || "heavy");
-  if (creds.apiKey && creds.apiKey.trim().length > 5) {
-    try {
-      const model = input.model || creds.model;
-      const response = await callOpenAiCompatible({
-        url: env.NVIDIA_BASE_URL,
-        apiKey: creds.apiKey,
-        model,
-        messages,
-        temperature: 0.1,
-        maxTokens: 1800,
-      });
-
-      return c.json({
-        output: response,
-        provider: "nvidia",
-        model,
-        tier: input.tier || "heavy",
-        keySource: creds.keySource,
-        isFallback: false,
-        latencyMs: Date.now() - startTime,
-      });
-    } catch (err) {
-      console.warn(
-        "NVIDIA evaluation failed, falling back to local evaluator:",
-        err,
-      );
-    }
+  const response = await completeWithFallback(input.tier || "heavy", {
+    messages,
+    temperature: 0.1,
+    maxTokens: 1800,
+  });
+  if (response) {
+    return c.json({
+      output: response.text,
+      provider: "nvidia",
+      model: response.model,
+      tier: response.tier,
+      keySource: response.keySource,
+      isFallback: false,
+      latencyMs: Date.now() - startTime,
+    });
   }
 
   // Fallback to local deterministic evaluator
