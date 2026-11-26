@@ -32,7 +32,7 @@
     "@tanstack/router-plugin": "^1.168.0",
     "@vercel/blob": "^2.8.0",
     "aws4fetch": "1.0.20",
-    "better-auth": "^1.6.29",
+    "better-auth": "^1.7.28",
     "drizzle-orm": "^0.45.2",
     "esbuild": "^0.25.2",
     "hono": "^4.13.2",
@@ -43,7 +43,7 @@
     "resend": "^6.20.0",
     "tailwindcss": "^4.2.1",
     "vite-tsconfig-paths": "^6.0.2",
-    "zod": "^4.4.3"
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@aws-sdk/client-s3": "^3.1111.0",
@@ -65,7 +65,7 @@
     "tsx": "^4.23.12",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.56.1",
-    "vite": "^7.3.6",
+    "vite": "^7.3.8",
     "vitest": "^4.1.10",
     "wrangler": "^4.162.0"
   }
